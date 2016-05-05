@@ -6,7 +6,7 @@ differences to pymel / red9Meta
 - custom meta class instances are handled like red9 (attach metaclass as serializer / instance)
 - node connections not like red9, instead: myNode.my_joint = 'joint1' connection is 'joint1.message' >> myNode.my_joint [single message attr]
 - better reload / initialize than red9?
-
+- __metaclass__ not overwritten like red9 does?
 
 - pythonic maya node wrapper
 -- extra node functionionality (library)

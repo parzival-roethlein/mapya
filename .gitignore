@@ -1,0 +1,12 @@
+# compiled source
+*.pyc
+
+# eclipse / pydev
+/.project
+/.pydevproject
+/dfa
+/.settings
+
+# maya / template
+incrementalSave
+.mayaSwatches
