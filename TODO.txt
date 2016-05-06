@@ -1,8 +1,0 @@
-- rig control should be connectable multiple times to the same meta class (change the way the custom attr gets created, maybe other way around? not from meta > ctrl, but ctrl > meta) 
-
-- "state" attribute on main metanode, create attribute map for each state, so attribute settings for rigging, published state
-- or state attribute can have any string value, which is connected with attribute maps? so user is free to say "template tweak", "template", "rig", ... and/or option when rig_build is executed automatically say "rig" state, etc? automatically look for attr map when state changes
-- separate from "state" or maybe both: option to write attribute map in scene folder, by default use state as file_name, allow user input. then extra UI that just reads those files "rig clean" "rig wip" (show all controls)
-  when reading/writing script is smart and tries to use different name at same hierarchy spot, but give popup if it should be replaced. or use an attribute + value on node to identify it (does not work after duplicate?)
-
-- attribute map for template stage (overwrite with template (not reference) nodes that should not be touched when positioning template)
