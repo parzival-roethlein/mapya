@@ -1,4 +1,15 @@
-maya metaclass system
+prmPySerial = parzival roethlein maya python serializer
+
+PURPOSE
+- attach classes to maya objects (serializer? or metaprogramming?)
+- attach maya objects to nodetype classes for extra functionality
+
+
+TECHNOLOGY
+- using python api 2.0 (pythonic + fast) and maya.cmds 
+- properties instead of getter/setter
+
+
 
 differences to pymel / red9Meta
 - properties / setter like red9 myNode.tx = 1 not like pymel [myNode.tx.set(1) or myCam.setFocalLength(1)]
