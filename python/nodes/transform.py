@@ -1,10 +1,10 @@
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-from .. import node
+from ..node import Node
 
 
-class Transform(node):
+class Transform(Node):
     
     @property
     def matrix(self):
@@ -12,9 +12,10 @@ class Transform(node):
     
     @matrix.setter
     def matrix(self, value):
-        self.translate = value[0]
-        self.rotate = value[1]
-        self.scale = value[2]
+        value_matrix = om.MTransformationMatrix( value )
+        self.translate = value_matrix.translation()
+        self.rotate = value_matrix.rotation()
+        self.scale = value_matrix.scale()
     
     @property
     def worldMatrix(self):
@@ -22,6 +23,7 @@ class Transform(node):
     
     @matrix.setter
     def worldMatrix(self, value):
-        self.translate = value[0]
-        self.rotate = value[1]
-        self.scale = value[2]
+        value_matrix = om.MTransformationMatrix( value )
+        self.translate = value_matrix.translation()
+        self.rotate = value_matrix.rotation()
+        self.scale = value_matrix.scale()

@@ -5,12 +5,16 @@ import maya.cmds as mc
 class Node(object):
     
     def __init__(self, name):
-        
-        if( not mc.objExists( name ) ):
-            raise NameError('Object does not exist: %s' % name)
         sel_list = om.MSelectionList()
         sel_list.add( name )
         self.MObject = sel_list.getDependNode(0)
+    
+    def __setattr__(self, name, value):
+        print( 'name: %s / value: %s' % (name, value))
+        super(Node, self).__setattr__(name, value)
+        
+        # if maya attr, set it now
+        # ...
     
     @property
     def name(self):
@@ -21,3 +25,5 @@ class Node(object):
     @name.setter
     def name(self, value):
         mc.rename( self.name, value )
+    
+    

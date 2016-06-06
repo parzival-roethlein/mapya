@@ -1,12 +1,12 @@
 prmPySerial = parzival roethlein maya python serializer
 
 PURPOSE
-- attach classes to maya objects (serializer? or metaprogramming?)
-- attach maya objects to nodetype classes for extra functionality
+- attach custom user classes to maya objects (serializer? or metaprogramming?)
+- attach library classes to maya nodes for extra functionality (PyNode)
 
 
-TECHNOLOGY
-- using python api 2.0 (pythonic + fast) and maya.cmds 
+TECHNICAL
+- python api 2.0 and maya.cmds
 - properties instead of getter/setter
 
 
@@ -41,8 +41,6 @@ EXAMPLES
 
 
 
-
-
 MAYBE:
 - better reload / initialize than red9?
 - "state" attribute on main metanode, create attribute map for each state, so attribute settings for rigging, published state
@@ -50,3 +48,6 @@ MAYBE:
 -- separate from "state" or maybe both: option to write attribute map in scene folder, by default use state as file_name, allow user input. then extra UI that just reads those files "rig clean" "rig wip" (show all controls)
 - when reading/writing script is smart and tries to use different name at same hierarchy spot, but give popup if it should be replaced. or use an attribute + value on node to identify it (does not work after duplicate?)
 - attribute maps for stages template/rigged (overwrite with template (not reference) nodes that should not be touched when positioning template)
+
+
+
