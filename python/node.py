@@ -19,9 +19,10 @@ class Node(object):
         # default maya attr
         if( mc.objExists( maya_attr ) ):
             mc.setAttr( maya_attr, value )
+            if( not hasattr(self, name) ):
+                return
         
         # python variable
-        # TODO: if maya object existed, check if python variable exists before running:
         super(Node, self).__setattr__(name, value)
     
     def __getattr__(self, name):
