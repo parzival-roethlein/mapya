@@ -1,30 +1,36 @@
-prmPySerial = parzival roethlein maya python serializer
+mPySerial = maya python serializer
 
-PURPOSE
-- attach custom user classes to maya objects (serializer? or metaprogramming?)
-- attach library classes to maya nodes for extra functionality (PyNode)
+FEATURES
+- pythonic + mayaesque serializer (if you know python and maya, everything should be as expected)
+- fast (python api 2.0) only maya.cmds when api does not work (undo/redo)
+- small (only essential functionality, no opinions/studio specifics implemented) 
+- serialize / attach / interact with python classes on maya objects (serializer? or metaprogramming?)
+- either custom user classes (r9Meta) or from the nodetype library (PyNode)
+- properties/setter for maya attributes
+-- attach complex python attributes to maya nodes (dict, attributeMap?, ...)
+- pythonic maya node wrapper with extra node type based functionality library
 
 
-TECHNICAL
-- python api 2.0 and maya.cmds
-- properties instead of getter/setter
-
-
-
-differences to pymel / red9Meta
-- properties / setter like red9 myNode.tx = 1 not like pymel [myNode.tx.set(1) or myCam.setFocalLength(1)]
-- default maya nodes are handled like pynodes pm.PyNode('pCube1'): (does not create meta attribute) 
-- custom meta class instances are handled like red9 (attach metaclass as serializer / instance)
-- node connections not like red9, instead: myNode.my_joint = 'joint1' connection is 'joint1.message' >> myNode.my_joint [single message attr]
-- __metaclass__ not overwritten like red9 does?
+FEATURES (small)
 - class instance should save class version, that way it can be noticed and converted etc
 
-- pythonic maya node wrapper
--- extra node functionionality (library)
--- properties / setter for all attributes: 
---- pCube1.ty = 1.0
---- pCube1.matrix = myMatrix
---- pCube1.worldMatrix = myMatrix
+
+different from red9:
+- connected node attrs like a pointer, allows multiple. (not like red9 only one and in the "wrong" direction)
+- __metaclass__ not overwritten like red9 does? for abstract classes + ...?
+
+different from pymel
+- properties/setter instead of getter/setter methods [myNode.tx.set(1) = myNode.tx = 1]
+
+
+MAYBE:
+- easier / better reload / initialize than red9?
+- "state" attribute on main metanode, create attribute map for each state, so attribute settings for rigging, published state
+-- or state attribute can have any string value, which is connected with attribute maps? so user is free to say "template tweak", "template", "rig", ... and/or option when rig_build is executed automatically say "rig" state, etc? automatically look for attr map when state changes
+-- separate from "state" or maybe both: option to write attribute map in scene folder, by default use state as file_name, allow user input. then extra UI that just reads those files "rig clean" "rig wip" (show all controls)
+- when reading/writing script is smart and tries to use different name at same hierarchy spot, but give popup if it should be replaced. or use an attribute + value on node to identify it (does not work after duplicate?)
+- attribute maps for stages template/rigged (overwrite with template (not reference) nodes that should not be touched when positioning template)
+
 
 
 EXAMPLES
@@ -41,13 +47,6 @@ EXAMPLES
 
 
 
-MAYBE:
-- better reload / initialize than red9?
-- "state" attribute on main metanode, create attribute map for each state, so attribute settings for rigging, published state
--- or state attribute can have any string value, which is connected with attribute maps? so user is free to say "template tweak", "template", "rig", ... and/or option when rig_build is executed automatically say "rig" state, etc? automatically look for attr map when state changes
--- separate from "state" or maybe both: option to write attribute map in scene folder, by default use state as file_name, allow user input. then extra UI that just reads those files "rig clean" "rig wip" (show all controls)
-- when reading/writing script is smart and tries to use different name at same hierarchy spot, but give popup if it should be replaced. or use an attribute + value on node to identify it (does not work after duplicate?)
-- attribute maps for stages template/rigged (overwrite with template (not reference) nodes that should not be touched when positioning template)
 
 
 

@@ -5,13 +5,13 @@ import maya.cmds as mc
 
 from ..node import Node
 
-
 class DagNode(Node):
     
     @property
     def matrix(self):
-        return self.matrix
+        return self.__getAttr__('matrix')
     
     @property
     def worldMatrix(self):
-        return self.worldMatrix
+        return self.__getAttr__('worldMatrix')
+    

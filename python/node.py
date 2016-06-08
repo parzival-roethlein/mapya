@@ -10,20 +10,27 @@ class Node(object):
         self.MObject = sel_list.getDependNode(0)
     
     def __setattr__(self, name, value=None):
-        super(Node, self).__setattr__(name, value)
+        # maya attr
+        maya_attr = self.name+'.'+name
         
-        # check for custom complex type?
+        # TODO: check for custom complex type
         # ...
         
-        # set if maya attr
-        maya_attr = self.name+'.'+name
+        # default maya attr
         if( mc.objExists( maya_attr ) ):
             mc.setAttr( maya_attr, value )
+        
+        # python variable
+        # TODO: if maya object existed, check if python variable exists before running:
+        super(Node, self).__setattr__(name, value)
     
     def __getattr__(self, name):
+        # maya attr
         maya_attr = self.name+'.'+name
         if( mc.objExists( maya_attr ) ):
             return mc.getAttr( maya_attr)
+        
+        # python variable
         super(Node, self).__getattribute__(name)
     
     @property
@@ -35,5 +42,3 @@ class Node(object):
     @name.setter
     def name(self, value):
         mc.rename( self.name, value )
-    
-    
