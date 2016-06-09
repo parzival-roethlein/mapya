@@ -1,7 +1,7 @@
 mPySerial = maya python serializer
 
 FEATURES
-- pythonic + mayaesque serializer (if you know python and maya, everything should be as expected)
+- pythonic + mayaic serializer (if you know python and maya, everything should be as expected. priority python > maya)
 - fast (python api 2.0) only maya.cmds when api does not work (undo/redo)
 - small (only essential functionality, no opinions/studio specifics implemented) 
 - serialize / attach / interact with python classes on maya objects (serializer? or metaprogramming?)
