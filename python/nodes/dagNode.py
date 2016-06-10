@@ -9,6 +9,7 @@ class DagNode(Node):
     
     @property
     def matrix(self):
+        print('matrix property')
         return self.__getAttr__('matrix')
     
     @property
