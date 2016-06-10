@@ -18,12 +18,14 @@ FEATURES (small)
 different from red9:
 - connected node attrs like a pointer, allows multiple. (not like red9 only one and in the "wrong" direction)
 - __metaclass__ not overwritten like red9 does? for abstract classes + ...?
+- message attr only returns list if it is a multiMessage attr
 
 different from pymel
 - properties/setter instead of getter/setter methods [myNode.tx.set(1) = myNode.tx = 1]
 
 
 MAYBE:
+- multithreading? GPU?
 - easier / better reload / initialize than red9?
 - "state" attribute on main metanode, create attribute map for each state, so attribute settings for rigging, published state
 -- or state attribute can have any string value, which is connected with attribute maps? so user is free to say "template tweak", "template", "rig", ... and/or option when rig_build is executed automatically say "rig" state, etc? automatically look for attr map when state changes
