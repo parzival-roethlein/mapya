@@ -15,23 +15,31 @@ class Node(object):
         maya_attr = self.name+'.'+name
         if(mc.objExists(maya_attr)):
             return mc.getAttr(maya_attr)
-        
-        # python variable
-        super(Node, self).__getattribute__(name)
+        # this should error
+        self.__getattribute__(name)
     
-    def __setattr__(self, name, value=None):
+    def __setattr__(self, name, value):
         print('__setattr__ name: %s // value: %s' % (name, value))
+        
+        # skip properties (find better way way)
+        if( name in dir(self) and not name.startswith('__') and not name.endswith('__')):
+            print('skip attr' )
+            super(Node, self).__setattr__(name, value)
+            return
+        
         # maya attr
         maya_attr = self.name+'.'+name
-        
         # TODO: check for custom complex type
-        # ...
-        
         # default maya attr
         if(mc.objExists(maya_attr)):
-            mc.setAttr(maya_attr, value)
-            if(not hasattr(self, name)):
+            attr_children = mc.attributeQuery(name, n='a', listChildren=1)
+            if( attr_children ):
+                print( 'attr_children: %s' % attr_children)
+                for x, each_attr in enumerate( attr_children):
+                    self.__setattr__( each_attr, value[x])
                 return
+            mc.setAttr(maya_attr, value)
+            return
         
         # python variable
         super(Node, self).__setattr__(name, value)
@@ -51,3 +59,6 @@ class Node(object):
     @name.setter
     def name(self, value):
         mc.rename(self.name, value)
+
+
+

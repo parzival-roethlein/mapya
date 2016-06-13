@@ -15,6 +15,11 @@ FEATURES (small)
 - class instance should save class version, that way it can be noticed and converted etc
 
 
+RULES
+- maybe: no self.variables that are not represented in maya?
+
+
+
 different from red9:
 - connected node attrs like a pointer, allows multiple. (not like red9 only one and in the "wrong" direction)
 - __metaclass__ not overwritten like red9 does? for abstract classes + ...?
