@@ -13,10 +13,10 @@ from ..node import Node
 
 
 class DagNode(Node):
-    
-    @property
-    def matrix(self):
-        print('matrix property getter: %s' % self.name)
-        return self.__getattr__('matrix')
+    pass
+    #@property
+    #def matrix(self):
+    #    print('matrix property getter: %s' % self.name)
+    #    return self.__getattr__('matrix')
     
     

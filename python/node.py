@@ -45,6 +45,7 @@ class Node(object):
         super(Node, self).__setattr__(name, value)
     
     def __repr__(self):
+        # always return string of object name for ease of use? (pymel style?)
         return('%s(%r)' % (self.__class__, self.__dict__))
     
     def __str__(self):
