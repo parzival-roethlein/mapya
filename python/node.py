@@ -1,6 +1,7 @@
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
+from .attribute import Attribute
 
 class Node(object):
     
@@ -23,7 +24,7 @@ class Node(object):
         
         # skip properties (find better way way)
         if( name in dir(self) and not name.startswith('__') and not name.endswith('__')):
-            print('skip attr' )
+            print(' __setattr__ skip attr' )
             super(Node, self).__setattr__(name, value)
             return
         
@@ -45,20 +46,25 @@ class Node(object):
         super(Node, self).__setattr__(name, value)
     
     def __repr__(self):
-        # always return string of object name for ease of use? (pymel style?)
+        # TODO: always return string of object name for ease of use? (pymel style?)
         return('%s(%r)' % (self.__class__, self.__dict__))
     
     def __str__(self):
         return self.name
     
+    def attr(self, name):
+        return Attribute( self.name, name )
+    
     @property
     def name(self):
+        print('name property get')
         sel_list = om.MSelectionList()
         sel_list.add(self.MObject)
         return sel_list.getSelectionStrings(0)[0]
     
     @name.setter
     def name(self, value):
+        print('name property set')
         mc.rename(self.name, value)
 
 

@@ -6,7 +6,7 @@ FEATURES
 - small (only essential functionality, no opinions/studio specifics implemented) 
 - serialize / attach / interact with python classes on maya objects (serializer? or metaprogramming?)
 - either custom user classes (r9Meta) or from the nodetype library (PyNode)
-- properties/setter for maya attributes
+- properties/setter for maya attributes BUT python variables etc with the same name as attr have priority: use mynode.attr('name') = 'bla'
 -- attach complex python attributes to maya nodes (dict, attributeMap?, ...)
 - pythonic maya node wrapper with extra node type based functionality library
 
