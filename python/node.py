@@ -5,13 +5,22 @@ from .attribute import Attribute
 
 class Node(object):
     
-    def __init__(self, name):
+    
+    def debug(self, message):
+        if( self._debug ):
+            print( ' debug %s: %s' (self.__name__, message))
+    
+    def __init__(self, name, custom_type=False, debug=0):
+        self._debug = debug
         sel_list = om.MSelectionList()
         sel_list.add(name)
         super(Node, self).__setattr__('MObject', sel_list.getDependNode(0))
+        # bind data? debug variable?
+        # custom type check/return Transform(), ...
     
+    '''
     def __getattr__(self, name):
-        print('__getattr__ name: %s' % (name))
+        self.debug('__getattr__(name=%s)' % (name))
         # maya attr
         maya_attr = self.name+'.'+name
         if(mc.objExists(maya_attr)):
@@ -20,30 +29,22 @@ class Node(object):
         self.__getattribute__(name)
     
     def __setattr__(self, name, value):
-        print('__setattr__ name: %s // value: %s' % (name, value))
+        self.debug('__setattr__(name=%s, value=%s)' % (name, value))
         
-        # skip properties (find better way way)
+        # skip properties (TODO: find proper way)
         if( name in dir(self) and not name.startswith('__') and not name.endswith('__')):
-            print(' __setattr__ skip attr' )
+            self.debug(' skip custom __setattr__ part' )
             super(Node, self).__setattr__(name, value)
             return
         
-        # maya attr
-        maya_attr = self.name+'.'+name
-        # TODO: check for custom complex type
-        # default maya attr
-        if(mc.objExists(maya_attr)):
-            attr_children = mc.attributeQuery(name, n='a', listChildren=1)
-            if( attr_children ):
-                print( 'attr_children: %s' % attr_children)
-                for x, each_attr in enumerate( attr_children):
-                    self.__setattr__( each_attr, value[x])
-                return
-            mc.setAttr(maya_attr, value)
+        if( Attribute.exists( self.name, name) ):
+            self.attr(name).setValue( value )
             return
+        
         
         # python variable
         super(Node, self).__setattr__(name, value)
+    '''
     
     def __repr__(self):
         # TODO: always return string of object name for ease of use? (pymel style?)
@@ -57,14 +58,14 @@ class Node(object):
     
     @property
     def name(self):
-        print('name property get')
+        self.debug('name property get')
         sel_list = om.MSelectionList()
         sel_list.add(self.MObject)
         return sel_list.getSelectionStrings(0)[0]
     
     @name.setter
     def name(self, value):
-        print('name property set')
+        self.debug('name property set')
         mc.rename(self.name, value)
 
 
