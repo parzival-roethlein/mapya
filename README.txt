@@ -31,6 +31,7 @@ different from pymel
 
 
 MAYBE:
+- class instances stored as attributes on maya node? like ptdd
 - multithreading? GPU?
 - easier / better reload / initialize than red9?
 - "state" attribute on main metanode, create attribute map for each state, so attribute settings for rigging, published state
