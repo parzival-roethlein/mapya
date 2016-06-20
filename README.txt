@@ -9,6 +9,7 @@ FEATURES
 - properties/setter for maya attributes BUT python variables etc with the same name as attr have priority: use mynode.attr('name') = 'bla'
 -- attach complex python attributes to maya nodes (dict, attributeMap?, ...)
 - pythonic maya node wrapper with extra node type based functionality library
+- use the default Node class for highspeed, when no special function is needed. getting specified class instances (Transform, ...) is optional
 
 
 FEATURES (small)
