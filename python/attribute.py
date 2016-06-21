@@ -1,3 +1,8 @@
+'''
+lazy property on node for attrs?
+
+'''
+
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
