@@ -9,6 +9,10 @@ import maya.cmds as mc
 
 class Attribute(object):
     
+    def debug(self, message):
+        if( self._debug ):
+            print( ' debug %s: %s' (self.__name__, message))
+    
     @staticmethod
     def exists(node, attr, doError=False):
         full_attr = node+'.'+name
@@ -18,21 +22,16 @@ class Attribute(object):
             return False
         return True
     
-    def __init__(self, node, name):
-        self.exists( node, name, True )
-        
-        self.node = node
-        # TODO: use proper plug
-        self.plug = om.MPlug(full_attr_name)
+    def __init__(self, node, attr, debug=0):
+        self._debug=debug
+        sel_list = om.MSelectionList()
+        sel_list.add(node+'.'+attr)
+        self.MObject = sel_list.getPlug(0)
+        self.MPlug = om.MPlug( self.MObject )
     
-    
-    def setValue(self, value):
-        # TODO: use proper plug
-        # maya attr
-        maya_attr = self.name+'.'+name
-        # TODO: check for custom complex type
-        # default maya attr
-        if(mc.objExists(maya_attr)):
+    def set(self, value):
+        # TODO: more special cases?
+        if(self.MPlug.isCompound):
             attr_children = mc.attributeQuery(name, n='a', listChildren=1)
             if( attr_children ):
                 self.debug( ' attr_children: %s' % attr_children)
@@ -41,28 +40,28 @@ class Attribute(object):
                 return
             mc.setAttr(maya_attr, value)
             return
+        # TODO: add all type options
+        self.MPlug.setFloat( value )
     
-    def getValue(self):
-        # TODO: use proper plug
-        return mc.getAttr(maya_attr)
+    def get(self):
+        # TODO: add all type options
+        return self.MPlug.asFloat()
     
     @property
     def name(self):
         self.debug('name property get')
-        return self.plug.name()
-    
-    #@name.setter
-    #def name(self, value):
-    #    self.debug('name property set')
-    #    # TODO...
-    
-    @property
-    def attribute(self):
-        self.debug('attribute property get')
-        return self.plug.attribute()
-    
-    #@attribute.setter
-    #def attribute(self, value):
-    #    self.debug('attribute property set')
-    #    # TODO...
-    
+        return self.MPlug.name()
+    @name.setter
+    def name(self, value):
+        self.debug('name property set')
+        if(not self.MPlug.isDynamic):
+            self.debug('nondynamic plugs can never be renamed?!')
+        mc.renameAttr(self.name, value)
+
+
+
+
+
+
+
+
