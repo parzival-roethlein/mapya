@@ -5,19 +5,57 @@ from .attribute import Attribute
 
 class Node(object):
     
-    
     def debug(self, message):
         if( self._debug ):
             print( ' debug %s: %s' (self.__name__, message))
     
     def __init__(self, name, custom_type=False, debug=0):
-        self._debug = debug
+        #self._debug = debug
+        super(Node, self).__setattr__('_debug', debug)
+        
         sel_list = om.MSelectionList()
         sel_list.add(name)
         super(Node, self).__setattr__('MObject', sel_list.getDependNode(0))
         # bind data? debug variable?
         # custom type check/return Transform(), ...
     
+    def __getattr__(self, name):
+        print('__getattr__(name=%s)' % (name) )
+        
+        # skip properties (TODO: find proper way)
+        if(name in dir(self) and not name.startswith('__') and not name.endswith('__')):
+            super(Node, self).__getattribute__(name, value)
+            return
+        
+        if(name not in self.__dict__.keys()):
+            attr = Attribute(self.name, name)
+            self.__dict__[name] = attr
+            return attr
+        self.__getattribute__(name)
+        #super(Node, self).__getattr__(name)
+    
+    #def __setattr__(self, name, value):
+    #    self.debug('__setattr__(name=%s)' % (name))
+    #    if(name not in self.__dict__.keys()):
+    #        attr = Attribute(self.name, name)
+    #        self.__dict__[name] = attr
+    #    super(Node, self).__setattribute__(name, value)
+    '''
+        if(name not in self.__dict__.keys()):
+            attr = Attribute(self.name, name)
+            self.__dict__[name] = attr
+            return attr
+        #super(Node, self).__getattr__(name)
+        self.__getattribute__(name)
+    
+    def __setattr__(self, name, value):
+        self.debug('__setattr__(name=%s)' % (name))
+        if(name not in self.__dict__.keys()):
+            attr = Attribute(self.name, name)
+            self.__dict__[name] = attr
+        super(Node, self).__setattr__(name, value)
+        
+    '''
     '''
     def __getattr__(self, name):
         self.debug('__getattr__(name=%s)' % (name))
