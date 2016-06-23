@@ -1,3 +1,14 @@
+'''
+>>> setattr(o, "foo", "bar")
+>>> o.foo
+'bar'
+>>> getattr(o, "foo")
+'bar'
+
+
+
+'''
+
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
@@ -7,82 +18,20 @@ class Node(object):
     
     def debug(self, message):
         if( self._debug ):
-            print( ' debug %s: %s' (self.__name__, message))
+            print(' Node: %s' % (message))
     
-    def __init__(self, name, custom_type=False, debug=0):
-        #self._debug = debug
-        super(Node, self).__setattr__('_debug', debug)
-        
+    def __init__(self, name, check_node_type=False, debug=True):
+        self._debug = debug
+        self.debug( '__init__(self, name=%s, custom_type=%s)' % (name, custom_type))
         sel_list = om.MSelectionList()
         sel_list.add(name)
-        super(Node, self).__setattr__('MObject', sel_list.getDependNode(0))
+        self.__MObject = sel_list.getDependNode(0)
+        self._MObjectHandle = om.MObjectHandle(self.__MObject)
+        self._attributes = {}
         # bind data? debug variable?
         # custom type check/return Transform(), ...
-    
-    def __getattr__(self, name):
-        print('__getattr__(name=%s)' % (name) )
-        
-        # skip properties (TODO: find proper way)
-        if(name in dir(self) and not name.startswith('__') and not name.endswith('__')):
-            super(Node, self).__getattribute__(name, value)
-            return
-        
-        if(name not in self.__dict__.keys()):
-            attr = Attribute(self.name, name)
-            self.__dict__[name] = attr
-            return attr
-        self.__getattribute__(name)
-        #super(Node, self).__getattr__(name)
-    
-    #def __setattr__(self, name, value):
-    #    self.debug('__setattr__(name=%s)' % (name))
-    #    if(name not in self.__dict__.keys()):
-    #        attr = Attribute(self.name, name)
-    #        self.__dict__[name] = attr
-    #    super(Node, self).__setattribute__(name, value)
-    '''
-        if(name not in self.__dict__.keys()):
-            attr = Attribute(self.name, name)
-            self.__dict__[name] = attr
-            return attr
-        #super(Node, self).__getattr__(name)
-        self.__getattribute__(name)
-    
-    def __setattr__(self, name, value):
-        self.debug('__setattr__(name=%s)' % (name))
-        if(name not in self.__dict__.keys()):
-            attr = Attribute(self.name, name)
-            self.__dict__[name] = attr
-        super(Node, self).__setattr__(name, value)
-        
-    '''
-    '''
-    def __getattr__(self, name):
-        self.debug('__getattr__(name=%s)' % (name))
-        # maya attr
-        maya_attr = self.name+'.'+name
-        if(mc.objExists(maya_attr)):
-            return mc.getAttr(maya_attr)
-        # this should error
-        self.__getattribute__(name)
-    
-    def __setattr__(self, name, value):
-        self.debug('__setattr__(name=%s, value=%s)' % (name, value))
-        
-        # skip properties (TODO: find proper way)
-        if( name in dir(self) and not name.startswith('__') and not name.endswith('__')):
-            self.debug(' skip custom __setattr__ part' )
-            super(Node, self).__setattr__(name, value)
-            return
-        
-        if( Attribute.exists( self.name, name) ):
-            self.attr(name).setValue( value )
-            return
-        
-        
-        # python variable
-        super(Node, self).__setattr__(name, value)
-    '''
+        #if(check_node_type):
+        #...
     
     def __repr__(self):
         # TODO: always return string of object name for ease of use? (pymel style?)
@@ -92,18 +41,28 @@ class Node(object):
         return self.name
     
     def attr(self, name):
-        return Attribute( self.name, name )
+        self.debug('attr(name=%s)' % name)
+        if(name not in self.attributes.keys()):
+            self.debug('attr does not exist creating')
+            self._attributes[name] = Attribute(self.name, name)
+        return self._attributes[name]
+    
+    @property
+    def _MObject(self):
+        self.debug('_MObject getter')
+        if( self._MObjectHandle.isValid() ):
+            return self.__MObject
+        raise NameError('MObject not valid')
     
     @property
     def name(self):
-        self.debug('name property get')
+        self.debug('name getter')
         sel_list = om.MSelectionList()
-        sel_list.add(self.MObject)
+        sel_list.add(self._MObject)
         return sel_list.getSelectionStrings(0)[0]
-    
     @name.setter
     def name(self, value):
-        self.debug('name property set')
+        self.debug('name.setter(value=%s)' % value)
         mc.rename(self.name, value)
 
 
