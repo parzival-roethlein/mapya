@@ -65,6 +65,9 @@ class Attribute(object):
     
     def set(self, *args, **kwargs):
         self.debug('def set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
+        
+        # TODO: if args has lists/tuples,... make args just one list (for setAttr command)
+        # maybe only the case for compound attributes?!
         for each in args:
             print('each: ', each)
             print('type(each): ', type(each))
