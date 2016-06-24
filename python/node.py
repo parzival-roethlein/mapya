@@ -15,23 +15,29 @@ import maya.cmds as mc
 from .attribute import Attribute
 
 class Node(object):
+    ''' MObject based '''
     
     def debug(self, message):
         if( self._debug ):
             print(' Node: %s' % (message))
     
-    def __init__(self, name, check_node_type=False, debug=True):
+    def __init__(self, name, detect_node_type=False, debug=True):
         self._debug = debug
-        self.debug( '__init__(self, name=%s, custom_type=%s)' % (name, custom_type))
+        self.debug( '__init__(self, name=%s, detect_node_type=%s)' % (name, detect_node_type))
+        
         sel_list = om.MSelectionList()
         sel_list.add(name)
-        self.__MObject = sel_list.getDependNode(0)
+        MObject = sel_list.getDependNode(0)
+        # custom type check/return Transform(), ...
+        #if(detect_node_type):
+        #    this_type = MObject.apiTypeStr
+        # or use mc.ls(type=...)?
+        
+        self.__MObject = MObject
         self._MObjectHandle = om.MObjectHandle(self.__MObject)
         self._attributes = {}
         # bind data? debug variable?
-        # custom type check/return Transform(), ...
-        #if(check_node_type):
-        #...
+        
     
     def __repr__(self):
         # TODO: always return string of object name for ease of use? (pymel style?)
@@ -40,19 +46,28 @@ class Node(object):
     def __str__(self):
         return self.name
     
-    def attr(self, name):
-        self.debug('attr(name=%s)' % name)
-        if(name not in self.attributes.keys()):
-            self.debug('attr does not exist creating')
-            self._attributes[name] = Attribute(self.name, name)
-        return self._attributes[name]
-    
     @property
     def _MObject(self):
         self.debug('_MObject getter')
-        if( self._MObjectHandle.isValid() ):
-            return self.__MObject
-        raise NameError('MObject not valid')
+        if(self.__MObject.isNull() or not self._MObjectHandle.isValid()):
+            raise NameError('MObject not valid')
+        return self.__MObject
+    
+    
+    # #########################
+    # USER
+    # #########################
+    def attr(self, name):
+        self.debug('attr(name=%s)' % name)
+        if(name not in self._attributes.keys()):
+            self.debug('attr does not exist creating')
+            self._attributes[name] = Attribute(self.name, name)
+            #>>> setattr(o, "foo", "bar")
+            #>>> o.foo
+            #'bar'
+            #>>> getattr(o, "foo")
+            #'bar'
+        return self._attributes[name]
     
     @property
     def name(self):

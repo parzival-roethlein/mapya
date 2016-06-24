@@ -18,18 +18,10 @@ import maya.cmds as mc
 
 
 class Attribute(object):
+    ''' MPlug based '''
     def debug(self, message):
         if( self._debug ):
             print(' Attribute: %s' % (message))
-    
-    @staticmethod
-    def exists(node, attr, doError=False, debug=1):
-        full_attr = node+'.'+name
-        if(not mc.objExists(full_attr)):
-            if( doError ):
-                raise NameError('attribute does not exist: %s' % full_attr)
-            return False
-        return True
     
     def __init__(self, node, attr, debug=0):
         self._debug = debug
@@ -37,43 +29,19 @@ class Attribute(object):
         
         sel_list = om.MSelectionList()
         sel_list.add(node+'.'+attr)
-        self.__MObject = sel_list.getPlug(0)
-        self.__MPlug = om.MPlug( self.__MObject )
-        self._MObjectHandle = om.MObjectHandle(self.__MPlug.node())
-        # TODO: find way to check if mplug mobject is valid
+        self.__MPlug = om.MPlug(sel_list.getPlug(0))
     
-    def get(self):
-        # TODO: add all type options
-        return self._MPlug.asFloat()
-    
-    def set(self, value):
-        self.debug('def set(self, value=%d)' % value)
-        # TODO: more special cases?
-        if(self._MPlug.isCompound):
-            self.debug('compound attr')
-            attr_children = mc.attributeQuery(name, n='a', listChildren=1)
-            if( attr_children ):
-                self.debug('attr_children: %s' % attr_children)
-                for x, each_attr in enumerate(attr_children):
-                    Attribute(self._MPlug.node(), each_attr)
-                return
-            mc.setAttr(self.name, value)
-            return
-        # TODO: add all type options
-        self._MPlug.setFloat( value )
-    
-    @property
-    def _MObject(self):
-        self.debug('_MObject getter')
-        if( self._MObjectHandle.isValid() ):
-            return self.__MObject
-        raise NameError('MObject not valid')
     @property
     def _MPlug(self):
         self.debug('_MPlug getter')
-        if( self._MObjectHandle.isValid() ):
-            return self.__MPlug
-        raise NameError('MObject not valid')
+        if( self.__MPlug.isNull ):
+            # TODO: find better check, deleted attr or even new scene does not trigger
+            raise NameError('MPlug is null')
+        return self.__MPlug
+    
+    # #########################
+    # USER PROPERTIES
+    # #########################
     
     @property
     def name(self):
@@ -85,6 +53,50 @@ class Attribute(object):
         if(not self._MPlug.isDynamic):
             self.debug('nondynamic plugs can never be renamed?!')
         mc.renameAttr(self.name, value)
+        # TODO: api version?
+    
+    # #########################
+    # USER FUNCTIONS
+    # #########################
+    
+    def get(self, **kwargs):
+        print('get(kwargs: %s)' % (kwargs))
+        return mc.getAttr(self.name, **kwargs)
+    
+    def set(self, *args, **kwargs):
+        self.debug('def set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
+        for each in args:
+            print('each: ', each)
+            print('type(each): ', type(each))
+            
+        mc.setAttr(self.name, *args, **kwargs)
+        #if(value):
+        #    mc.setAttr(self.name, value, **kwargs)
+        #else:
+        #    mc.setAttr(self.name, **kwargs)
+    
+    
+    def get_api(self):
+        # TODO: add all type options
+        return self._MPlug.asFloat()
+    
+    def set_api(self, value):
+        # TODO: more special cases?
+        if(self._MPlug.isCompound):
+            self.debug('compound attr')
+            attr_children = mc.attributeQuery(name, n='a', listChildren=1)
+            if( attr_children ):
+                self.debug('attr_children: %s' % attr_children)
+                for x, each_attr in enumerate(attr_children):
+                    Attribute(self._MPlug.node(), each_attr).set_api(value[x])
+            else:
+                mc.setAttr(self.name, value)
+            return
+        # TODO: add all type options
+        self._MPlug.setFloat( value )
+    
+    
+    
 
 
 
