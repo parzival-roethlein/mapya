@@ -1,10 +1,11 @@
 ''' 
-- either data descriptor (dynamic - even possible?)
-- or lazy property?
+make this class:
+- data descriptor?
+- check for var name in node, so it can update when user changes maya attr name?
+-- on get/set check this?
+- or lazy property? 
 - or ...?
 
-use descriptor and check for var name in node, so it can update when user changes maya attr name?
-- on get/set check this? 
 
 
 compound / array attr get/set
@@ -39,6 +40,13 @@ class Attribute(object):
             raise NameError('MPlug is null')
         return self.__MPlug
     
+    @property 
+    def _apiType(self):
+        if(not hasattr(self, '__apiType')):
+            # TODO: get type...
+            pass
+        return self.__apiType
+    
     # #########################
     # USER PROPERTIES
     # #########################
@@ -53,7 +61,7 @@ class Attribute(object):
         if(not self._MPlug.isDynamic):
             self.debug('nondynamic plugs can never be renamed?!')
         mc.renameAttr(self.name, value)
-        # TODO: api version?
+        # TODO: look up api command version?
     
     # #########################
     # USER FUNCTIONS
@@ -73,15 +81,14 @@ class Attribute(object):
             print('type(each): ', type(each))
             
         mc.setAttr(self.name, *args, **kwargs)
-        #if(value):
-        #    mc.setAttr(self.name, value, **kwargs)
-        #else:
-        #    mc.setAttr(self.name, **kwargs)
     
     
     def get_api(self):
         # TODO: add all type options
-        return self._MPlug.asFloat()
+        if(self._apiType == 'kFloat'):# TODO: ...
+            return self._MPlug.asFloat()
+        else:
+            raise NameError('Unknown api attr type: %s' % self._apiType)
     
     def set_api(self, value):
         # TODO: more special cases?
@@ -96,7 +103,11 @@ class Attribute(object):
                 mc.setAttr(self.name, value)
             return
         # TODO: add all type options
-        self._MPlug.setFloat( value )
+        if(self._apiType == 'kFloat'):# TODO: ...
+            self._MPlug.setFloat( value )
+        else:
+            raise NameError('Unknown api attr type: %s' % self._apiType)
+        
     
     
     
