@@ -32,4 +32,6 @@ class DagNode(Node):
     #    print('matrix property getter: %s' % self.name)
     #    return self.__getattr__('matrix')
     
-    
+    def isVisible(self):
+        # use api command
+        pass
