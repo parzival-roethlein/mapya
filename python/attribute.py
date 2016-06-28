@@ -75,11 +75,11 @@ class Attribute(object):
     # USER FUNCTIONS
     # #########################
     
-    def __get__(self, **kwargs):
+    def get(self, **kwargs):
         print('get(kwargs: %s)' % (kwargs))
         return mc.getAttr(self.name, **kwargs)
     
-    def __set__(self, *args, **kwargs):
+    def set(self, *args, **kwargs):
         self.debug('def set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
         # TODO: if args has lists/tuples,... make args just one list (for setAttr command)
         # maybe only the case for compound attributes?!

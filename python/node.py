@@ -48,9 +48,29 @@ class Node(object):
     def __str__(self):
         return self.name
     
+    def __getattr__(self, key):
+        print('\ngetattr:%s' % key)
+        # TODO: check for python attr first?? but without a cycle
+        # hasattr runs __getattr__, so should it return True / False for maya node attrs??
+        #if(hasattr(self, key)):
+        #    # this is never the case?!
+        #    print('hasattr: %s' % key)
+        #    return self.__dict__[key]
+        if(self._attributes.has_key(key)):
+            print('attribute.haskey: %s' % key)
+            # run this before for performance (skip objExists for existing attrs)
+            return self._attributes[key].get()
+        elif(Attribute.exists(self.name, key)):
+            print('create attr: %s' % key)
+            self._attributes[key] = Attribute(self.name, key)
+            return self._attributes[key].get()
+        else:
+            print('object.getattr: %s' % key)
+            return object.__getattr__(self, key)
+    
     @property
     def _MObject(self):
-        self.debug('_MObject getter')
+        #self.debug('_MObject getter')
         if(self.__MObject.isNull() or not self._MObjectHandle.isValid()):
             raise NameError('MObject not valid')
         return self.__MObject
@@ -73,12 +93,12 @@ class Node(object):
     
     @property
     def name(self):
-        self.debug('name getter')
+        #self.debug('name getter')
         sel_list = om.MSelectionList()
         sel_list.add(self._MObject)
         return sel_list.getSelectionStrings(0)[0]
     @name.setter
     def name(self, value):
-        self.debug('name.setter(value=%s)' % value)
+        #self.debug('name.setter(value=%s)' % value)
         mc.rename(self.name, value)
 
