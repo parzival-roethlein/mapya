@@ -43,12 +43,23 @@ class Attribute(object):
     @property
     def _MPlug(self):
         self.debug('_MPlug getter')
+        # TODO: 
+        # FIND WAY TO VALIDATE TO PREVENT CRASH
+        # 1. try: self.__MPlug.isNull = DOES NOT WORK
         if( self.__MPlug.isNull ):
-            # TODO: find better check, deleted attr or even new scene does not trigger
             raise NameError('MPlug is null')
+        # 2. try: check MObject of plug .isNull() = DOES NOT WORK
+        #if(self.__MPlug.attribute().isNull()):
+        #    raise NameError('MPlug MObject is null')
+        # 3. try: check MObjectHandle of plug MObject = DOES NOT WORK
+        #if(not om.MObjectHandle(self.__MPlug.attribute()).isValid()):
+        #    raise NameError('MPlug MObject MObjectHandle is null')
+        # 4. try: check MObject from MDataHandle = CRASHING ATM WIP WIP 
+        #if(not self.__MPlug.asMDataHandle().data().isNull()):
+        #    raise NameError('MPlug asMDataHandle is null')
         return self.__MPlug
     
-    @property 
+    @property
     def _apiType(self):
         if(not hasattr(self, '__apiType')):
             # TODO: get type...
