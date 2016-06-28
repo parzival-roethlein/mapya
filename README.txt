@@ -14,10 +14,16 @@ FEATURES
 
 FEATURES (small)
 - class instance should save class version, that way it can be noticed and converted etc
+-- maybe extra util module for each class that does update nodes? (if it exists do... to convert)
 
 
 RULES
-- maybe: no self.variables that are not represented in maya?
+- pythonic > mayaic
+
+
+RULES (maybe)
+- use underscore for python only variables that are not visible in the attr editor: self._variable - to avoid collisions with maya attr names
+- use the same import namespaces (maya.cmds as mc, ..)
 
 
 
