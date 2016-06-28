@@ -19,6 +19,13 @@ import maya.cmds as mc
 
 class Attribute(object):
     ''' MPlug based '''
+    @staticmethod
+    def exists(node, attr):
+        if(mc.objExists(node+'.'+attr)):
+            return True
+        else:
+            return False
+    
     def debug(self, message):
         if( self._debug ):
             print(' Attribute: %s' % (message))
@@ -59,11 +66,11 @@ class Attribute(object):
     # USER FUNCTIONS
     # #########################
     
-    def get(self, **kwargs):
+    def __get__(self, **kwargs):
         print('get(kwargs: %s)' % (kwargs))
         return mc.getAttr(self.name, **kwargs)
     
-    def set(self, *args, **kwargs):
+    def __set__(self, *args, **kwargs):
         self.debug('def set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
         
         # TODO: if args has lists/tuples,... make args just one list (for setAttr command)

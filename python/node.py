@@ -80,5 +80,3 @@ class Node(object):
         self.debug('name.setter(value=%s)' % value)
         mc.rename(self.name, value)
 
-
-
