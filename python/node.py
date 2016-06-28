@@ -48,25 +48,26 @@ class Node(object):
     def __str__(self):
         return self.name
     
-    def __getattr__(self, key):
-        print('\ngetattr:%s' % key)
-        # TODO: check for python attr first?? but without a cycle
+    def __getattr__(self, name):
+        print('\ngetattr:%s' % name)
+        # TODO: is there any case where python behavior gets overwritten here?
+        #  because it should have priority over maya attrs
         # hasattr runs __getattr__, so should it return True / False for maya node attrs??
-        #if(hasattr(self, key)):
+        #if(hasattr(self, name)):
         #    # this is never the case?!
-        #    print('hasattr: %s' % key)
-        #    return self.__dict__[key]
-        if(self._attributes.has_key(key)):
-            print('attribute.haskey: %s' % key)
+        #    print('hasattr: %s' % name)
+        #    return self.__dict__[name]
+        if(self._attributes.has_key(name)):
+            print('attribute.haskey: %s' % name)
             # run this before for performance (skip objExists for existing attrs)
-            return self._attributes[key].get()
-        elif(Attribute.exists(self.name, key)):
-            print('create attr: %s' % key)
-            self._attributes[key] = Attribute(self.name, key)
-            return self._attributes[key].get()
+            return self._attributes[name].get()
+        elif(Attribute.exists(self.name, name)):
+            print('create attr: %s' % name)
+            self._attributes[name] = Attribute(self.name, name)
+            return self._attributes[name].get()
         else:
-            print('object.getattr: %s' % key)
-            return object.__getattr__(self, key)
+            print('object.getattr: %s' % name)
+            return object.__getattr__(self, name)
     
     @property
     def _MObject(self):
