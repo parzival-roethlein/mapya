@@ -20,6 +20,7 @@ import maya.cmds as mc
 
 class Attribute(object):
     ''' MPlug based '''
+    
     @staticmethod
     def exists(node, attr):
         if(mc.objExists(node+'.'+attr)):
@@ -80,15 +81,12 @@ class Attribute(object):
     
     def __set__(self, *args, **kwargs):
         self.debug('def set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
-        
         # TODO: if args has lists/tuples,... make args just one list (for setAttr command)
         # maybe only the case for compound attributes?!
         for each in args:
             print('each: ', each)
             print('type(each): ', type(each))
-            
         mc.setAttr(self.name, *args, **kwargs)
-    
     
     def get_api(self):
         # TODO: add all type options
@@ -114,10 +112,9 @@ class Attribute(object):
             self._MPlug.setFloat( value )
         else:
             raise NameError('Unknown api attr type: %s' % self._apiType)
-        
-    
-    
-    
+
+
+
 
 
 

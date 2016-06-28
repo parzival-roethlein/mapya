@@ -4,15 +4,17 @@
 'bar'
 >>> getattr(o, "foo")
 'bar'
-
-
-
 '''
+
+
 
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-from .attribute import Attribute
+
+import attribute;reload(attribute)
+from attribute import Attribute
+
 
 class Node(object):
     ''' MObject based '''
