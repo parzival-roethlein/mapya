@@ -1,10 +1,7 @@
 ''' 
-make this class:
-- data descriptor?
+TODO:
 - check for var name in node, so it can update when user changes maya attr name?
--- on get/set check this?
-- or lazy property? 
-- or ...?
+
 
 
 
@@ -39,24 +36,29 @@ class Attribute(object):
         sel_list = om.MSelectionList()
         sel_list.add(node+'.'+attr)
         self.__MPlug = om.MPlug(sel_list.getPlug(0))
+        self._MObjectHandle = om.MObjectHandle(self.__MPlug.node())
     
     @property
     def _MPlug(self):
         self.debug('_MPlug getter')
         # TODO: 
-        # FIND WAY TO VALIDATE TO PREVENT CRASH
-        # 1. try: self.__MPlug.isNull = DOES NOT WORK
-        if( self.__MPlug.isNull ):
-            raise NameError('MPlug is null')
+        # FIND WAY TO VALIDATE ACTUAL PLUG
+        # 1. try: self.__MPlug.isNull = DOES NOT WORK (once created never null)
+        #if( self.__MPlug.isNull):
+        #    raise NameError('MPlug is null')
         # 2. try: check MObject of plug .isNull() = DOES NOT WORK
         #if(self.__MPlug.attribute().isNull()):
         #    raise NameError('MPlug MObject is null')
         # 3. try: check MObjectHandle of plug MObject = DOES NOT WORK
         #if(not om.MObjectHandle(self.__MPlug.attribute()).isValid()):
         #    raise NameError('MPlug MObject MObjectHandle is null')
-        # 4. try: check MObject from MDataHandle = CRASHING ATM WIP WIP 
+        # 4. try: check MObject from MDataHandle = .data() seems to always be invalid/null 
         #if(not self.__MPlug.asMDataHandle().data().isNull()):
         #    raise NameError('MPlug asMDataHandle is null')
+        
+        # workaround: validate node MObjectHandle (does not work if attr gets deleted)
+        if(not self._MObjectHandle.isValid()):
+            raise NameError('MPlug MObjectHandle.isValid')
         return self.__MPlug
     
     @property

@@ -50,24 +50,15 @@ class Node(object):
     
     def __getattr__(self, name):
         print('\ngetattr:%s' % name)
-        # TODO: is there any case where python behavior gets overwritten here?
-        #  because it should have priority over maya attrs
-        # hasattr runs __getattr__, so should it return True / False for maya node attrs??
-        #if(hasattr(self, name)):
-        #    # this is never the case?!
-        #    print('hasattr: %s' % name)
-        #    return self.__dict__[name]
-        if(self._attributes.has_key(name)):
-            print('attribute.haskey: %s' % name)
-            # run this before for performance (skip objExists for existing attrs)
+        # TODO: is there any case where default python behavior gets overwritten here? (because it should have priority over maya attrs)
+        if(name in self._attributes):
+            # code duplication, for performance reasons (skip mc.objExists)
             return self._attributes[name].get()
         elif(Attribute.exists(self.name, name)):
-            print('create attr: %s' % name)
             self._attributes[name] = Attribute(self.name, name)
             return self._attributes[name].get()
         else:
-            print('object.getattr: %s' % name)
-            return object.__getattr__(self, name)
+            return object.__getattribute__(self, name)
     
     @property
     def _MObject(self):
@@ -82,24 +73,21 @@ class Node(object):
     # #########################
     def attr(self, name):
         self.debug('attr(name=%s)' % name)
-        if(name not in self._attributes.keys()):
+        if(not name in self._attributes):
             self.debug('attr does not exist creating')
             self._attributes[name] = Attribute(self.name, name)
-            #>>> setattr(o, "foo", "bar")
-            #>>> o.foo
-            #'bar'
-            #>>> getattr(o, "foo")
-            #'bar'
         return self._attributes[name]
     
     @property
     def name(self):
-        #self.debug('name getter')
         sel_list = om.MSelectionList()
         sel_list.add(self._MObject)
         return sel_list.getSelectionStrings(0)[0]
     @name.setter
     def name(self, value):
-        #self.debug('name.setter(value=%s)' % value)
         mc.rename(self.name, value)
+
+
+
+
 
