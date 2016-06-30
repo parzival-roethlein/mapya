@@ -51,12 +51,8 @@ class Node(object):
     def __getattr__(self, name):
         print('\ngetattr:%s' % name)
         # TODO: is there any case where default python behavior gets overwritten here? (because it should have priority over maya attrs)
-        if(name in self._attributes):
-            # code duplication, for performance reasons (skip mc.objExists)
-            return self._attributes[name].get()
-        elif(Attribute.exists(self.name, name)):
-            self._attributes[name] = Attribute(self.name, name)
-            return self._attributes[name].get()
+        if(Attribute.exists(self.name, name)):
+            return self.attr(name).get()
         else:
             return object.__getattribute__(self, name)
     
@@ -73,10 +69,17 @@ class Node(object):
     # #########################
     def attr(self, name):
         self.debug('attr(name=%s)' % name)
-        if(not name in self._attributes):
+        short_name = mc.attributeQuery(name, node=self.name, shortName=1)# this catches invalid attr names
+        if(not short_name in self._attributes):
             self.debug('attr does not exist creating')
-            self._attributes[name] = Attribute(self.name, name)
-        return self._attributes[name]
+            self._attributes[short_name] = Attribute(self.name, short_name)
+        elif(self._attributes[short_name]._MPlug.isDynamic):
+            instance_name = self._attributes[short_name]._MPlug.partialName()
+            if(instance_name != short_name):
+                self.debug('attr not synchronized')
+                self._attributes[instance_name] = self._attributes[short_name]
+                self._attributes[short_name] = Attribute(self.name, short_name)
+        return self._attributes[short_name]
     
     @property
     def name(self):
