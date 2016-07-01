@@ -43,7 +43,7 @@ class Node(object):
     
     def __repr__(self):
         # TODO: always return string of object name for ease of use? (pymel style?)
-        return('%s(%r)' % (self.__class__, self.__dict__))
+        return('%s\n(%r)' % (self.__class__, self.__dict__))
     
     def __str__(self):
         return self.name
@@ -58,7 +58,6 @@ class Node(object):
     
     @property
     def _MObject(self):
-        #self.debug('_MObject getter')
         if(self.__MObject.isNull() or not self._MObjectHandle.isValid()):
             raise NameError('MObject not valid')
         return self.__MObject

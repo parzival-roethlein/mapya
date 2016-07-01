@@ -38,6 +38,10 @@ class Attribute(object):
         self.__MPlug = om.MPlug(sel_list.getPlug(0))
         self._MObjectHandle = om.MObjectHandle(self.__MPlug.node())
     
+    def __repr__(self):
+        # TODO: always return string of object name for ease of use? (pymel style?)
+        return('%s\n(%r)' % (self.__class__, self.__dict__))
+    
     @property
     def _MPlug(self):
         self.debug('_MPlug getter')
@@ -57,8 +61,8 @@ class Attribute(object):
         #    raise NameError('MPlug asMDataHandle is null')
         
         # workaround: validate node MObjectHandle (does not work if attr gets deleted)
-        if(not self._MObjectHandle.isValid()):
-            raise NameError('MPlug MObjectHandle.isValid')
+        if(self.__MPlug.isNull or not self._MObjectHandle.isValid()):
+            raise NameError('MPlug isNull or not MObjectHandle.isValid')
         return self.__MPlug
     
     @property
@@ -74,13 +78,12 @@ class Attribute(object):
     
     @property
     def name(self):
-        self.debug('def name(self)')
-        return self._MPlug.name()
+        plug_name = self._MPlug.name()
+        if(plug_name.endswith('.')):
+            raise NameError('Invalid attribute: %s' % plug_name)
+        return plug_name
     @name.setter
     def name(self, value):
-        self.debug('def name.setter(self, value=%d)' % value)
-        if(not self._MPlug.isDynamic):
-            self.debug('nondynamic plugs can never be renamed?!')
         mc.renameAttr(self.name, value)
         # TODO: look up api command version?
     
