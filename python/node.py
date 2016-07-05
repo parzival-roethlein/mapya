@@ -16,12 +16,12 @@ class Node(object):
     def getTypedInstance(self, node_name, debug=False):
         all_types = mc.nodeType(node_name, inherited=1)
         all_types.reverse()
-        node_type_modules = {'dagNode':Node, 'transform':Node}# get from folder
+        node_type_modules = {'dagNode':Node, 'transform':Node}# TODO: get from folder
         for each in all_types:
             if(each in node_type_modules):
-                return node_type_modules[each](debug=debug)
+                return node_type_modules[each](node_name, debug=debug)
         else:
-            return Node(node_name)
+            return Node(node_name, debug=debug)
     
     def debug(self, message):
         if( self._debug ):
