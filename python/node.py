@@ -10,7 +10,7 @@ from attribute import Attribute
 import nodes;reload(nodes)
 
 class Node(object):
-    ''' MObject based '''
+    ''' Pythonic Maya node representation '''
     
     @staticmethod
     def getTypedInstance(self, node_name, debug=False):
@@ -24,9 +24,18 @@ class Node(object):
         else:
             return Node(node_name, debug=debug)
     
-    def debug(self, message):
-        if( self._debug ):
-            print(' Node: %s' % (message))
+    
+    '''
+    # TODO: node type specific instances with classmethods or __new__ ???
+    def __new__(cls, *args, **kwargs):
+        # custom type check/return Transform(), ...
+        #if(detect_node_type):
+        #    this_type = MObject.apiTypeStr
+        # or use mc.ls(type=...)?
+        
+        #self = pm.window(cls._TITLE, title=cls._TITLE)
+        #return pm.uitypes.Window.__new__(cls, self)
+    '''
     
     def __init__(self, name, detect_node_type=False, debug=True):
         self._debug = debug
@@ -35,15 +44,11 @@ class Node(object):
         sel_list = om.MSelectionList()
         sel_list.add(name)
         MObject = sel_list.getDependNode(0)
-        # custom type check/return Transform(), ...
-        #if(detect_node_type):
-        #    this_type = MObject.apiTypeStr
-        # or use mc.ls(type=...)?
         
         self.__MObject = MObject
         self._MObjectHandle = om.MObjectHandle(self.__MObject)
         self._attributes = {}
-        # bind data? debug variable?
+        # bind data?
     
     def __repr__(self):
         # TODO: always return string of object name for ease of use? (pymel style?)
@@ -60,18 +65,38 @@ class Node(object):
         else:
             return object.__getattribute__(self, name)
     
+    
+    
+    
+    
     @property
     def _MObject(self):
         if(self.__MObject.isNull() or not self._MObjectHandle.isValid()):
             raise NameError('MObject not valid')
         return self.__MObject
     
-    # #########################
-    # USER
-    # #########################
+    @property
+    def name(self):
+        sel_list = om.MSelectionList()
+        sel_list.add(self._MObject)
+        return sel_list.getSelectionStrings(0)[0]
+    @name.setter
+    def name(self, value):
+        mc.rename(self.name, value)
+    
+    
+    
+    def debug(self, message):
+        if( self._debug ):
+            print(' Node: %s' % (message))
+    
+    
     def attr(self, name):
+        '''
+        return maya attribute
+        '''
         self.debug('attr(name=%s)' % name)
-        short_name = mc.attributeQuery(name, node=self.name, shortName=1)# this catches invalid attr names
+        short_name = mc.attributeQuery(name, node=self.name, shortName=1)# this also catches invalid attr names
         if(not short_name in self._attributes):
             self.debug('attr does not exist creating')
             self._attributes[short_name] = Attribute(self.name, short_name)
@@ -83,14 +108,7 @@ class Node(object):
                 self._attributes[short_name] = Attribute(self.name, short_name)
         return self._attributes[short_name]
     
-    @property
-    def name(self):
-        sel_list = om.MSelectionList()
-        sel_list.add(self._MObject)
-        return sel_list.getSelectionStrings(0)[0]
-    @name.setter
-    def name(self, value):
-        mc.rename(self.name, value)
+    
 
 
 
