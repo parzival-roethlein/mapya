@@ -60,7 +60,7 @@ class Attribute(object):
         #if(not self.__MPlug.asMDataHandle().data().isNull()):
         #    raise NameError('MPlug asMDataHandle is null')
         
-        # workaround: validate node MObjectHandle (does not work if attr gets deleted)
+        # workaround: validate node MObjectHandle
         if(self.__MPlug.isNull or not self._MObjectHandle.isValid()):
             raise NameError('MPlug isNull or not MObjectHandle.isValid')
         return self.__MPlug

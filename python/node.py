@@ -1,10 +1,3 @@
-'''
->>> setattr(o, "foo", "bar")
->>> o.foo
-'bar'
->>> getattr(o, "foo")
-'bar'
-'''
 
 
 
@@ -19,13 +12,24 @@ from attribute import Attribute
 class Node(object):
     ''' MObject based '''
     
+    @staticmethod
+    def getTypedInstance(self, node_name, debug=False):
+        all_types = mc.nodeType(node_name, inherited=1)
+        all_types.reverse()
+        node_type_modules = {'dagNode':Node, 'transform':Node}# get from folder
+        for each in all_types:
+            if(each in node_type_modules):
+                return node_type_modules[each](debug=debug)
+        else:
+            return Node(node_name)
+    
     def debug(self, message):
         if( self._debug ):
             print(' Node: %s' % (message))
     
     def __init__(self, name, detect_node_type=False, debug=True):
         self._debug = debug
-        self.debug( '__init__(self, name=%s, detect_node_type=%s)' % (name, detect_node_type))
+        self.debug('__init__(self, name=%s, detect_node_type=%s)' % (name, detect_node_type))
         
         sel_list = om.MSelectionList()
         sel_list.add(name)
@@ -39,7 +43,6 @@ class Node(object):
         self._MObjectHandle = om.MObjectHandle(self.__MObject)
         self._attributes = {}
         # bind data? debug variable?
-        
     
     def __repr__(self):
         # TODO: always return string of object name for ease of use? (pymel style?)
@@ -61,7 +64,6 @@ class Node(object):
         if(self.__MObject.isNull() or not self._MObjectHandle.isValid()):
             raise NameError('MObject not valid')
         return self.__MObject
-    
     
     # #########################
     # USER
