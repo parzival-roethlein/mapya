@@ -10,11 +10,13 @@ from attribute import Attribute
 import nodes;reload(nodes)
 
 class Node(object):
-    ''' Pythonic Maya node representation '''
+    ''' Pythonic Maya node (MObject) representation '''
     
     @staticmethod
     def getTypedInstance(self, node_name, debug=False):
-        node_type_modules = {'dagNode':nodes.dagNode, 'transform':nodes.transform}# TODO: automated read from folder
+        # TODO: automated read from folder
+        node_type_modules = {'dagNode':nodes.dagNode, 
+                             'transform':nodes.transform}
         all_types = mc.nodeType(node_name, inherited=1)
         all_types.reverse()
         
@@ -39,7 +41,8 @@ class Node(object):
     
     def __init__(self, name, detect_node_type=False, debug=True):
         self._debug = debug
-        self.debug('__init__(self, name=%s, detect_node_type=%s)' % (name, detect_node_type))
+        self.debug('__init__(self, name=%s, detect_node_type=%s)' % 
+                   (name, detect_node_type))
         
         sel_list = om.MSelectionList()
         sel_list.add(name)
@@ -50,8 +53,13 @@ class Node(object):
         self._attributes = {}
         # bind data?
     
+    
+    
+    
+    
     def __repr__(self):
-        # TODO: always return string of object name for ease of use? (pymel style?)
+        # TODO: 
+        # always return string of object name for ease of use? (pymel style?)
         return('%s\n(%r)' % (self.__class__, self.__dict__))
     
     def __str__(self):
@@ -59,7 +67,9 @@ class Node(object):
     
     def __getattr__(self, name):
         print('\ngetattr:%s' % name)
-        # TODO: is there any case where default python behavior gets overwritten here? (because it should have priority over maya attrs)
+        # TODO: 
+        # is there any case where default python behavior gets overwritten?
+        # (because it should have priority over maya attrs)
         if(Attribute.exists(self.name, name)):
             return self.attr(name).get()
         else:
@@ -86,17 +96,19 @@ class Node(object):
     
     
     
+    
+    
     def debug(self, message):
         if( self._debug ):
             print(' Node: %s' % (message))
-    
     
     def attr(self, name):
         '''
         return maya attribute
         '''
         self.debug('attr(name=%s)' % name)
-        short_name = mc.attributeQuery(name, node=self.name, shortName=1)# this also catches invalid attr names
+        # this also catches invalid attr names
+        short_name = mc.attributeQuery(name, node=self.name, shortName=1)
         if(not short_name in self._attributes):
             self.debug('attr does not exist creating')
             self._attributes[short_name] = Attribute(self.name, short_name)

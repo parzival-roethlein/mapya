@@ -24,7 +24,7 @@ RULES
 RULES (maybe)
 - use underscore for python only variables that are not visible in the attr editor: self._variable - to avoid collisions with maya attr names
 - use the same import namespaces (maya.cmds as mc, ..)
-
+- PEP8?
 
 
 different from red9:

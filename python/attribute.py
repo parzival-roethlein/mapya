@@ -1,10 +1,4 @@
 ''' 
-TODO:
-- check for var name in node, so it can update when user changes maya attr name?
-
-
-
-
 compound / array attr get/set
 https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_attributes.htm
 '''
@@ -16,7 +10,7 @@ import maya.cmds as mc
 
 
 class Attribute(object):
-    ''' MPlug based '''
+    ''' Pythonic Maya attribute (MPlug) representation '''
     
     @staticmethod
     def exists(node, attr):
@@ -39,7 +33,8 @@ class Attribute(object):
         self._MObjectHandle = om.MObjectHandle(self.__MPlug.node())
     
     def __repr__(self):
-        # TODO: always return string of object name for ease of use? (pymel style?)
+        # TODO: 
+        # always return string of object name for ease of use? (pymel style?)
         return('%s\n(%r)' % (self.__class__, self.__dict__))
     
     @property
@@ -47,16 +42,24 @@ class Attribute(object):
         self.debug('_MPlug getter')
         # TODO: 
         # FIND WAY TO VALIDATE ACTUAL PLUG
-        # 1. try: self.__MPlug.isNull = DOES NOT WORK (once created never null)
+        #
+        # 1. try: self.__MPlug.isNull
+        #         -> once created never null
         #if( self.__MPlug.isNull):
         #    raise NameError('MPlug is null')
-        # 2. try: check MObject of plug .isNull() = DOES NOT WORK
+        #
+        # 2. try: check MObject of plug .isNull()
+        #         -> DOES NOT WORK
         #if(self.__MPlug.attribute().isNull()):
         #    raise NameError('MPlug MObject is null')
-        # 3. try: check MObjectHandle of plug MObject = DOES NOT WORK
+        #
+        # 3. try: check MObjectHandle of plug MObject 
+        #         -> DOES NOT WORK
         #if(not om.MObjectHandle(self.__MPlug.attribute()).isValid()):
         #    raise NameError('MPlug MObject MObjectHandle is null')
-        # 4. try: check MObject from MDataHandle = .data() seems to always be invalid/null 
+        #
+        # 4. try: check MObject from MDataHandle = .data() 
+        #         -> seems to always be invalid/null 
         #if(not self.__MPlug.asMDataHandle().data().isNull()):
         #    raise NameError('MPlug asMDataHandle is null')
         
@@ -97,7 +100,8 @@ class Attribute(object):
     
     def set(self, *args, **kwargs):
         self.debug('def set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
-        # TODO: if args has lists/tuples,... make args just one list (for setAttr command)
+        # TODO: 
+        # if args has lists/tuples,... make args just one list (for setAttr)
         # maybe only the case for compound attributes?!
         for each in args:
             print('each: ', each)
