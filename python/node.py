@@ -7,16 +7,17 @@ import maya.cmds as mc
 
 import attribute;reload(attribute)
 from attribute import Attribute
-
+import nodes;reload(nodes)
 
 class Node(object):
     ''' MObject based '''
     
     @staticmethod
     def getTypedInstance(self, node_name, debug=False):
+        node_type_modules = {'dagNode':nodes.dagNode, 'transform':nodes.transform}# TODO: automated read from folder
         all_types = mc.nodeType(node_name, inherited=1)
         all_types.reverse()
-        node_type_modules = {'dagNode':Node, 'transform':Node}# TODO: get from folder
+        
         for each in all_types:
             if(each in node_type_modules):
                 return node_type_modules[each](node_name, debug=debug)
