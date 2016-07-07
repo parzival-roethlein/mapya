@@ -20,7 +20,7 @@ class Attribute(object):
             return False
     
     def debug(self, message):
-        if( self._debug ):
+        if(self._debug):
             print(' Attribute: %s' % (message))
     
     def __init__(self, node, attr, debug=0):
@@ -45,7 +45,7 @@ class Attribute(object):
         #
         # 1. try: self.__MPlug.isNull
         #         -> once created never null
-        #if( self.__MPlug.isNull):
+        #if(self.__MPlug.isNull):
         #    raise NameError('MPlug is null')
         #
         # 2. try: check MObject of plug .isNull()
@@ -108,6 +108,7 @@ class Attribute(object):
             print('type(each): ', type(each))
         mc.setAttr(self.name, *args, **kwargs)
     
+    '''
     def get_api(self):
         # TODO: add all type options
         if(self._apiType == 'kFloat'):# TODO: ...
@@ -120,7 +121,7 @@ class Attribute(object):
         if(self._MPlug.isCompound):
             self.debug('compound attr')
             attr_children = mc.attributeQuery(name, n='a', listChildren=1)
-            if( attr_children ):
+            if(attr_children):
                 self.debug('attr_children: %s' % attr_children)
                 for x, each_attr in enumerate(attr_children):
                     Attribute(self._MPlug.node(), each_attr).set_api(value[x])
@@ -129,10 +130,10 @@ class Attribute(object):
             return
         # TODO: add all type options
         if(self._apiType == 'kFloat'):# TODO: ...
-            self._MPlug.setFloat( value )
+            self._MPlug.setFloat(value)
         else:
             raise NameError('Unknown api attr type: %s' % self._apiType)
-
+    '''
 
 
 

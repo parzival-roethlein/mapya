@@ -99,7 +99,7 @@ class Node(object):
     
     
     def debug(self, message):
-        if( self._debug ):
+        if(self._debug):
             print(' Node: %s' % (message))
     
     def attr(self, name):
