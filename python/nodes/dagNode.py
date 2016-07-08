@@ -8,11 +8,11 @@ from .. import node;reload(node)
 #from prmmeta.python import node as node
 from node import Node
 '''
-from ..node import Node
+from prmmeta.python import node;reload(node)
 
 
 
-class DagNode(Node):
+class DagNode(node.Node):
     ''' MDagPath based '''
     def __init__(self, name, debug=True):
         super(DagNode, self).__init__(name=name, debug=debug)
