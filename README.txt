@@ -22,6 +22,7 @@ RULES
 
 
 RULES (maybe)
+- dont add existing one line functions from maya.cmds or maya.api.OpenMaya (example, myDagNode.isVisible() is unnecessary since user can: myDagNode._MDagPath.isVisible())
 - use underscore for python only variables that are not visible in the attr editor: self._variable - to avoid collisions with maya attr names
 - use the same import namespaces (maya.cmds as mc, ..)
 - PEP8?
