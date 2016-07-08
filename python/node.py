@@ -7,16 +7,22 @@ import maya.cmds as mc
 
 import attribute;reload(attribute)
 from attribute import Attribute
+
 import nodes;reload(nodes)
+from nodes import transform;reload(transform)
+from nodes import dagNode;reload(dagNode)
+# TODO:
+# dynamically load all node types
 
 class Node(object):
     ''' Pythonic Maya node (MObject) representation '''
     
     @staticmethod
-    def getTypedInstance(self, node_name, debug=False):
-        # TODO: automated read from folder
-        node_type_modules = {'dagNode':nodes.dagNode, 
-                             'transform':nodes.transform}
+    def getTypedInstance(node_name, debug=False):
+        # TODO: 
+        # dynamically load modules
+        node_type_modules = {'dagNode':dagNode.DagNode, 
+                             'transform':transform.Transform}
         all_types = mc.nodeType(node_name, inherited=1)
         all_types.reverse()
         
@@ -121,8 +127,6 @@ class Node(object):
         return self._attributes[short_name]
     
     
-
-
 
 
 

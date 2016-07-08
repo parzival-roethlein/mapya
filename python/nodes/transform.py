@@ -9,6 +9,11 @@ from dagNode import DagNode
 
 class Transform(DagNode):
     
+    # TODO:
+    # find right way to super in dagNode?
+    def __init__(self, name, debug=True):
+        super(Transform, self).__init__(name=name, debug=debug)
+    
     '''
     @DagNode.matrix.setter
     def matrix(self, value):

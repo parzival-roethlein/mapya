@@ -68,12 +68,7 @@ class Attribute(object):
             raise NameError('MPlug isNull or not MObjectHandle.isValid')
         return self.__MPlug
     
-    @property
-    def _apiType(self):
-        if(not hasattr(self, '__apiType')):
-            # TODO: get type...
-            pass
-        return self.__apiType
+    
     
     # #########################
     # USER PROPERTIES
@@ -109,6 +104,14 @@ class Attribute(object):
         mc.setAttr(self.name, *args, **kwargs)
     
     '''
+    
+    @property
+    def _apiType(self):
+        if(not hasattr(self, '__apiType')):
+            # TODO: get type...
+            pass
+        return self.__apiType
+    
     def get_api(self):
         # TODO: add all type options
         if(self._apiType == 'kFloat'):# TODO: ...
