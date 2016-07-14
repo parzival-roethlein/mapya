@@ -6,11 +6,11 @@ https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_att
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-
+import api;reload(api)
 
 
 class Attribute(object):
-    ''' Pythonic Maya attribute (MPlug) representation '''
+    ''' Pythonic Maya attribute '''
     
     @staticmethod
     def exists(node, attr):
@@ -23,50 +23,19 @@ class Attribute(object):
         if(self._debug):
             print(' Attribute: %s' % (message))
     
-    def __init__(self, node, attr, debug=0):
+    def __init__(self, node_name, attr_name, debug=0):
         self._debug = debug
         self.debug('__init__(self, node=%s, attr=%s)' % (str(node), attr))
         
-        sel_list = om.MSelectionList()
-        sel_list.add(node+'.'+attr)
-        self.__MPlug = om.MPlug(sel_list.getPlug(0))
-        self._MObjectHandle = om.MObjectHandle(self.__MPlug.node())
+        self.api = api.Plug(node_name, attr_name)
+    
     
     def __repr__(self):
         # TODO: 
         # always return string of object name for ease of use? (pymel style?)
         return('%s\n(%r)' % (self.__class__, self.__dict__))
     
-    @property
-    def _MPlug(self):
-        self.debug('_MPlug getter')
-        # TODO: 
-        # FIND WAY TO VALIDATE ACTUAL PLUG
-        #
-        # 1. try: self.__MPlug.isNull
-        #         -> once created never null
-        #if(self.__MPlug.isNull):
-        #    raise NameError('MPlug is null')
-        #
-        # 2. try: check MObject of plug .isNull()
-        #         -> DOES NOT WORK
-        #if(self.__MPlug.attribute().isNull()):
-        #    raise NameError('MPlug MObject is null')
-        #
-        # 3. try: check MObjectHandle of plug MObject 
-        #         -> DOES NOT WORK
-        #if(not om.MObjectHandle(self.__MPlug.attribute()).isValid()):
-        #    raise NameError('MPlug MObject MObjectHandle is null')
-        #
-        # 4. try: check MObject from MDataHandle = .data() 
-        #         -> seems to always be invalid/null 
-        #if(not self.__MPlug.asMDataHandle().data().isNull()):
-        #    raise NameError('MPlug asMDataHandle is null')
-        
-        # workaround: validate node MObjectHandle
-        if(self.__MPlug.isNull or not self._MObjectHandle.isValid()):
-            raise NameError('MPlug isNull or not MObjectHandle.isValid')
-        return self.__MPlug
+    
     
     
     
@@ -76,7 +45,7 @@ class Attribute(object):
     
     @property
     def name(self):
-        plug_name = self._MPlug.name()
+        plug_name = self.api.MPlug.name()
         if(plug_name.endswith('.')):
             raise NameError('Invalid attribute: %s' % plug_name)
         return plug_name
