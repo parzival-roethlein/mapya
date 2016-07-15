@@ -1,14 +1,18 @@
+'''
+maya api object wrapper to ensure the objects are still valid
+'''
+
 import maya.api.OpenMaya as om
 
 
 
-class Object(object):
+class MObject(object):
     
     def __init__(self, name):
         sel_list = om.MSelectionList()
         sel_list.add(name)
         self.__MObject__ = sel_list.getDependNode(0)
-        self.__MObjectHandle__ = om.MObjectHandle(self.__MObject)
+        self.__MObjectHandle__ = om.MObjectHandle(self.__MObject__)
     
     @property
     def MObject(self):
@@ -21,12 +25,12 @@ class Object(object):
         if(not self.__MObjectHandle__.isValid()):
             raise NameError('MObjectHandle not valid')
         return self.__MObjectHandle__
-    
 
-class Plug(Object):
+
+class MPlug(MObject):
     
     def __init__(self, node_name, attr_name):
-        super().__init__(self, node_name)
+        super(MPlug, self).__init__(node_name)
         
         sel_list = om.MSelectionList()
         sel_list.add(node_name+'.'+attr_name)
@@ -34,7 +38,6 @@ class Plug(Object):
     
     @property
     def MPlug(self):
-        self.debug('_MPlug getter')
         # TODO: 
         # FIND WAY TO VALIDATE ACTUAL PLUG
         #
@@ -57,7 +60,7 @@ class Plug(Object):
         #         -> seems to always be invalid/null 
         #if(not self.__MPlug.asMDataHandle().data().isNull()):
         #    raise NameError('MPlug asMDataHandle is null')
-        
+        #
         # workaround: validate node MObjectHandle
         if(self.__MPlug__.isNull or not self.MObjectHandle):
             raise NameError('MPlug isNull or not MObjectHandle.isValid')

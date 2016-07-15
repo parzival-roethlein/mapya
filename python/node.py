@@ -12,12 +12,6 @@ import api;reload(api)
 
 
 class Node(object):
-    ''' Pythonic Maya node '''
-    
-    
-    def debug(self, message):
-        if(self._debug):
-            print(' Node: %s' % (message))
     
     @staticmethod
     def getTypedInstance(node_name):
@@ -36,13 +30,12 @@ class Node(object):
         else:
             return Node(node_name)
     
-    
     def __init__(self, name):
-        
-        self.api = api.Object(name)
-        self._attributes = {}
-        # bind data?
-    
+        #self.api = api.MObject(name)
+        object.__setattr__(self, 'api', api.MObject(name))
+        self.__attrs__ = {}
+        # TODO:
+        # call bind_data?
     
     def __repr__(self):
         # TODO: 
@@ -53,19 +46,17 @@ class Node(object):
         return self.name
     
     def __getattr__(self, name):
-        print('\ngetattr:%s' % name)
-        # TODO: 
-        # is there any case where default python behavior gets overwritten?
-        # (because it should have priority over maya attrs)
         if(Attribute.exists(self.name, name)):
             return self.attr(name).get()
         else:
             return object.__getattribute__(self, name)
     
-    
-    
-    
-    
+    def __setattr__(self, attr, value):
+        print('setattr: %s' % attr)
+        if(not attr in dir(self) and Attribute.exists(self.name, attr)):
+            self.attr(attr).set(value)
+        else:
+            object.__setattr__(self, attr, value)
     
     @property
     def name(self):
@@ -76,31 +67,22 @@ class Node(object):
     def name(self, value):
         mc.rename(self.name, value)
     
-    
-    
-    
-    
-    
-    
     def attr(self, name):
         '''
         return maya attribute
         '''
-        self.debug('attr(name=%s)' % name)
         # this also catches invalid attr names
         short_name = mc.attributeQuery(name, node=self.name, shortName=1)
-        if(not short_name in self._attributes):
-            self.debug('attr does not exist creating')
-            self._attributes[short_name] = Attribute(self.name, short_name)
-        elif(self._attributes[short_name]._MPlug.isDynamic):
-            instance_name = self._attributes[short_name]._MPlug.partialName()
+        if(not short_name in self.__attrs__):
+            self.__attrs__[short_name] = Attribute(self.name, short_name)
+        elif(self.__attrs__[short_name].api.MPlug.isDynamic):
+            instance_name = self.__attrs__[short_name].api.MPlug.partialName()
             if(instance_name != short_name):
-                self.debug('attr not synchronized')
-                self._attributes[instance_name] = self._attributes[short_name]
-                self._attributes[short_name] = Attribute(self.name, short_name)
-        return self._attributes[short_name]
-    
-    
+                self.__attrs__[instance_name] = self.__attrs__[short_name]
+                self.__attrs__[short_name] = Attribute(self.name, short_name)
+        return self.__attrs__[short_name]
+
+
 
 
 

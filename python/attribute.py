@@ -25,9 +25,9 @@ class Attribute(object):
     
     def __init__(self, node_name, attr_name, debug=0):
         self._debug = debug
-        self.debug('__init__(self, node=%s, attr=%s)' % (str(node), attr))
+        self.debug('__init__(self, node=%s, attr=%s)' % (str(node_name), attr_name))
         
-        self.api = api.Plug(node_name, attr_name)
+        self.api = api.MPlug(node_name, attr_name)
     
     
     def __repr__(self):
