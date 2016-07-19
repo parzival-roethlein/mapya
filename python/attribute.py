@@ -19,29 +19,21 @@ class Attribute(object):
         else:
             return False
     
-    def debug(self, message):
-        if(self._debug):
-            print(' Attribute: %s' % (message))
-    
-    def __init__(self, node_name, attr_name, debug=0):
-        self._debug = debug
-        self.debug('__init__(self, node=%s, attr=%s)' % (str(node_name), attr_name))
-        
-        self.api = api.MPlug(node_name, attr_name)
-    
+    def __init__(self, attr_name):
+        print('__init__(self, attr_name=%s)' % (attr_name))
+        self.api = attr_name
     
     def __repr__(self):
         # TODO: 
         # always return string of object name for ease of use? (pymel style?)
         return('%s\n(%r)' % (self.__class__, self.__dict__))
     
-    
-    
-    
-    
-    # #########################
-    # USER PROPERTIES
-    # #########################
+    @property
+    def api(self):
+        return self.__api__
+    @api.setter
+    def api(self, attr_name):
+        object.__setattr__(self, '__api__', api.MPlug(attr_name))
     
     @property
     def name(self):
@@ -52,18 +44,15 @@ class Attribute(object):
     @name.setter
     def name(self, value):
         mc.renameAttr(self.name, value)
-        # TODO: look up api command version?
-    
-    # #########################
-    # USER FUNCTIONS
-    # #########################
+        # TODO: 
+        #look up api command version? MDGModifier doesnt have it
     
     def get(self, **kwargs):
         print('get(kwargs: %s)' % (kwargs))
         return mc.getAttr(self.name, **kwargs)
     
     def set(self, *args, **kwargs):
-        self.debug('def set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
+        print('def set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
         # TODO: 
         # if args has lists/tuples,... make args just one list (for setAttr)
         # maybe only the case for compound attributes?!
@@ -91,10 +80,10 @@ class Attribute(object):
     def set_api(self, value):
         # TODO: more special cases?
         if(self._MPlug.isCompound):
-            self.debug('compound attr')
+            print('compound attr')
             attr_children = mc.attributeQuery(name, n='a', listChildren=1)
             if(attr_children):
-                self.debug('attr_children: %s' % attr_children)
+                print('attr_children: %s' % attr_children)
                 for x, each_attr in enumerate(attr_children):
                     Attribute(self._MPlug.node(), each_attr).set_api(value[x])
             else:

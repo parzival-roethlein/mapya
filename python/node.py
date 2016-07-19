@@ -19,9 +19,9 @@ class Node(object):
         # load modules dynamically
         from nodes import transform;reload(transform)
         from nodes import dagNode;reload(dagNode)
-        
         node_type_modules = {'dagNode':dagNode.DagNode, 
                              'transform':transform.Transform}
+        
         all_types = mc.nodeType(node_name, inherited=1)
         all_types.reverse()
         for each in all_types:
@@ -31,11 +31,9 @@ class Node(object):
             return Node(node_name)
     
     def __init__(self, name):
-        #self.api = api.MObject(name)
-        object.__setattr__(self, 'api', api.MObject(name))
-        self.__attrs__ = {}
+        self.api = name
         # TODO:
-        # call bind_data?
+        # check bind_data?
     
     def __repr__(self):
         # TODO: 
@@ -57,6 +55,14 @@ class Node(object):
             self.attr(attr).set(value)
         else:
             object.__setattr__(self, attr, value)
+    
+    @property
+    def api(self):
+        return self.__api__
+    @api.setter
+    def api(self, node_name):
+        object.__setattr__(self, '__api__', api.MObject(node_name))
+        self.__attrs__ = {}
     
     @property
     def name(self):

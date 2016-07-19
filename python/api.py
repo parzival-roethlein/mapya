@@ -8,9 +8,11 @@ import maya.api.OpenMaya as om
 
 class MObject(object):
     
-    def __init__(self, name):
+    def __init__(self, node_name):
+        if(node_name.find('.') != -1):
+            raise NameError('MObject requires a node name, not attr: %s' % node_name)
         sel_list = om.MSelectionList()
-        sel_list.add(name)
+        sel_list.add(node_name)
         self.__MObject__ = sel_list.getDependNode(0)
         self.__MObjectHandle__ = om.MObjectHandle(self.__MObject__)
     
@@ -29,12 +31,13 @@ class MObject(object):
 
 class MPlug(MObject):
     
-    def __init__(self, node_name, attr_name):
-        super(MPlug, self).__init__(node_name)
-        
+    def __init__(self, attr_name):
         sel_list = om.MSelectionList()
-        sel_list.add(node_name+'.'+attr_name)
+        sel_list.add(attr_name)
         self.__MPlug__ = om.MPlug(sel_list.getPlug(0))
+        
+        node_name = attr_name[:attr_name.rfind('.')]
+        super(MPlug, self).__init__(node_name)
     
     @property
     def MPlug(self):
