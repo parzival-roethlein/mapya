@@ -33,7 +33,7 @@ class Attribute(object):
         return self.__api__
     @api.setter
     def api(self, attr_name):
-        object.__setattr__(self, '__api__', api.MPlug(attr_name))
+        setattr(self, '__api__', api.MPlug(attr_name))
     
     @property
     def name(self):
@@ -57,12 +57,10 @@ class Attribute(object):
         # if args has lists/tuples,... make args just one list (for setAttr)
         # maybe only the case for compound attributes?!
         for each in args:
-            print('each: ', each)
-            print('type(each): ', type(each))
+            print('each: %s // type(each): %s' % (each, type(each)))
         mc.setAttr(self.name, *args, **kwargs)
     
     '''
-    
     @property
     def _apiType(self):
         if(not hasattr(self, '__apiType')):
