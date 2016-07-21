@@ -31,7 +31,10 @@ class Node(object):
             return Node(node_name)
     
     def __init__(self, name):
-        self.api = name
+        super(Node, self).__setattr__('__api__', api.MObject(name))
+        self.__attrs__ = {}
+        #self.api = name
+        
         # TODO:
         # check bind_data?
     
@@ -44,28 +47,42 @@ class Node(object):
         return self.name
     
     def __getattr__(self, name):
+        print('getattr: %s' % name)
         if(Attribute.exists(self.name, name)):
             return self.attr(name).get()
         else:
-            return object.__getattribute__(self, name)
+            return super(Node, self).__getattribute__(name)
+            #return object.__getattribute__(self, name)
+            #return getattr(self, name)
     
     def __setattr__(self, attr, value):
         print('setattr: %s' % attr)
         if(not attr in dir(self) and Attribute.exists(self.name, attr)):
             self.attr(attr).set(value)
         else:
-            object.__setattr__(self, attr, value)
+            #object.__setattr__(self, attr, value)
+            super(Node, self).__setattr__(attr, value)
     
     @property
     def api(self):
+        print('get api')
         return self.__api__
-    @api.setter
+    '''@api.setter
     def api(self, node_name):
-        object.__setattr__(self, '__api__', api.MObject(node_name))
+        print('set api')
+        self.__api__ = api.MObject(node_name)
+        #object.__setattr__(self, '__api__', api.MObject(node_name))
+        #super(Node, self).__setattr__('__api__', api.MObject(node_name))
+        #setattr(self, '__api__', api.MObject(node_name))
         self.__attrs__ = {}
-    
+    '''
     @property
     def name(self):
+        #print('name')
+        #if(not hasattr(self, '__api__')):
+        #    print('no __api__ in name')
+        #    return ''
+        #print('__api__ in name')
         sel_list = om.MSelectionList()
         sel_list.add(self.api.MObject)
         return sel_list.getSelectionStrings(0)[0]
@@ -79,13 +96,14 @@ class Node(object):
         '''
         # this also catches invalid attr names
         short_name = mc.attributeQuery(name, node=self.name, shortName=1)
+        full_name = self.name+'.'+short_name
         if(not short_name in self.__attrs__):
-            self.__attrs__[short_name] = Attribute(self.name, short_name)
+            self.__attrs__[short_name] = Attribute(full_name)
         elif(self.__attrs__[short_name].api.MPlug.isDynamic):
             instance_name = self.__attrs__[short_name].api.MPlug.partialName()
             if(instance_name != short_name):
                 self.__attrs__[instance_name] = self.__attrs__[short_name]
-                self.__attrs__[short_name] = Attribute(self.name, short_name)
+                self.__attrs__[short_name] = Attribute(full_name)
         return self.__attrs__[short_name]
 
 
