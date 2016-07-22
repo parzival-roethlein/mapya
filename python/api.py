@@ -69,4 +69,17 @@ class MPlug(MObject):
             raise NameError('MPlug isNull or not MObjectHandle.isValid')
         return self.__MPlug__
 
-
+class MDagPath(MObject):
+    
+    def __init__(self, node_name):
+        super(MDagPath, self).__init__(node_name=node_name)
+        sel_list = om.MSelectionList()
+        sel_list.add(node_name)
+        self.__MDagPath__ = sel_list.getDagPath(0)
+    
+    @property
+    def MDagPath(self):
+        print('MDagPath getter')
+        if(not self.__MDagPath__.isValid() or not self.__MDagPath__.fullPathName()):
+            raise NameError('__MDagPath__ not valid / no path')
+        return self.__MDagPath__

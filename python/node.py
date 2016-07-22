@@ -16,7 +16,8 @@ class Node(object):
     @staticmethod
     def getTypedInstance(node_name):
         # TODO: 
-        # load modules dynamically
+        # load modules dynamically 
+        # maybe put it in __new__ and check for keyword: typedInstance
         from nodes import transform;reload(transform)
         from nodes import dagNode;reload(dagNode)
         node_type_modules = {'dagNode':dagNode.DagNode, 
@@ -30,11 +31,11 @@ class Node(object):
         else:
             return Node(node_name)
     
+    
     def __init__(self, name):
         super(Node, self).__setattr__('__api__', api.MObject(name))
+        #self.api = name# loop...
         self.__attrs__ = {}
-        #self.api = name
-        
         # TODO:
         # check bind_data?
     

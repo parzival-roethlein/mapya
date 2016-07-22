@@ -10,25 +10,20 @@ from dagNode import DagNode
 class Transform(DagNode):
     
     # TODO:
-    # find right way to super in dagNode?
-    def __init__(self, name, debug=True):
-        super(Transform, self).__init__(name=name, debug=debug)
-    
-    '''
-    @DagNode.matrix.setter
+    # DRY: inherit matrix property getter
+    @property
+    def matrix(self):
+        print('Transform matrix getter')
+        return self.__getattr__('matrix')
+    @matrix.setter
     def matrix(self, value):
-        print('matrix setter')
+        print('matrix setter: %s' % value)
         value_matrix = om.MTransformationMatrix(om.MMatrix(value))
-        self.translate = value_matrix.translation(om.MSpace.kWorld)
-        self.rotate = value_matrix.rotation()# does not work properly
-        self.scale = value_matrix.scale(om.MSpace.kWorld)
-    '''
-    @SetterProperty
-    def matrix(self, value):
-        print('matrix setter')
-        self.__dict__['matrix'] = value
-        value_matrix = om.MTransformationMatrix(om.MMatrix(value))
-        self.translate = value_matrix.translation(om.MSpace.kWorld)
-        self.rotate = value_matrix.rotation()# does not work properly
-        self.scale = value_matrix.scale(om.MSpace.kWorld)
-        
+        translation = value_matrix.translation(om.MSpace.kWorld)
+        rotation = value_matrix.rotation()
+        scale = value_matrix.scale(om.MSpace.kWorld)
+        self.attr('translate').set(translation.x, translation.y, translation.z)
+        # TODO: 
+        # rotation not working
+        self.attr('rotate').set(rotation.x, rotation.y, rotation.z)    
+        self.attr('scale').set(scale[0], scale[1], scale[2])

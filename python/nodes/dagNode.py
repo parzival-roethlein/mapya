@@ -9,25 +9,18 @@ from .. import node;reload(node)
 from node import Node
 '''
 from prmmeta.python import node;reload(node)
-
+from prmmeta.python import api;reload(api)
 
 
 class DagNode(node.Node):
     ''' MDagPath based '''
     def __init__(self, name, debug=True):
-        super(DagNode, self).__init__(name=name, debug=debug)
-        sel_list = om.MSelectionList()
-        sel_list.add(name)
-        self.__MDagPath = sel_list.getDagPath(0)
+        object.__setattr__(self, '__api__', api.MDagPath(name))
+        # TODO
+        # DRY: __attrs__ should only be set in node.Node 
+        self.__attrs__ = {}
     
     @property
-    def _MDagPath(self):
-        self.debug('_MDagPath getter')
-        if( not self.__MDagPath.isValid() or not self.__MDagPath.fullPathName() ):
-            raise NameError('__MDagPath not valid / no path')
-        return self.__MDagPath
-    
-    #@property
-    #def matrix(self):
-    #    print('matrix property getter: %s' % self.name)
-    #    return self.__getattr__('matrix')
+    def matrix(self):
+        print('DagNode matrix getter')
+        return self.__getattr__('matrix')
