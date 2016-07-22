@@ -10,7 +10,7 @@ from dagNode import DagNode
 class Transform(DagNode):
     
     # TODO:
-    # DRY: inherit matrix property getter
+    # find SetterProperty that ignores getter?
     @property
     def matrix(self):
         print('Transform matrix getter')
@@ -25,5 +25,5 @@ class Transform(DagNode):
         self.attr('translate').set(translation.x, translation.y, translation.z)
         # TODO: 
         # rotation not working
-        self.attr('rotate').set(rotation.x, rotation.y, rotation.z)    
+        self.attr('rotate').set(rotation.x, rotation.y, rotation.z)
         self.attr('scale').set(scale[0], scale[1], scale[2])

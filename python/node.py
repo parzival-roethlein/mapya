@@ -13,6 +13,8 @@ import api;reload(api)
 
 class Node(object):
     
+    api_type = api.MObject
+    
     @staticmethod
     def getTypedInstance(node_name):
         # TODO: 
@@ -31,13 +33,11 @@ class Node(object):
         else:
             return Node(node_name)
     
-    
     def __init__(self, name):
-        super(Node, self).__setattr__('__api__', api.MObject(name))
-        #self.api = name# loop...
+        object.__setattr__(self, '__api__', self.api_type(name))
         self.__attrs__ = {}
         # TODO:
-        # check bind_data?
+        # run bind_data?
     
     def __repr__(self):
         # TODO: 
