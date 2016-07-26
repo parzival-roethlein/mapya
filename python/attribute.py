@@ -6,11 +6,12 @@ https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_att
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-import api;reload(api)
+import api
 
 
-class Attribute(object):
-    ''' Pythonic Maya attribute '''
+class Attribute(api.ApiObject):
+    
+    api_type = api.MPlug
     
     @staticmethod
     def exists(node, attr):
@@ -19,21 +20,14 @@ class Attribute(object):
         else:
             return False
     
-    def __init__(self, attr_name):
-        print('__init__(self, attr_name=%s)' % (attr_name))
-        self.api = attr_name
+    def __init__(self, name):
+        print('__init__(self, name=%s)' % (name))
+        super(Attribute, self).__init__(name)
     
     def __repr__(self):
         # TODO: 
         # always return string of object name for ease of use? (pymel style?)
         return('%s\n(%r)' % (self.__class__, self.__dict__))
-    
-    @property
-    def api(self):
-        return self.__api__
-    @api.setter
-    def api(self, attr_name):
-        setattr(self, '__api__', api.MPlug(attr_name))
     
     @property
     def name(self):
@@ -44,8 +38,6 @@ class Attribute(object):
     @name.setter
     def name(self, value):
         mc.renameAttr(self.name, value)
-        # TODO: 
-        #look up api command version? MDGModifier doesnt have it
     
     def get(self, **kwargs):
         print('get(kwargs: %s)' % (kwargs))

@@ -3,13 +3,13 @@ import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 
-import attribute;reload(attribute)
+import attribute
 from attribute import Attribute
 
-import api;reload(api)
+import api
 
 
-class Node(object):
+class Node(api.ApiObject):
     
     api_type = api.MObject
     
@@ -18,8 +18,8 @@ class Node(object):
         # TODO: 
         # load modules dynamically 
         # maybe put it in __new__ and check for keyword: typedInstance
-        from nodes import transform;reload(transform)
-        from nodes import dagNode;reload(dagNode)
+        from nodes import transform
+        from nodes import dagNode
         node_type_modules = {'dagNode':dagNode.DagNode, 
                              'transform':transform.Transform}
         
@@ -32,7 +32,7 @@ class Node(object):
             return Node(node_name)
     
     def __init__(self, name):
-        object.__setattr__(self, '__api__', self.api_type(name))
+        super(Node, self).__init__(name)
         self.__attrs__ = {}
         # TODO:
         # run bind_data?
@@ -50,8 +50,8 @@ class Node(object):
         if(Attribute.exists(self.name, name)):
             return self.attr(name).get()
         else:
-            return super(Node, self).__getattribute__(name)
-            #return object.__getattribute__(self, name)
+            return object.__getattribute__(self, name)
+            #return super(Node, self).__getattribute__(name)
             #return getattr(self, name)
     
     def __setattr__(self, attr, value):
@@ -59,13 +59,10 @@ class Node(object):
         if(not attr in dir(self) and Attribute.exists(self.name, attr)):
             self.attr(attr).set(value)
         else:
-            #object.__setattr__(self, attr, value)
-            super(Node, self).__setattr__(attr, value)
+            object.__setattr__(self, attr, value)
+            #super(Node, self).__setattr__(attr, value)
     
-    @property
-    def api(self):
-        print('get api')
-        return self.__api__
+    
     @property
     def name(self):
         sel_list = om.MSelectionList()
@@ -79,6 +76,7 @@ class Node(object):
         '''
         maya attribute
         '''
+        print('attr(name=%s)' % name)
         # this also catches invalid attr names
         short_name = mc.attributeQuery(name, node=self.name, shortName=1)
         full_name = self.name+'.'+short_name

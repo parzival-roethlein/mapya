@@ -2,8 +2,8 @@
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-from prmmeta.python import node;reload(node)
-from prmmeta.python import api;reload(api)
+from prmmeta.python import node
+from prmmeta.python import api
 
 
 class DagNode(node.Node):

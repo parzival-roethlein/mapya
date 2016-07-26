@@ -3,18 +3,13 @@ import maya.cmds as mc
 
 from ..utils import SetterProperty
 
-from . import dagNode;reload(dagNode)
+from . import dagNode
 from dagNode import DagNode
 
 
 class Transform(DagNode):
     
-    # TODO:
-    # DRY inherit getter from parent
-    @property
-    def parent(self):
-        return super(Transform, self).parent
-    @parent.setter
+    @DagNode.parent.setter
     def parent(self, parent_name):
         # TODO:
         # DECIDE to catch error if parent_name is already parent???
