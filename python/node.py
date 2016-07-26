@@ -9,7 +9,7 @@ from attribute import Attribute
 import api
 
 
-class Node(api.ApiObject):
+class Node(api.Object):
     
     api_type = api.MObject
     

@@ -7,7 +7,7 @@ maya api objects wrapper
 import maya.api.OpenMaya as om
 
 
-class ApiObject(object):
+class Object(object):
     
     def __init__(self, name):
         print('api_type: %s' % self.api_type)

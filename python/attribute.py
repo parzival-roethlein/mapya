@@ -9,7 +9,7 @@ import maya.cmds as mc
 import api
 
 
-class Attribute(api.ApiObject):
+class Attribute(api.Object):
     
     api_type = api.MPlug
     
