@@ -1,6 +1,4 @@
 
-
-
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
@@ -68,22 +66,8 @@ class Node(object):
     def api(self):
         print('get api')
         return self.__api__
-    '''@api.setter
-    def api(self, node_name):
-        print('set api')
-        self.__api__ = api.MObject(node_name)
-        #object.__setattr__(self, '__api__', api.MObject(node_name))
-        #super(Node, self).__setattr__('__api__', api.MObject(node_name))
-        #setattr(self, '__api__', api.MObject(node_name))
-        self.__attrs__ = {}
-    '''
     @property
     def name(self):
-        #print('name')
-        #if(not hasattr(self, '__api__')):
-        #    print('no __api__ in name')
-        #    return ''
-        #print('__api__ in name')
         sel_list = om.MSelectionList()
         sel_list.add(self.api.MObject)
         return sel_list.getSelectionStrings(0)[0]
@@ -93,7 +77,7 @@ class Node(object):
     
     def attr(self, name):
         '''
-        return maya attribute
+        maya attribute
         '''
         # this also catches invalid attr names
         short_name = mc.attributeQuery(name, node=self.name, shortName=1)

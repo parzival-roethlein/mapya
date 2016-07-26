@@ -10,6 +10,18 @@ from dagNode import DagNode
 class Transform(DagNode):
     
     # TODO:
+    # DRY inherit getter from parent
+    @property
+    def parent(self):
+        return super(Transform, self).parent
+    @parent.setter
+    def parent(self, parent_name):
+        # TODO:
+        # DECIDE to catch error if parent_name is already parent???
+        # MEL does only warning, maya.cmds does warning+error
+        mc.parent(self.name, parent_name)
+    
+    # TODO:
     # find SetterProperty that ignores getter?
     @property
     def matrix(self):

@@ -1,8 +1,10 @@
 
 
 
-
+# TODO:
+# maybe getter auto inherit here with obj.super?
 class SetterProperty(object):
+    
     def __init__(self, func, doc=None):
         self.func = func
         self.__doc__ = doc if doc is not None else func.__doc__
