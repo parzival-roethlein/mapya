@@ -63,7 +63,6 @@ class Node(api.Object):
             object.__setattr__(self, attr, value)
             #super(Node, self).__setattr__(attr, value)
     
-    
     @property
     def name(self):
         sel_list = om.MSelectionList()
@@ -74,9 +73,6 @@ class Node(api.Object):
         mc.rename(self.name, value)
     
     def attr(self, name):
-        '''
-        maya attribute
-        '''
         print('attr(name=%s)' % name)
         # this also catches invalid attr names
         short_name = mc.attributeQuery(name, node=self.name, shortName=1)
