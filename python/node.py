@@ -7,7 +7,7 @@ import attribute
 from attribute import Attribute
 
 import api
-
+import cmds
 
 class Node(api.Object):
     
@@ -33,6 +33,7 @@ class Node(api.Object):
     
     def __init__(self, name):
         super(Node, self).__init__(name)
+        self.mc = cmds.Cmds(self)
         self.__attrs__ = {}
         # TODO:
         # run bind_data?

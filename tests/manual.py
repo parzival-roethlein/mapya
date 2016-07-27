@@ -13,6 +13,8 @@ from prmmeta.python.nodes import transform;reload(transform)
 from prmmeta.python.nodes import dagNode;reload(dagNode)
 from prmmeta.python import node;reload(node)
 nod = node.Node('pSphere1')
+nod.mc.listRelatives(parent=1)
+nod.mc.ls(showType=1)
 print(nod.name)
 print(dir(nod))
 print(help(nod))
@@ -74,6 +76,19 @@ from prmmeta.python import node;reload(node)
 api.ApiObject('pSphere1')
 
 
-
+# ######################
+# Cmds
+# ######################
+import prmmeta.python.cmds as mycmds;reload(mycmds)
+import prmmeta.python.api as api;reload(api)
+import prmmeta.python.attribute as attribute;reload(attribute)
+from prmmeta.python.nodes import transform;reload(transform)
+from prmmeta.python.nodes import dagNode;reload(dagNode)
+from prmmeta.python import node;reload(node)
+nod = node.Node('pSphere1')
+help(nod.mc.listRelatives)
+print(nod.mc.listRelatives(parent=1))
+print(nod.mc.listRelatives())
+print(nod.mc.ls(showType=1))
 
 
