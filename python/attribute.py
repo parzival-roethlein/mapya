@@ -1,7 +1,3 @@
-''' 
-compound / array attr get/set
-https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_attributes.htm
-'''
 
 import maya.api.OpenMaya as om
 import maya.cmds as mc
@@ -60,6 +56,8 @@ class Attribute(api.Object):
             pass
         return self.__apiType
     
+    # compound / array attr get/set
+    # https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_attributes.htm
     def get_api(self):
         # TODO: add all type options
         if(self._apiType == 'kFloat'):# TODO: ...
