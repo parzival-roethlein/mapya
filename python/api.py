@@ -38,7 +38,7 @@ class MObject(object):
     
     @property
     def MObjectHandle(self):
-        if(not self.__MObjectHandle__.isValid()):
+        if(not self.__MObjectHandle__.isValid()):# self.__MObjectHandle__.isAlive()
             raise NameError('MObjectHandle not valid')
         return self.__MObjectHandle__
 
@@ -68,12 +68,7 @@ class MPlug(MObject):
         self.__MPlug__ = om.MPlug(sel_list.getPlug(0))
         
         node_name = attr_name[:attr_name.rfind('.')]
-        print('dir(self): %s' % dir(self))
-        print('node_name: %s' % node_name)
-        print('self: %s' % self)
-        print('MPlug: %s' % MPlug)
         super(MPlug, self).__init__(node_name)
-        #MObject.__init__(self, node_name)
     
     @property
     def MPlug(self):
@@ -104,6 +99,7 @@ class MPlug(MObject):
         if(self.__MPlug__.isNull or not self.MObjectHandle):
             raise NameError('MPlug isNull or not MObjectHandle.isValid')
         return self.__MPlug__
+
 
 
 
