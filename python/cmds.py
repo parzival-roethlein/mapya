@@ -21,6 +21,31 @@ def func():
         return func2
     setattr(Cmds, callbackName, func())
 
+
+class Cmds(object):
+
+    initialized = False
+    def __new__(cls, *args, **kwargs):
+        if not cls.initialized:
+            for callbackName in dir(mc):
+                if(not hasattr(mc.__dict__[callbackName], '__call__')):
+                    continue
+                with mc.__dict__[callbackName] as f:
+                    #func = lambda self, f=mc.__dict__[callbackName], *args, **kwargs: f(self.node.name, *args, **kwargs)
+                    def func(self, *args, **kwargs):
+                        return f(self.node.name, *args, **kwargs)
+                    setattr(cls, callbackName, func)
+                #del func
+        return super(Cmds, cls).__new__(cls, *args, **kwargs)
+    
+    def __init__(self, node):
+        self.node = node
+        
+print(Cmds(nod))
+print(len(dir(Cmds)))
+c = Cmds(nod)
+print c.listRelatives('pSphere1', parent=1)
+
 '''
 
 import maya.cmds as mc
