@@ -35,6 +35,7 @@ class Attribute(api.Object):
     def name(self, value):
         mc.renameAttr(self.name, value)
     
+    
     def get(self, **kwargs):
         print('get(kwargs: %s)' % (kwargs))
         return mc.getAttr(self.name, **kwargs)
@@ -47,6 +48,17 @@ class Attribute(api.Object):
         for each in args:
             print('each: %s // type(each): %s' % (each, type(each)))
         mc.setAttr(self.name, *args, **kwargs)
+    
+    
+    def connect(self, target_attr):
+        pass
+    
+    # TODO:
+    # should operator only work with Attribute instances and not string, etc?
+    # thats how many python types (set for example) work (but int and float do work...)
+    #def bitwise >> operator(self, target_attr):
+    #    self.connect(target)
+    
     
     '''
     @property
