@@ -21,11 +21,10 @@ class Attribute(api.Object):
         super(Attribute, self).__init__(name)
     
     def __repr__(self):
-        # TODO: 
-        # always return string of object name for ease of use? (pymel style?)
-        #return('%s(\'"%s')' % (self.__class__, self.__dict__))
-        #return("%s('"+self.name+"')")
         return('%s(%r)' % (self.__class__.__name__, self.name))
+    
+    def __str__(self):
+        return self.name
     
     @property
     def name(self):
@@ -53,14 +52,10 @@ class Attribute(api.Object):
     
     
     def connect(self, target_attr):
-        pass
-    
-    # TODO:
-    # should operator only work with Attribute instances and not string, etc?
-    # thats how many python types (set for example) work (but int and float do work...)
-    #def bitwise >> operator(self, target_attr):
-    #    self.connect(target)
-    
+        mc.connectAttr(self.name, target_attr)
+    def __rshift__(self, value):
+        'overwrite for connecting attributes (self >> target)'
+        self.connect(value)
     
     '''
     @property
