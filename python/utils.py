@@ -2,23 +2,13 @@
 
 
 def reload_all():
-    'reload all all modules'
+    'reload all all modules in the right order'
     from . import api;reload(api)
     from . import attribute;reload(attribute)
-    from .nodes import transform;reload(transform)
-    from .nodes import dagNode;reload(dagNode)
     from . import node;reload(node)
-    '''
-    for each in [api,
-                 attribute,
-                 transform,
-                 dagNode,
-                 node,
-                 ]:
-        print('reload')
-        print(reload)
-        reload(each)
-    '''
+    from .nodes import dagNode;reload(dagNode)
+    from .nodes import transform;reload(transform)
+    
 
 
 

@@ -1,94 +1,66 @@
-mm.eval('SavePreferences')
 mm.eval( 'syncExecuterBackupFiles()' )
+mm.eval( 'SavePreferences' )
+
 import maya.api.OpenMaya as om
-
-
-
-# ######################
+# ############################
 # NODE
-# ######################
-import prmmeta.python.api as api;reload(api)
-import prmmeta.python.attribute as attribute;reload(attribute)
-from prmmeta.python.nodes import transform;reload(transform)
-from prmmeta.python.nodes import dagNode;reload(dagNode)
-from prmmeta.python import node;reload(node)
-nod = node.Node('pSphere1')
-nod.mc.listRelatives(parent=1)
-nod.mc.ls(showType=1)
+# ############################
+from prmmeta.python import utils;reload(utils);utils.reload_all()
+from prmmeta.python.node import Node
+nod = Node('pSphere1')
 print(nod.name)
 print(dir(nod))
 print(help(nod))
 print(nod.tx)
 nod.tx = 1
+nod.ty
 # ######################
 # DagNode
 # ######################
-import prmmeta.python.api as api;reload(api)
-import prmmeta.python.attribute as attribute;reload(attribute)
-from prmmeta.python.nodes import transform;reload(transform)
+from prmmeta.python import utils;reload(utils);utils.reload_all()
 from prmmeta.python.nodes import dagNode;reload(dagNode)
-from prmmeta.python import node;reload(node)
-dag = dagNode.DagNode('pSphere1')
-a.matrix
+dag1 = dagNode.DagNode('pSphere1')
+dag2 = dagNode.DagNode('pSphere2')
+print(dag1.matrix)
 # ######################
 # Transform
 # ######################
-import prmmeta.python.api as api;reload(api)
-import prmmeta.python.attribute as attribute;reload(attribute)
-from prmmeta.python.nodes import transform;reload(transform)
-from prmmeta.python.nodes import dagNode;reload(dagNode)
-from prmmeta.python import node;reload(node)
-trana = transform.Transform('pSphere1')
-tranb =transform.Transform('pSphere2')
-trana.matrix = tranb.matrix
-
-
-
+from prmmeta.python import utils;reload(utils);utils.reload_all()
+from prmmeta.python.nodes.transform import Transform
+tra1 = Transform('pSphere1')
+tra2 = Transform('pSphere2')
+print(tra1.matrix)
+tra1.matrix = tra2.matrix
 # ######################
 # Attribute
 # ######################
-import prmmeta.python.api as api;reload(api)
-import prmmeta.python.attribute as attribute;reload(attribute)
-from prmmeta.python.nodes import transform;reload(transform)
-from prmmeta.python.nodes import dagNode;reload(dagNode)
-from prmmeta.python import node;reload(node)
-
-attra = attribute.Attribute('pSphere1.tx')
-print(attra.get())
-print(attra.set(1.5))
-print(attra)
-print(dir(attra))
-print(help(attra))
-
-print(attra.api.MObject)
-
-
+from prmmeta.python import utils;reload(utils);utils.reload_all()
+from prmmeta.python.attribute import Attribute
+attr1 = Attribute('pSphere1.tx')
+print(dir(attr1))
+print(help(attr1))
+print(attr1)
+print(attr1.get())
+print(attr1.set(1.5))
+print(attr1.api.MObject)
 # ######################
 # api
 # ######################
-import prmmeta.python.api as api;reload(api)
-import prmmeta.python.attribute as attribute;reload(attribute)
-from prmmeta.python.nodes import transform;reload(transform)
-from prmmeta.python.nodes import dagNode;reload(dagNode)
-from prmmeta.python import node;reload(node)
-
-
-api.ApiObject('pSphere1')
-
-
-# ######################
-# Cmds
-# ######################
-import prmmeta.python.cmds as mycmds;reload(mycmds)
-import prmmeta.python.api as api;reload(api)
-import prmmeta.python.attribute as attribute;reload(attribute)
-from prmmeta.python.nodes import transform;reload(transform)
-from prmmeta.python.nodes import dagNode;reload(dagNode)
-from prmmeta.python import node;reload(node)
-nod = node.Node('pSphere1')
-help(nod.mc.listRelatives)
-print(nod.mc.listRelatives(parent=1))
-print(nod.mc.listRelatives())
-print(nod.mc.ls(showType=1))
+from prmmeta.python import utils;reload(utils);utils.reload_all()
+from prmmeta.python import api
+apiobj = api.MObject('pSphere1')
+help(apiobj)
+print(dir(apiobj))
+apiplug = api.MPlug('pSphere1.tx')
+help(apiplug)
+print(dir(apiplug))
+# ############################
+# MC
+# ############################
+from prmmeta.python import utils;reload(utils);utils.reload_all()
+from prmmeta.python.node import Node
+nodmc = Node('pSphere1')
+print(nodmc.mc.listRelatives(parent=1))
+print(nodmc.mc.ls(showType=1))
 
 

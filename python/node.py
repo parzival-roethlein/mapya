@@ -39,8 +39,6 @@ class Node(api.Object):
         # run bind_data?
     
     def __repr__(self):
-        # TODO: 
-        # always return string of object name for ease of use? (pymel style?)
         return('%s(%r)' % (self.__class__.__name__, self.name))
     
     def __str__(self):
