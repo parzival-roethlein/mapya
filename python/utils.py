@@ -1,22 +1,25 @@
 
 
 
-def reload():
+def reload_all():
     'reload all all modules'
-    for each in [prmmeta.python.api,
-                 prmmeta.python.attribute,
-                 prmmeta.python.nodes.transform,
-                 prmmeta.python.nodes.dagNode,
-                 prmmeta.python.node]:
-        import each
+    from . import api;reload(api)
+    from . import attribute;reload(attribute)
+    from .nodes import transform;reload(transform)
+    from .nodes import dagNode;reload(dagNode)
+    from . import node;reload(node)
+    '''
+    for each in [api,
+                 attribute,
+                 transform,
+                 dagNode,
+                 node,
+                 ]:
+        print('reload')
+        print(reload)
         reload(each)
     '''
-    import prmmeta.python.api as api;reload(api)
-    import prmmeta.python.attribute as attribute;reload(attribute)
-    from prmmeta.python.nodes import transform;reload(transform)
-    from prmmeta.python.nodes import dagNode;reload(dagNode)
-    from prmmeta.python import node;reload(node)
-    '''
+
 
 
 

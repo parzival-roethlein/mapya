@@ -23,7 +23,9 @@ class Attribute(api.Object):
     def __repr__(self):
         # TODO: 
         # always return string of object name for ease of use? (pymel style?)
-        return('%s\n(%r)' % (self.__class__, self.__dict__))
+        #return('%s(\'"%s')' % (self.__class__, self.__dict__))
+        #return("%s('"+self.name+"')")
+        return('%s(%r)' % (self.__class__.__name__, self.name))
     
     @property
     def name(self):

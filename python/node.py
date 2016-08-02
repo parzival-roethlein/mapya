@@ -41,7 +41,7 @@ class Node(api.Object):
     def __repr__(self):
         # TODO: 
         # always return string of object name for ease of use? (pymel style?)
-        return('%s(%r)' % (self.__class__.__name__, self.__dict__))
+        return('%s(%r)' % (self.__class__.__name__, self.name))
     
     def __str__(self):
         return self.name
