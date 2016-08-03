@@ -104,28 +104,28 @@ class Attribute(api.Object):
 
 
 
-def operate(operator_func, inplace=False):
-    def func(self, other):
+def wrap_operator(operator_func, inplace=False):
+    def inner_operator(self, other):
         if(isinstance(other, Attribute)):
             other = other.get()
         if(inplace):
             self.set(operator_func(self.get(), other))
             return self
         return operator_func(self.get(), other)
-    func.__name__ = operator_func.__name__
-    func.__doc__ = operator_func.__doc__
-    return func
+    inner_operator.__name__ = operator_func.__name__
+    inner_operator.__doc__ = operator_func.__doc__
+    return inner_operator
 
 math_op = ['__add__', '__sub__', '__mul__', '__pow__', '__div__', '__truediv__', '__mod__']
 logic_op = ['__lt__', '__le__', '__eq__', '__ne__', '__gt__', '__ge__']
 # rshift and floordiv used to connect/disconnect attrs
 # other bitwise operators ignored for now
 for each in math_op+logic_op:
-    setattr(Attribute, each, operate(getattr(operator, each)))
+    setattr(Attribute, each, wrap_operator(getattr(operator, each)))
 
 math_iop = [each.replace('__', '__i', 1) for each in math_op]
 for each in math_iop:
-    setattr(Attribute, each, operate(getattr(operator, each), inplace=True))
+    setattr(Attribute, each, wrap_operator(getattr(operator, each), inplace=True))
 # TODO:
 # fix Node.attr inplace operator calls (calls attr one, and then own)
 

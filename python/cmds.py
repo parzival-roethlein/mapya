@@ -69,11 +69,11 @@ class Cmds(object):
     
     @staticmethod
     def wrap_node_func(func_arg, node, *args, **kwargs):
-        def func(self, *args, **kwargs):
+        def inner_func(self, *args, **kwargs):
             return func_arg(node.name, *args, **kwargs)
-        func.__name__ = func_arg.__name__
-        #func.__doc__ = func_arg.__doc__# TODO: check if always empty?
-        return func
+        inner_func.__name__ = func_arg.__name__
+        inner_func.__doc__ = func_arg.__doc__# TODO: check if always empty?
+        return inner_func
     
     def __init__(self, node):
         if(not Cmds.initialized):
