@@ -58,7 +58,7 @@ class Cmds(object):
     initialized = False
     
     @staticmethod
-    def initialize(node):
+    def initialize_node(node):
         for callbackName in dir(mc):
             if(not hasattr(mc.__dict__[callbackName], '__call__')):
                 continue
@@ -77,7 +77,7 @@ class Cmds(object):
     
     def __init__(self, node):
         if(not Cmds.initialized):
-            Cmds.initialize(node)
+            Cmds.initialize_node(node)
         self.node = node
     
 
