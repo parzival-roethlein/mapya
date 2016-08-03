@@ -104,19 +104,14 @@ class Attribute(api.Object):
 
 
 
-def operate(func):
+def operate(operator_func, inplace=False):
     def inner(self, other):
         if(isinstance(other, Attribute)):
             other = other.get()
-        return func(self.get(), other)
-    return inner
-
-def inplace_operate(func):
-    def inner(self, other):
-        if(isinstance(other, Attribute)):
-            other = other.get()
-        self.set(func(self.get(), other))
-        return self
+        if(inplace):
+            self.set(operator_func(self.get(), other))
+            return self
+        return operator_func(self.get(), other)
     return inner
 
 math_op = ['__add__', '__sub__', '__mul__', '__pow__', '__div__', '__truediv__', '__mod__']
@@ -128,7 +123,7 @@ for each in math_op+logic_op:
 
 math_iop = [each.replace('__', '__i', 1) for each in math_op]
 for each in math_iop:
-    setattr(Attribute, each, inplace_operate(getattr(operator, each)))
+    setattr(Attribute, each, operate(getattr(operator, each), inplace=True))
 # TODO:
 # fix Node.attr inplace operator calls (calls attr one, and then own)
 
