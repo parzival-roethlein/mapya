@@ -105,14 +105,16 @@ class Attribute(api.Object):
 
 
 def operate(operator_func, inplace=False):
-    def inner(self, other):
+    def func(self, other):
         if(isinstance(other, Attribute)):
             other = other.get()
         if(inplace):
             self.set(operator_func(self.get(), other))
             return self
         return operator_func(self.get(), other)
-    return inner
+    func.__name__ = operator_func.__name__
+    func.__doc__ = operator_func.__doc__
+    return func
 
 math_op = ['__add__', '__sub__', '__mul__', '__pow__', '__div__', '__truediv__', '__mod__']
 logic_op = ['__lt__', '__le__', '__eq__', '__ne__', '__gt__', '__ge__']
