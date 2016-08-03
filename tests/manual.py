@@ -7,13 +7,17 @@ import maya.api.OpenMaya as om
 # ############################
 from prmmeta.python import utils;reload(utils);utils.reload_all()
 from prmmeta.python.node import Node
-nod = Node('pSphere1')
-print(nod.name)
-print(dir(nod))
-print(help(nod))
-print(nod.tx)
-nod.tx = 1
-nod.ty
+nod1 = Node('pSphere1')
+nod2 = Node('pSphere2')
+print(nod1.name)
+print(dir(nod1))
+print(help(nod1))
+print(nod1.tx)
+nod1.tx += 1
+nod1.tx = nod1.tx /2
+nod1.ty
+nod1.tx >> nod2.ty
+nod1.tx // nod2.ty
 # ######################
 # DagNode
 # ######################
@@ -37,12 +41,30 @@ tra1.matrix = tra2.matrix
 from prmmeta.python import utils;reload(utils);utils.reload_all()
 from prmmeta.python.attribute import Attribute
 attr1 = Attribute('pSphere1.tx')
+attr2 = Attribute('pSphere2.ty')
 print(dir(attr1))
 print(help(attr1))
 print(attr1)
 print(attr1.get())
 print(attr1.set(1.5))
 print(attr1.api.MObject)
+print(attr1+attr2)
+print(attr1-attr2)
+print(attr1*attr2)
+print(attr1/attr2)
+print(attr1 == attr2)
+print(attr1 != attr2)
+attr1.connect(attr2)
+attr1.disconnect(attr2)
+attr1 += attr2
+attr1 += attr2
+attr1 -= attr2
+attr1 *= attr2
+attr1 /= attr2
+attr1 >> attr2
+attr1 // attr2
+attr1 >> "pSphere2.translateZ"
+attr1 // "pSphere2.translateZ"
 # ######################
 # api
 # ######################

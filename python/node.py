@@ -47,11 +47,9 @@ class Node(api.Object):
     def __getattr__(self, name):
         print('getattr: %s' % name)
         if(Attribute.exists(self.name, name)):
-            return self.attr(name).get()
+            return self.attr(name)
         else:
             return object.__getattribute__(self, name)
-            #return super(Node, self).__getattribute__(name)
-            #return getattr(self, name)
     
     def __setattr__(self, attr, value):
         print('setattr: %s' % attr)
@@ -59,7 +57,6 @@ class Node(api.Object):
             self.attr(attr).set(value)
         else:
             object.__setattr__(self, attr, value)
-            #super(Node, self).__setattr__(attr, value)
     
     @property
     def name(self):
@@ -72,7 +69,6 @@ class Node(api.Object):
     
     def attr(self, name):
         print('attr(name=%s)' % name)
-        # this also catches invalid attr names
         short_name = mc.attributeQuery(name, node=self.name, shortName=1)
         full_name = self.name+'.'+short_name
         if(not short_name in self.__attrs__):

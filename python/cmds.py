@@ -72,7 +72,7 @@ class Cmds(object):
         def func(self, *args, **kwargs):
             return func_arg(node.name, *args, **kwargs)
         func.__name__ = func_arg.__name__
-        #func.__doc__ = func_arg.__doc__# TODO: maya.cmds check if always empty?
+        #func.__doc__ = func_arg.__doc__# TODO: check if always empty?
         return func
     
     def __init__(self, node):

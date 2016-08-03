@@ -1,8 +1,11 @@
+import operator
 
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 import api
+
+
 
 
 class Attribute(api.Object):
@@ -51,11 +54,17 @@ class Attribute(api.Object):
         mc.setAttr(self.name, *args, **kwargs)
     
     
-    def connect(self, target_attr):
-        mc.connectAttr(self.name, target_attr)
-    def __rshift__(self, value):
-        'overwrite for connecting attributes (self >> target)'
-        self.connect(value)
+    def connect(self, other):
+        mc.connectAttr(self.name, other)
+    def __rshift__(self, other):
+        'overwritten to connect attributes (attr1 >> attr2)'
+        self.connect(other)
+    
+    def disconnect(self, other):
+        mc.disconnectAttr(self.name, other)
+    def __floordiv__(self, other):
+        'overwritten to disconnect attributes (attr1 // attr2)'
+        self.disconnect(other)
     
     '''
     @property
@@ -95,10 +104,33 @@ class Attribute(api.Object):
 
 
 
+def operate(func):
+    def inner(self, other):
+        if(isinstance(other, Attribute)):
+            other = other.get()
+        return func(self.get(), other)
+    return inner
 
+def inplace_operate(func):
+    def inner(self, other):
+        if(isinstance(other, Attribute)):
+            other = other.get()
+        self.set(func(self.get(), other))
+        return self
+    return inner
 
+math_op = ['__add__', '__sub__', '__mul__', '__pow__', '__div__', '__truediv__', '__mod__']
+logic_op = ['__lt__', '__le__', '__eq__', '__ne__', '__gt__', '__ge__']
+# rshift and floordiv used to connect/disconnect attrs
+# other bitwise operators ignored for now
+for each in math_op+logic_op:
+    setattr(Attribute, each, operate(getattr(operator, each)))
 
-
+math_iop = [each.replace('__', '__i', 1) for each in math_op]
+for each in math_iop:
+    setattr(Attribute, each, inplace_operate(getattr(operator, each)))
+# TODO:
+# fix Node.attr inplace operator calls (calls attr one, and then own)
 
 
 
