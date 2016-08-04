@@ -3,6 +3,7 @@
 
 def reload_all():
     'reload all all modules in the right order'
+    from . import operator_wrapper;reload(operator_wrapper)
     from . import api;reload(api)
     from . import attribute;reload(attribute)
     from . import node;reload(node)
