@@ -45,14 +45,14 @@ class Node(api.Object):
         return self.name
     
     def __getattr__(self, name):
-        print('getattr: %s' % name)
+        print('Node.getattr: %s' % name)
         if(Attribute.exists(self.name, name)):
             return self.attr(name)
         else:
             return object.__getattribute__(self, name)
     
     def __setattr__(self, attr, value):
-        print('setattr: %s' % attr)
+        print('Node.setattr: %s' % attr)
         if(not attr in dir(self) and Attribute.exists(self.name, attr)):
             self.attr(attr).set(value)
         else:
@@ -68,7 +68,7 @@ class Node(api.Object):
         mc.rename(self.name, value)
     
     def attr(self, name):
-        print('attr(name=%s)' % name)
+        print('Node.attr(name=%s)' % name)
         short_name = mc.attributeQuery(name, node=self.name, shortName=1)
         full_name = self.name+'.'+short_name
         if(not short_name in self.__attrs__):

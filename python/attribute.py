@@ -20,7 +20,7 @@ class Attribute(api.Object):
             return False
     
     def __init__(self, name):
-        print('__init__(self, name=%s)' % (name))
+        print('Attribute.__init__(self, name=%s)' % (name))
         super(Attribute, self).__init__(name)
     
     def __repr__(self):
@@ -41,17 +41,28 @@ class Attribute(api.Object):
     
     
     def get(self, **kwargs):
-        print('get(kwargs: %s)' % (kwargs))
+        print('Attribute.get(kwargs: %s)' % (kwargs))
         return mc.getAttr(self.name, **kwargs)
     
     def set(self, *args, **kwargs):
-        print('def set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
-        # TODO: 
-        # if args has lists/tuples,... make args just one list (for setAttr)
-        # maybe only the case for compound attributes?!
-        for each in args:
-            print('each: %s // type(each): %s' % (each, type(each)))
-        mc.setAttr(self.name, *args, **kwargs)
+        print('Attribute.set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
+        
+        # convert attr instances to their value and flatten lists / tuples
+        args_list = []
+        for x, each in enumerate(args):
+            if(isinstance(each, Attribute)):
+                each = each.get()
+            if(isinstance(each, (list, tuple))):
+                for each_child in each:
+                    if(isinstance(each_child, (list, tuple))):
+                        args_list += each_child
+                        # TODO: check if this is the max level
+                    else:
+                        args_list.append(each_child)
+            else:
+                args_list.append(each)
+        print('args_list after: %s ' % args_list)
+        mc.setAttr(self.name, *args_list, **kwargs)
     
     
     def connect(self, other):
