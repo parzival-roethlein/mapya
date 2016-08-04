@@ -47,7 +47,8 @@ class Attribute(api.Object):
     def set(self, *args, **kwargs):
         print('Attribute.set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
         
-        # convert attr instances to their value and flatten lists / tuples
+        # convert attr instances to their value 
+        # and flatten lists / tuples to work with mc.setAttr
         args_list = []
         for x, each in enumerate(args):
             if(isinstance(each, Attribute)):
@@ -56,7 +57,9 @@ class Attribute(api.Object):
                 for each_child in each:
                     if(isinstance(each_child, (list, tuple))):
                         args_list += each_child
-                        # TODO: check if this is the max level
+                        # TODO: 
+                        # check if this is the max level
+                        # or use recursive function?
                     else:
                         args_list.append(each_child)
             else:
@@ -76,42 +79,6 @@ class Attribute(api.Object):
     def __floordiv__(self, other):
         'overwritten to disconnect attributes (attr1 // attr2)'
         self.disconnect(other)
-    
-    '''
-    @property
-    def _apiType(self):
-        if(not hasattr(self, '__apiType')):
-            # TODO: get type...
-            pass
-        return self.__apiType
-    
-    # compound / array attr get/set
-    # https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_attributes.htm
-    def get_api(self):
-        # TODO: add all type options
-        if(self._apiType == 'kFloat'):# TODO: ...
-            return self._MPlug.asFloat()
-        else:
-            raise NameError('Unknown api attr type: %s' % self._apiType)
-    
-    def set_api(self, value):
-        # TODO: more special cases?
-        if(self._MPlug.isCompound):
-            print('compound attr')
-            attr_children = mc.attributeQuery(name, n='a', listChildren=1)
-            if(attr_children):
-                print('attr_children: %s' % attr_children)
-                for x, each_attr in enumerate(attr_children):
-                    Attribute(self._MPlug.node(), each_attr).set_api(value[x])
-            else:
-                mc.setAttr(self.name, value)
-            return
-        # TODO: add all type options
-        if(self._apiType == 'kFloat'):# TODO: ...
-            self._MPlug.setFloat(value)
-        else:
-            raise NameError('Unknown api attr type: %s' % self._apiType)
-    '''
 
 
 

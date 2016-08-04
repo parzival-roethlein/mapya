@@ -8,7 +8,7 @@ import maya.api.OpenMaya as om
 
 
 class Object(object):
-    
+    'base class for Node and Attribute, which require api_type variable'
     def __init__(self, name):
         print('api_type: %s' % self.api_type)
         object.__setattr__(self, '__api__', self.api_type(name))
@@ -99,6 +99,45 @@ class MPlug(MObject):
         if(self.__MPlug__.isNull or not self.MObjectHandle):
             raise NameError('MPlug isNull or not MObjectHandle.isValid')
         return self.__MPlug__
+    
+    '''
+    @property
+    def apiType(self):
+        if(not hasattr(self, '__apiType__')):
+            # TODO: get type...
+            pass
+        return self.__apiType__
+    
+    # compound / array attr get/set
+    # https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_attributes.htm
+    def get_api(self):
+        # TODO: add all type options
+        if(self.api.type == 'kFloat'):# TODO: ...
+            return self.api.MPlug.asFloat()
+        else:
+            raise NameError('Unknown api attr type: %s' % self._apiType)
+    
+    def set_api(self, value):
+        # TODO: more special cases?
+        if(self.api.MPlug.isCompound):
+            print('compound attr')
+            attr_children = mc.attributeQuery(name, n='a', listChildren=1)
+            if(attr_children):
+                print('attr_children: %s' % attr_children)
+                for x, each_attr in enumerate(attr_children):
+                    Attribute(self.api.MPlug.node(), each_attr).set_api(value[x])
+            else:
+                mc.setAttr(self.name, value)
+            return
+        # TODO: add all type options
+        if(self._apiType == 'kFloat'):# TODO: ...
+            self.api.MPlug.setFloat(value)
+        else:
+            raise NameError('Unknown api attr type: %s' % self._apiType)
+    '''
+
+
+
 
 
 
