@@ -1,3 +1,10 @@
+'''
+DECIDE:
+always work with the longName or shortName of attributes?! 
+- listConnections and probably all maya.cmds return the longname
+
+'''
+
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
@@ -88,14 +95,32 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
         # convert kwargs Attributes as well?
         mc.setAttr(self.name, *args_list, **kwargs)
     
-    
-    def connect(self, other):
+    @staticmethod
+    def __connectAttr__(source, target):
         # TODO:
-        # make error when connection already exists a warning
-        mc.connectAttr(self.name, other)
+        # fix this test code...
+        # print warnings when:
+        #  input was the same already
+        #  (maybe) other input was overwritten 
+        input = mc.listConnections(target, destination=1, plugs=1)
+        if(input):
+            print(input)
+            input = input[0]
+            mc.disconnectAttr(input, target)
+        try:
+            mc.connectAttr(source, target)
+        except:
+            if(input):
+                mc.connectAttr(inut, target)
+    def connect(self, other):
+        self.__connectAttr__(self.name, other)
     def __rshift__(self, other):
         'overwritten to connect attributes (attr1 >> attr2)'
         self.connect(other)
+    def __lshift__(self, other):
+        'overwritten to connect attributes (attr1 << attr2)'
+        self.__connectAttr__(other, self.name)
+    
     
     def disconnect(self, other):
         # TODO:
