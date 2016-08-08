@@ -8,8 +8,10 @@ from attribute import Attribute
 
 import api
 import cmds
+import utils
 
-class Node(api.Object):
+
+class Node(api.Object, utils.PrintDebugger):
     
     api_type = api.MObject
     
@@ -45,14 +47,20 @@ class Node(api.Object):
         return self.name
     
     def __getattr__(self, name):
-        print('Node.getattr: %s' % name)
+        if(name != '__members__' and name != '__methods__'):
+            self.debug('.getattr(name=%s)' % name)
         if(Attribute.exists(self.name, name)):
             return self.attr(name)
         else:
             return object.__getattribute__(self, name)
     
     def __setattr__(self, attr, value):
-        print('Node.setattr: %s' % attr)
+        self.debug('.setattr(attr=%s, value=%s' % (attr, value))
+        # TODO:
+        # use missing function (same as in Attribute.set()
+        if(isinstance(value, Attribute)):
+            value = value.get()
+        
         if(not attr in dir(self) and Attribute.exists(self.name, attr)):
             self.attr(attr).set(value)
         else:
@@ -68,7 +76,7 @@ class Node(api.Object):
         mc.rename(self.name, value)
     
     def attr(self, name):
-        print('Node.attr(name=%s)' % name)
+        self.debug('.attr(name=%s)' % name)
         short_name = mc.attributeQuery(name, node=self.name, shortName=1)
         full_name = self.name+'.'+short_name
         if(not short_name in self.__attrs__):

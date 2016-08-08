@@ -10,7 +10,6 @@ import maya.api.OpenMaya as om
 class Object(object):
     'base class for Node and Attribute, which require api_type variable'
     def __init__(self, name):
-        print('api_type: %s' % self.api_type)
         object.__setattr__(self, '__api__', self.api_type(name))
     @property
     def api(self):

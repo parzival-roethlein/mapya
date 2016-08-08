@@ -2,11 +2,12 @@ import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 import api
+import utils
 from operator_wrapper import AttributeOperator
 
 
 
-class Attribute(api.Object, AttributeOperator):
+class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
     
     api_type = api.MPlug
     
@@ -45,24 +46,46 @@ class Attribute(api.Object, AttributeOperator):
     def set(self, *args, **kwargs):
         print('Attribute.set(self, args=%s, **kwargs=%s)' %  (args, kwargs))
         
-        # convert attr instances to their value 
+        # TODO:
+        # temporary code...
+        # use recursive function for infinite levels? and DRY
         # and flatten lists / tuples to work with mc.setAttr
-        args_list = []
+        # MAYBE also flatten lists in .get() function?
+        
+        # 1. step: make flat list (args can be tuples, ..)
+        args_list1 = []
         for x, each in enumerate(args):
-            if(isinstance(each, Attribute)):
-                each = each.get()
             if(isinstance(each, (list, tuple))):
                 for each_child in each:
                     if(isinstance(each_child, (list, tuple))):
-                        args_list += each_child
-                        # TODO: 
-                        # check if this is the max level
-                        # or use recursive function?
+                        for each_child_child in each_child:
+                            args_list1.append(each_child_child)
+                    else:
+                        args_list1.append(each_child)
+            else:
+                args_list1.append(each)
+        
+        # 2. step convert attr instances to their value 
+        for x, each in enumerate(args_list1):
+            if(isinstance(each, Attribute)):
+                args_list1[x] = each.get()
+        
+        # 3. step: make list flat again (attribute.get() can be list of tuples again...)
+        args_list = []
+        for x, each in enumerate(args_list1):
+            if(isinstance(each, (list, tuple))):
+                for each_child in each:
+                    if(isinstance(each_child, (list, tuple))):
+                        for each_child_child in each_child:
+                            args_list.append(each_child_child)
                     else:
                         args_list.append(each_child)
             else:
                 args_list.append(each)
-        print('args_list after: %s ' % args_list)
+        self.debug('final args_list: %s' % args_list)
+        
+        # TODO:
+        # convert kwargs Attributes as well?
         mc.setAttr(self.name, *args_list, **kwargs)
     
     

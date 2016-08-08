@@ -19,6 +19,7 @@ FEATURES (small)
 
 RULES
 - pythonic > mayaic
+- in the framework use maya.cmds not own features, if possible (for performance)
 
 
 RULES (maybe)

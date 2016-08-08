@@ -2,6 +2,7 @@ import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 from ..utils import SetterProperty
+from ..attribute import Attribute
 
 from . import dagNode
 from dagNode import DagNode
@@ -29,8 +30,28 @@ class Transform(DagNode):
         translation = value_matrix.translation(om.MSpace.kWorld)
         rotation = value_matrix.rotation()
         scale = value_matrix.scale(om.MSpace.kWorld)
-        self.attr('translate').set(translation.x, translation.y, translation.z)
-        # TODO: 
-        # rotation not working
-        self.attr('rotate').set(rotation.x, rotation.y, rotation.z)
-        self.attr('scale').set(scale[0], scale[1], scale[2])
+        mc.setAttr(self.name+'.translate', translation.x, translation.y, translation.z)
+        mc.setAttr(self.name+'.rotate', rotation.x, rotation.y, rotation.z)
+        mc.setAttr(self.name+'.scale', scale[0], scale[1], scale[2])
+    
+    @property
+    def worldMatrix(self):
+        print('Transform worldMatrix getter')
+        return self.__getattr__('worldMatrix')
+    @worldMatrix.setter
+    def worldMatrix(self, value):
+        print('worldMatrix setter: %s' % value)
+        # TODO:
+        # value * self.parentInverseMatrix
+        value_matrix = om.MTransformationMatrix(om.MMatrix(value))
+        translation = value_matrix.translation(om.MSpace.kWorld)
+        rotation = value_matrix.rotation()
+        scale = value_matrix.scale(om.MSpace.kWorld)
+        mc.setAttr(self.name+'.translate', translation.x, translation.y, translation.z)
+        mc.setAttr(self.name+'.rotate', rotation.x, rotation.y, rotation.z)
+        mc.setAttr(self.name+'.scale', scale[0], scale[1], scale[2])
+
+
+
+
+

@@ -9,10 +9,15 @@ def reload_all():
     from . import node;reload(node)
     from .nodes import dagNode;reload(dagNode)
     from .nodes import transform;reload(transform)
+
+
+
+class PrintDebugger(object):
+    _debug = True
     
-
-
-
+    def debug(self, message):
+        if(self._debug):
+            print(' - %s: %s' % (self.name, message))
 
 # TODO:
 # maybe getter auto inherit here with obj.super?
