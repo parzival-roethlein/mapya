@@ -44,10 +44,29 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
     @name.setter
     def name(self, value):
         mc.renameAttr(self.name, value)
-    
+    @property
+    def nodeName(self):
+        sel_list = om.MSelectionList()
+        sel_list.add(self.api.MObject)
+        return sel_list.getSelectionStrings(0)[0]
+    @property
+    def attrName(self):
+        return self.api.MPlug.partialName()
     
     def get(self, **kwargs):
         print('Attribute.get(kwargs: %s)' % (kwargs))
+        if(mc.attributeQuery(self.attrName, n=self.nodeName, message=1)):
+            if(kwargs):
+                raise NameError('message attribute has no flags?!')
+            # TODO:
+            # cleanup...
+            # also not working when executed twice (overwrites node var with unicode)
+            input = self.input()
+            if(input):
+                import node
+                from node import Node
+                return Node(input[:input.rfind('.')])
+            return
         return mc.getAttr(self.name, **kwargs)
     
     def set(self, *args, **kwargs):
@@ -102,10 +121,10 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
         # print warnings when:
         #  input was the same already
         #  (maybe) other input was overwritten 
-        input = mc.listConnections(target, destination=1, plugs=1)
+        input = mc.listConnections(target, source=1, destination=0, plugs=1)
         if(input):
-            print(input)
             input = input[0]
+            print('warning, overwriting connection: %s >> %s' % (input, target))
             mc.disconnectAttr(input, target)
         try:
             mc.connectAttr(source, target)
@@ -129,6 +148,23 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
     def __floordiv__(self, other):
         'overwritten to disconnect attributes (attr1 // attr2)'
         self.disconnect(other)
+    
+    
+    def input(self, **kwargs):
+        # TODO:
+        # find way to easily overwrite flags used here with kwargs
+        input = mc.listConnections(self.name, source=1, destination=0, plugs=1, **kwargs)
+        if(input):
+            return input[0]
+        return
+    def outputs(self, **kwargs):
+        return mc.listConnections(self.name, source=0, destination=1, plugs=1, **kwargs)
+    def output(self, **kwargs):
+        outputs = self.outputs(kwargs)
+        if(outputs):
+            return outputs[0]
+        return
+
 
 
 

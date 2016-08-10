@@ -83,7 +83,7 @@ class Node(api.Object, utils.PrintDebugger):
             self.__attrs__[short_name] = Attribute(full_name)
         elif(self.__attrs__[short_name].api.MPlug.isDynamic):
             # look for name changes
-            instance_name = self.__attrs__[short_name].api.MPlug.partialName()
+            instance_name = self.__attrs__[short_name].attrName()
             if(instance_name != short_name):
                 self.__attrs__[instance_name] = self.__attrs__[short_name]
                 self.__attrs__[short_name] = Attribute(full_name)
