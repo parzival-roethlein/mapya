@@ -7,7 +7,7 @@ import attribute
 from attribute import Attribute
 
 import api
-import cmds
+from cmds import Cmds
 import utils
 
 
@@ -16,10 +16,9 @@ class Node(api.Object, utils.PrintDebugger):
     api_type = api.MObject
     
     @staticmethod
-    def getTypedInstance(node_name):
+    def get_typed_instance(node_name):
         # TODO: 
         # load modules dynamically 
-        # maybe put it in __new__ and check for keyword: typedInstance
         from nodes import transform
         from nodes import dagNode
         node_type_modules = {'dagNode':dagNode.DagNode, 
@@ -35,7 +34,7 @@ class Node(api.Object, utils.PrintDebugger):
     
     def __init__(self, name):
         super(Node, self).__init__(name)
-        self.mc = cmds.Cmds(self)
+        self.mc = Cmds(self)
         self.__attrs__ = {}
         # TODO:
         # run bind_data?

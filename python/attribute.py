@@ -45,17 +45,17 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
     def name(self, value):
         mc.renameAttr(self.name, value)
     @property
-    def nodeName(self):
+    def node_name(self):
         sel_list = om.MSelectionList()
         sel_list.add(self.api.MObject)
         return sel_list.getSelectionStrings(0)[0]
     @property
-    def attrName(self):
+    def attr_name(self):
         return self.api.MPlug.partialName()
     
     def get(self, **kwargs):
         print('Attribute.get(kwargs: %s)' % (kwargs))
-        if(mc.attributeQuery(self.attrName, n=self.nodeName, message=1)):
+        if(mc.attributeQuery(self.attr_name, n=self.node_name, message=1)):
             if(kwargs):
                 raise NameError('message attribute has no flags?!')
             # TODO:
@@ -158,12 +158,18 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
             return input[0]
         return
     def outputs(self, **kwargs):
-        return mc.listConnections(self.name, source=0, destination=1, plugs=1, **kwargs)
+        outputs = mc.listConnections(self.name, source=0, destination=1, plugs=1, **kwargs)
+        if(outputs == None):
+            return []
+        return outputs
     def output(self, **kwargs):
         outputs = self.outputs(kwargs)
         if(outputs):
             return outputs[0]
         return
+
+
+
 
 
 
