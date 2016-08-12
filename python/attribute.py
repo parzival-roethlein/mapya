@@ -64,6 +64,8 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
             raise ValueError('invalid number of args or kwargs:\n*args: {0}\n**kwargs: {1}'.format(args, kwargs))
         
         if(full_name):
+            if(isinstance(full_name, Attribute)):
+                return full_name.name
             node = full_name[:full_name.find('.')]
             attr = full_name[full_name.find('.')+1:]
         
@@ -175,36 +177,38 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
     def __connectAttr__(source, target):
         # TODO:
         # fix this test code...
-        # print warnings when:
-        #  input was the same already
-        #  (maybe) other input was overwritten 
+        source = Attribute.get_longName(full_name=source)
+        target = Attribute.get_longName(full_name=target)
         input = mc.listConnections(target, source=1, destination=0, plugs=1)
         if(input):
             input = input[0]
-            print('warning, overwriting connection: %s >> %s' % (input, target))
+            if(input == source):
+                print('warning, already connected: %s >> %s' % (source, target))
+                return
+            print('warning, overwriting connection: FROM %s TO %s >> %s' % (input, source, target))
             mc.disconnectAttr(input, target)
         try:
             mc.connectAttr(source, target)
         except:
             if(input):
                 mc.connectAttr(inut, target)
-    def connect(self, other):
+    def connect_into(self, other):
         self.__connectAttr__(self.name, other)
     def __rshift__(self, other):
         'overwritten to connect attributes (attr1 >> attr2)'
-        self.connect(other)
+        self.connect_into(other)
     def __lshift__(self, other):
         'overwritten to connect attributes (attr1 << attr2)'
         self.__connectAttr__(other, self.name)
     
     
-    def disconnect(self, other):
+    def disconnect_from(self, other):
         # TODO:
         # make error when not connected a warning
         mc.disconnectAttr(self.name, other)
     def __floordiv__(self, other):
         'overwritten to disconnect attributes (attr1 // attr2)'
-        self.disconnect(other)
+        self.disconnect_from(other)
     
     
     def input(self, **kwargs):
