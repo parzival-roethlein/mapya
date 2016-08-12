@@ -76,17 +76,17 @@ class Node(api.Object, utils.PrintDebugger):
     
     def attr(self, name):
         self.debug('.attr(name=%s)' % name)
-        short_name = mc.attributeQuery(name, node=self.name, shortName=1)
-        full_name = self.name+'.'+short_name
-        if(not short_name in self.__attrs__):
-            self.__attrs__[short_name] = Attribute(full_name)
-        elif(self.__attrs__[short_name].api.MPlug.isDynamic):
+        long_name = mc.attributeQuery(name, node=self.name, longName=1)
+        full_name = self.name+'.'+long_name
+        if(not long_name in self.__attrs__):
+            self.__attrs__[long_name] = Attribute(full_name)
+        elif(self.__attrs__[long_name].api.MPlug.isDynamic):
             # look for name changes
-            instance_name = self.__attrs__[short_name].attrName()
-            if(instance_name != short_name):
-                self.__attrs__[instance_name] = self.__attrs__[short_name]
-                self.__attrs__[short_name] = Attribute(full_name)
-        return self.__attrs__[short_name]
+            instance_name = self.__attrs__[long_name].attrName()
+            if(instance_name != long_name):
+                self.__attrs__[instance_name] = self.__attrs__[long_name]
+                self.__attrs__[long_name] = Attribute(full_name)
+        return self.__attrs__[long_name]
 
 
 

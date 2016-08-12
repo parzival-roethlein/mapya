@@ -1,7 +1,19 @@
 '''
-DECIDE:
-always work with the longName or shortName of attributes?! 
-- listConnections and probably all maya.cmds return the longname
+RULES
+- code should internally always use longName
+  it should always be either longName or always shortName
+  but listConnections and probably all maya.cmds return the longname, so...
+
+
+IDEAS:
+- decide to inherit string functions
+  or call some/all functions in self.__getattr__? 
+  or convert the Attribute instance arguments to strings in each function?
+
+- probably not: overwrite id calls / (is operator) return value with attr name
+  myAttr1 is myAttr2
+  better use extra function .is_same() function
+
 
 '''
 
@@ -25,6 +37,39 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
         else:
             return False
     
+    @staticmethod
+    def get_longName(*args, **kwargs):
+        ''' 
+        return node.attr (longName) for given arguments:
+        either args or kwargs
+        either node_name + attr_name or full_attr_name
+        args: [node_name, attr_name] or [full_attr_name]
+        kwargs: {node: 'node_name', 'attr': 'attr_name'} or {'full_name': full_attr_name}
+        '''
+        if(args and kwargs or not args and not kwargs):
+            raise ValueError('either args or kwargs must be given:\n*args: {0}\n**kwargs: {1}'.format(args, kwargs))
+        node = None
+        attr = None
+        full_name = None
+        
+        if(len(args) == 1):
+            full_name = args[0]
+        elif(len(args) == 2):
+            node_name, attr_name = args
+        elif(len(kwargs) == 1):
+            full_name = kwargs['full_name']
+        elif(len(kwargs) == 2):
+            node_name, attr_name = kwargs['node'], kwargs['attr']
+        else:
+            raise ValueError('invalid number of args or kwargs:\n*args: {0}\n**kwargs: {1}'.format(args, kwargs))
+        
+        if(full_name):
+            node = full_name[:full_name.find('.')]
+            attr = full_name[full_name.find('.')+1:]
+        
+        longName = mc.attributeQuery(attr, node=node, longName=1)
+        return node+'.'+longName
+    
     def __init__(self, name):
         print('Attribute.__init__(self, name=%s)' % (name))
         super(Attribute, self).__init__(name)
@@ -34,6 +79,18 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
     
     def __str__(self):
         return self.name
+    
+    def is_same_as(self, other):
+        'check if given attribute is the same as self'
+        if(isinstance(other, Attribute)):
+            other = other.name
+        else:
+            other = Attribute.get_longName(other)
+        self.debug('is_same_as: {0} == {1}'.format(self.name, other))
+        if(self.name == other):
+            return True
+        else:
+            return False
     
     @property
     def name(self):
