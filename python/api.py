@@ -8,7 +8,10 @@ import maya.api.OpenMaya as om
 
 
 class Object(object):
-    'base class for Node and Attribute, which require api_type variable'
+    '''
+    base class for Node and Attribute. 
+    requires api_type variable (is type of one of the other classes in this module)
+    '''
     def __init__(self, name):
         object.__setattr__(self, '__api__', self.api_type(name))
     @property
@@ -104,7 +107,7 @@ class MPlug(MObject):
     def apiType(self):
         if(not hasattr(self, '__apiType__')):
             # TODO: get type...
-            pass
+            self.__apiType__ = None
         return self.__apiType__
     
     # compound / array attr get/set

@@ -1,16 +1,18 @@
-'''
-NOTE:
-rshift (>>), lshift (<<) and floordiv (//) used to connect/disconnect attrs already
-other bitwise operators ignored for now
-
-NOTE:
-'==' should maybe work with the attribute names? was needed when comparing inputs/outputs
-
-'''
 
 import operator
 
 class AttributeOperator(object):
+    '''
+    makes operators use the attribute values, not the attributes themselves
+    
+    NOTE:
+    - floordiv (//) ignored, since it is used to disconnect attributes
+    - rshift (>>), lshift (<<) ignored since it is used to connect attributes
+    
+    TODO:
+    - overwrite "is" operator to compare attributes themselves?
+    - add the unused bitwise operators??
+    '''
     pass
 
 def wrap_operator(operator_func, inplace=False):

@@ -6,7 +6,7 @@ RULES
 
 
 IDEAS:
-- decide to inherit string functions
+- probably not: decide to inherit string functions
   or call some/all functions in self.__getattr__? 
   or convert the Attribute instance arguments to strings in each function?
 
@@ -191,29 +191,40 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
             mc.connectAttr(source, target)
         except:
             if(input):
-                mc.connectAttr(inut, target)
-    def connect_into(self, other):
-        self.__connectAttr__(self.name, other)
+                mc.connectAttr(input, target)
+    def connect(self, other):
+        self.__connectAttr__(self, other)
     def __rshift__(self, other):
         'overwritten to connect attributes (attr1 >> attr2)'
-        self.connect_into(other)
+        self.__connectAttr__(self, other)
     def __lshift__(self, other):
         'overwritten to connect attributes (attr1 << attr2)'
-        self.__connectAttr__(other, self.name)
+        self.__connectAttr__(other, self)
     
     
-    def disconnect_from(self, other):
+    @staticmethod
+    def __disconnectAttr__(source, target):
         # TODO:
-        # make error when not connected a warning
-        mc.disconnectAttr(self.name, other)
+        # make error (when not connected) a warning
+        # fix this testcode
+        source = Attribute.get_longName(full_name=source)
+        target = Attribute.get_longName(full_name=target)
+        try:
+            mc.disconnectAttr(source, target)
+        except:
+            print('could not disconnect: %s // %s' % (source, target))
+    
+    def disconnect(self, other):
+        self.__disconnectAttr__(self, other)
     def __floordiv__(self, other):
         'overwritten to disconnect attributes (attr1 // attr2)'
-        self.disconnect_from(other)
+        self.__disconnectAttr__(self, other)
     
     
     def input(self, **kwargs):
         # TODO:
         # find way to easily overwrite flags used here with kwargs
+        # maybe make utils function that gets kwargs and default values
         input = mc.listConnections(self.name, source=1, destination=0, plugs=1, **kwargs)
         if(input):
             return input[0]
