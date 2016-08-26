@@ -13,7 +13,7 @@ FEATURES
 -- attach complex python attributes to maya nodes (dict, attributeMap?, ...)
 - pythonic maya node wrapper with extra node type based functionality library
 - use the default Node class for highspeed, when no special function is needed. getting specified class instances (Transform, ...) is optional
-
+- fix maya.cmds inconsistencies cmds.set(objects, rm=set_name) cmds.set(objects, add=set_name)
 
 FEATURES (small)
 - class instance should save class version, that way it can be noticed and converted etc
