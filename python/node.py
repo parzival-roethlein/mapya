@@ -1,3 +1,10 @@
+"""
+TODO:
+- maybe make metaclass for __getattr__ __setattr__?
+
+"""
+
+
 
 import maya.api.OpenMaya as om
 import maya.cmds as mc
@@ -67,6 +74,7 @@ class Node(api.Object, utils.PrintDebugger):
     
     @property
     def name(self):
+        """make node name behave like a node attribute (maya by default does not)"""
         sel_list = om.MSelectionList()
         sel_list.add(self.api.MObject)
         return sel_list.getSelectionStrings(0)[0]

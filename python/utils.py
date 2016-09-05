@@ -2,7 +2,7 @@
 
 
 def reload_all():
-    'reload all all modules in the right order'
+    """reload all project modules in the right order"""
     from . import operator_wrapper;reload(operator_wrapper)
     from . import api;reload(api)
     from . import attribute;reload(attribute)
@@ -11,8 +11,8 @@ def reload_all():
     from .nodes import transform;reload(transform)
 
 
-
 class PrintDebugger(object):
+    # TODO: delete and use logger
     _debug = True
     
     def debug(self, message):
