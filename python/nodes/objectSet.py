@@ -8,7 +8,7 @@ different from maya:
 --- but user can avoid that by making manually connections (=python list)
 - empty set returns None (instead of empty list [])
 - maya does not error when removing non-member (python list does)
-
+- fix inconsistency of cmds.set(objects, rm=set_name) // cmds.set(objects, add=set_name)
 
 other representations:
 .getIndexedDependencyNodes() = {0: 'myNode1', 3: 'myNode3'}
