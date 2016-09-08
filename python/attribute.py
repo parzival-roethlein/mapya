@@ -14,6 +14,7 @@ IDEAS:
   myAttr1 is myAttr2
   better use extra function .is_same() function
 
+- instead of .get() / .set() use a .value property?
 
 '''
 
