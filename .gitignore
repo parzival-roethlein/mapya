@@ -7,6 +7,9 @@
 /dfa
 /.settings
 
+# pycharm
+/.idea
+
 # maya / template
 incrementalSave
 .mayaSwatches
