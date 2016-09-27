@@ -47,6 +47,8 @@ c = Cmds(nod)
 print c.listRelatives('pSphere1', parent=1)
 
 '''
+# TODO:
+# from functools import wraps
 
 import maya.cmds as mc
 
@@ -69,9 +71,11 @@ class Cmds(object):
     
     @staticmethod
     def wrap_node_func(func_arg, node, *args, **kwargs):
+        # TODO:
+        # @wraps # copy metadata (documentation string, ...)
         def inner_func(self, *args, **kwargs):
             return func_arg(node.name, *args, **kwargs)
-        inner_func.__name__ = func_arg.__name__
+        inner_func.__name__ = func_arg.__name__ # func.__qualname__ (class+method)
         inner_func.__doc__ = func_arg.__doc__# TODO: check if always empty?
         return inner_func
     

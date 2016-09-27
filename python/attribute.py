@@ -22,12 +22,13 @@ import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 import api
-import utils
+from utils import debug
 from operator_wrapper import AttributeOperator
 
 
-class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
+class Attribute(api.Object, AttributeOperator):
     api_type = api.MPlug
+
 
     @staticmethod
     def exists(node, attr):
@@ -36,7 +37,9 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
         else:
             return False
 
+
     @staticmethod
+    @debug
     def get_long_name(*args, **kwargs):
         """
         return node.attr (longName) for given arguments:
@@ -71,51 +74,63 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
         long_name = mc.attributeQuery(attr, node=node, longName=1)
         return node + '.' + long_name
 
+    @debug
     def __init__(self, name):
-        print('Attribute.__init__(self, name=%s)' % name)
+        #print('Attribute.__init__(self, name=%s)' % name)
         super(Attribute, self).__init__(name)
 
+    @debug
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
+    @debug
     def __str__(self):
         return self.name
 
+    @debug
     def is_same_as(self, other):
         """check if given attribute is the same as self"""
         if isinstance(other, Attribute):
             other = other.name
         else:
             other = Attribute.get_long_name(other)
-        self.debug('is_same_as: {0} == {1}'.format(self.name, other))
         if self.name == other:
             return True
         else:
             return False
 
+
     @property
+    @debug
     def name(self):
         plug_name = self.api.MPlug.name()
         if plug_name.endswith('.'):
             raise NameError('Invalid attribute: %s' % plug_name)
         return plug_name
 
+
     @name.setter
+    @debug
     def name(self, value):
         mc.renameAttr(self.name, value)
 
+
     @property
+    @debug
     def node_name(self):
         sel_list = om.MSelectionList()
         sel_list.add(self.api.MObject)
         return sel_list.getSelectionStrings(0)[0]
 
+
     @property
+    @debug
     def attr_name(self):
         return self.api.MPlug.partialName()
 
+    @debug
     def get(self, **kwargs):
-        print('Attribute.get(kwargs: %s)' % kwargs)
+        #print('Attribute.get(kwargs: %s)' % kwargs)
         if mc.attributeQuery(self.attr_name, n=self.node_name, message=1):
             if kwargs:
                 raise NameError('message attribute has no flags?!')
@@ -129,8 +144,9 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
             return
         return mc.getAttr(self.name, **kwargs)
 
+    @debug
     def set(self, *args, **kwargs):
-        print('Attribute.set(self, args=%s, **kwargs=%s)' % (args, kwargs))
+        #print('Attribute.set(self, args=%s, **kwargs=%s)' % (args, kwargs))
 
         # TODO:
         # temporary code...
@@ -168,13 +184,14 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
                         args_list.append(each_child)
             else:
                 args_list.append(each)
-        self.debug('final args_list: %s' % args_list)
 
         # TODO:
         # convert kwargs Attributes as well?
         mc.setAttr(self.name, *args_list, **kwargs)
 
+
     @staticmethod
+    @debug
     def __connectAttr__(source, target):
         # TODO:
         # fix this test code...
@@ -194,18 +211,23 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
             if input:
                 mc.connectAttr(input, target)
 
+    @debug
     def connect(self, other):
         self.__connectAttr__(self, other)
 
+    @debug
     def __rshift__(self, other):
         """overwritten to connect attributes (attr1 >> attr2)"""
         self.__connectAttr__(self, other)
 
+    @debug
     def __lshift__(self, other):
         """overwritten to connect attributes (attr1 << attr2)"""
         self.__connectAttr__(other, self)
 
+
     @staticmethod
+    @debug
     def __disconnectAttr__(source, target):
         # TODO:
         # make error (when not connected) a warning
@@ -217,13 +239,16 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
         except:
             print('could not disconnect: %s // %s' % (source, target))
 
+    @debug
     def disconnect(self, other):
         self.__disconnectAttr__(self, other)
 
+    @debug
     def __floordiv__(self, other):
         """overwritten to disconnect attributes (attr1 // attr2)"""
         self.__disconnectAttr__(self, other)
 
+    @debug
     def input(self, **kwargs):
         # TODO:
         # find way to easily overwrite flags used here with kwargs
@@ -233,12 +258,14 @@ class Attribute(api.Object, AttributeOperator, utils.PrintDebugger):
             return input[0]
         return
 
+    @debug
     def outputs(self, **kwargs):
         outputs = mc.listConnections(self.name, source=0, destination=1, plugs=1, **kwargs)
         if outputs is None:
             return []
         return outputs
 
+    @debug
     def output(self, **kwargs):
         outputs = self.outputs(kwargs)
         if outputs:

@@ -18,7 +18,7 @@ from cmds import Cmds
 import utils
 
 
-class Node(api.Object, utils.PrintDebugger):
+class Node(api.Object):
     
     api_type = api.MObject
     
@@ -53,15 +53,12 @@ class Node(api.Object, utils.PrintDebugger):
         return self.name
     
     def __getattr__(self, name):
-        if(name != '__members__' and name != '__methods__'):
-            self.debug('.getattr(name=%s)' % name)
         if(Attribute.exists(self.name, name)):
             return self.attr(name)
         else:
             return object.__getattribute__(self, name)
     
     def __setattr__(self, attr, value):
-        self.debug('.setattr(attr=%s, value=%s' % (attr, value))
         # TODO:
         # use missing function (same as in Attribute.set()
         if(isinstance(value, Attribute)):
@@ -83,7 +80,6 @@ class Node(api.Object, utils.PrintDebugger):
         mc.rename(self.name, value)
     
     def attr(self, name):
-        self.debug('.attr(name=%s)' % name)
         long_name = mc.attributeQuery(name, node=self.name, longName=1)
         full_name = self.name+'.'+long_name
         if(not long_name in self.__attrs__):

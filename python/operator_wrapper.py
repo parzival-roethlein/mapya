@@ -1,5 +1,7 @@
 
 import operator
+# TODO:
+# from functools import wraps
 
 class AttributeOperator(object):
     '''
@@ -16,6 +18,8 @@ class AttributeOperator(object):
     pass
 
 def wrap_operator(operator_func, inplace=False):
+    # TODO:
+    # @wraps # copy metadata (documentation string, ...)
     def inner_operator(self, other):
         if(isinstance(other, AttributeOperator)):
             other = other.get()
