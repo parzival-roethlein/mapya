@@ -29,7 +29,6 @@ from operator_wrapper import AttributeOperator
 class Attribute(api.Object, AttributeOperator):
     api_type = api.MPlug
 
-
     @staticmethod
     def exists(node, attr):
         if mc.objExists(node + '.' + attr):
@@ -37,16 +36,15 @@ class Attribute(api.Object, AttributeOperator):
         else:
             return False
 
-
     @staticmethod
     @debug
     def get_long_name(*args, **kwargs):
         """
-        return node.attr (longName) for given arguments:
-        either args or kwargs
+        give either args or kwargs
         either node_name + attr_name or full_attr_name
-        args: [node_name, attr_name] or [full_attr_name]
-        kwargs: {node: 'node_name', 'attr': 'attr_name'} or {'full_name': full_attr_name}
+        :param args: [node_name, attr_name] or [full_attr_name]
+        :param kwargs: {node: 'node_name', 'attr': 'attr_name'} or {'full_name': full_attr_name}
+        :return: 'node_name.attr_name'
         """
         if args and kwargs or not args and not kwargs:
             raise ValueError('either args or kwargs must be given:\n*args: {0}\n**kwargs: {1}'.format(args, kwargs))
@@ -74,16 +72,24 @@ class Attribute(api.Object, AttributeOperator):
         long_name = mc.attributeQuery(attr, node=node, longName=1)
         return node + '.' + long_name
 
+    @staticmethod
     @debug
+    def get_short_name(*args, **kwargs):
+        """
+        filter attribute name from 'node_name.attr_name' or 'attr_name' or Attribute() instance
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        pass
+
     def __init__(self, name):
-        #print('Attribute.__init__(self, name=%s)' % name)
+        print('Attribute.__init__(self, name=%s)' % name)
         super(Attribute, self).__init__(name)
 
-    @debug
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
-    @debug
     def __str__(self):
         return self.name
 
@@ -99,21 +105,17 @@ class Attribute(api.Object, AttributeOperator):
         else:
             return False
 
-
     @property
-    @debug
     def name(self):
         plug_name = self.api.MPlug.name()
         if plug_name.endswith('.'):
             raise NameError('Invalid attribute: %s' % plug_name)
         return plug_name
 
-
     @name.setter
-    @debug
+    @debug  # has no effect
     def name(self, value):
         mc.renameAttr(self.name, value)
-
 
     @property
     @debug
@@ -122,7 +124,6 @@ class Attribute(api.Object, AttributeOperator):
         sel_list.add(self.api.MObject)
         return sel_list.getSelectionStrings(0)[0]
 
-
     @property
     @debug
     def attr_name(self):
@@ -130,7 +131,6 @@ class Attribute(api.Object, AttributeOperator):
 
     @debug
     def get(self, **kwargs):
-        #print('Attribute.get(kwargs: %s)' % kwargs)
         if mc.attributeQuery(self.attr_name, n=self.node_name, message=1):
             if kwargs:
                 raise NameError('message attribute has no flags?!')
@@ -146,8 +146,6 @@ class Attribute(api.Object, AttributeOperator):
 
     @debug
     def set(self, *args, **kwargs):
-        #print('Attribute.set(self, args=%s, **kwargs=%s)' % (args, kwargs))
-
         # TODO:
         # temporary code...
         # use recursive function for infinite levels? and DRY
@@ -189,7 +187,6 @@ class Attribute(api.Object, AttributeOperator):
         # convert kwargs Attributes as well?
         mc.setAttr(self.name, *args_list, **kwargs)
 
-
     @staticmethod
     @debug
     def __connectAttr__(source, target):
@@ -225,7 +222,6 @@ class Attribute(api.Object, AttributeOperator):
         """overwritten to connect attributes (attr1 << attr2)"""
         self.__connectAttr__(other, self)
 
-
     @staticmethod
     @debug
     def __disconnectAttr__(source, target):
@@ -236,8 +232,8 @@ class Attribute(api.Object, AttributeOperator):
         target = Attribute.get_long_name(full_name=target)
         try:
             mc.disconnectAttr(source, target)
-        except:
-            print('could not disconnect: %s // %s' % (source, target))
+        except RuntimeError as e:
+            print(e)
 
     @debug
     def disconnect(self, other):
@@ -253,9 +249,9 @@ class Attribute(api.Object, AttributeOperator):
         # TODO:
         # find way to easily overwrite flags used here with kwargs
         # maybe make utils function that gets kwargs and default values
-        input = mc.listConnections(self.name, source=1, destination=0, plugs=1, **kwargs)
-        if input:
-            return input[0]
+        attr_input = mc.listConnections(self.name, source=1, destination=0, plugs=1, **kwargs)
+        if attr_input:
+            return attr_input[0]
         return
 
     @debug

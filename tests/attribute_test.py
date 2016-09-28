@@ -16,27 +16,44 @@ from .maya_test import MayaTest
 from ..python.attribute import Attribute
 
 
-ATTRS = {
+LONG_NAME = {
     'default_compound_a': 'pSphere1.translate',
-    'default_compound_a_short': 'pSphere1.t',
     'default_compound_b': 'pSphere2.translate',
-    'default_compound_b_short': 'pSphere2.t',
-
     'user_int_a': 'pSphere1.testAttr',
-    'user_float_b': 'pSphere2.myattr',
+    'user_float_a': 'pSphere2.myattr',
+}
+SHORT_NAME = {
+    'default_compound_a': 'pSphere1.t',
+    'default_compound_b': 'pSphere2.t',
 }
 
 
-class TestBasics(MayaTest):
+class TestInstance(MayaTest):
     def test_creation(self):
-        for attr_name in ATTRS.values():
-            attr = Attribute(attr_name)
-            self.assertEqual(attr.name, attr_name)
+        for name in LONG_NAME.values():
+            attr = Attribute(name)
+            self.assertEqual(attr.name, name)
+
+    # new scene, good error catching / no crashes when accessing old / invalid instances
+
+
+class TestName(MayaTest):
+    def test_rename_user_defined(self):
+        for user_defined in ['user_int_a', 'user_float_a']:
+            attr = Attribute(LONG_NAME[user_defined])
+            new_name = attr.attr_name+'ABC'
+            attr.name = new_name
+            self.assertEqual(attr.name, attr.node_name+'.'+new_name)
+
+# class TestValues (get/set)
+
+# class TestConnect (connect/disconnect)
 
 
 def run():
+    print('\n%s\ntest start\n%s' % ('-' * 70, '-' * 70))
     all_tests = unittest.TestSuite()
-    for each in [TestBasics]:
+    for each in [TestInstance, TestName]:
         all_tests.addTest(unittest.makeSuite(each))
     result = unittest.TextTestRunner(verbosity=2).run(all_tests)
-    print('===\ntest result:\n%s\n===\n' % result)
+    print('%s\ntest result:\n%s\n%s\n' % ('-'*70, result, '-'*70))

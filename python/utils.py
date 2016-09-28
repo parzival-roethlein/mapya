@@ -34,8 +34,8 @@ def debug(func):
         # func.__qualname__ is python 3.3+ (?)
         msg = func.__name__
         # args: RuntimeError: maximum recursion depth exceeded while getting the repr of a tuple #
-        # print('%s(%s, %s)' % (msg, args, kwargs))
-        print('%s(%s)' % (msg, kwargs))
+        print('%s(%s, %s)' % (msg, args, kwargs))
+        #print('%s(%s)' % (msg, kwargs))
         return func(*args, **kwargs)
     return wrapper
 
