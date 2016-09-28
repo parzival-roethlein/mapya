@@ -1,8 +1,9 @@
 """
 RULES
-- code should internally always use longName
-  it should always be either longName or always shortName
-  but listConnections and probably all maya.cmds return the longname, so...
+- always use longName if possible (some operators (comparison, ...?) should consider short names)
+  reason: it should always be either longName or always shortName and
+         - longName is more readable
+         - listConnections and probably all maya.cmds return the longname
 
 
 IDEAS:
@@ -127,7 +128,7 @@ class Attribute(api.Object, AttributeOperator):
     @property
     @debug
     def attr_name(self):
-        return self.api.MPlug.partialName()
+        return self.api.MPlug.partialName(useLongNames=True)
 
     @debug
     def get(self, **kwargs):

@@ -38,12 +38,29 @@ class TestInstance(MayaTest):
 
 
 class TestName(MayaTest):
-    def test_rename_user_defined(self):
+    def test_name_getter(self):
+        for v in LONG_NAME.values():
+            attr = Attribute(v)
+            self.assertEqual(attr.name, v)
+
+    def test_name_setter(self):
         for user_defined in ['user_int_a', 'user_float_a']:
             attr = Attribute(LONG_NAME[user_defined])
             new_name = attr.attr_name+'ABC'
             attr.name = new_name
             self.assertEqual(attr.name, attr.node_name+'.'+new_name)
+
+    def test_node_name(self):
+        for v in LONG_NAME.values():
+            attr = Attribute(v)
+            self.assertEqual(attr.node_name, v[:v.find('.')])
+
+    def test_attr_name(self):
+        for v in LONG_NAME.values():
+            attr = Attribute(v)
+            self.assertEqual(attr.attr_name, v[v.find('.')+1:])
+
+
 
 # class TestValues (get/set)
 
