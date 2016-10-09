@@ -17,6 +17,8 @@ IDEAS:
 
 - instead of .get() / .set() use a .value property?
 
+
+
 """
 
 import maya.api.OpenMaya as om
@@ -24,14 +26,15 @@ import maya.cmds as mc
 
 import api
 from utils import debug
-from operator_wrapper import AttributeOperator
+from attribute_operators import AttributeOperators
 
 
-class Attribute(api.Object, AttributeOperator):
+class Attribute(api.Object, AttributeOperators):
     api_type = api.MPlug
 
     @staticmethod
     def exists(node, attr):
+        """check if attribute exists in current maya instance"""
         if mc.objExists(node + '.' + attr):
             return True
         else:

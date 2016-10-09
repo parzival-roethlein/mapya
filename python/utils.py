@@ -3,8 +3,8 @@ from functools import wraps
 
 def reload_all():
     """reload all project modules in the right order"""
-    from . import operator_wrapper
-    reload(operator_wrapper)
+    from . import attribute_operators
+    reload(attribute_operators)
     from . import api
     reload(api)
     from . import attribute
@@ -22,12 +22,12 @@ def reload_all():
 
 
 def debug(func):
-    '''
+    """
     if hasattr(func, '__qualname__'):
         msg = func.__qualname__
     else:
         msg = func.__name__
-    '''
+    """
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -35,18 +35,10 @@ def debug(func):
         msg = func.__name__
         # args: RuntimeError: maximum recursion depth exceeded while getting the repr of a tuple #
         print('%s(%s, %s)' % (msg, args, kwargs))
-        #print('%s(%s)' % (msg, kwargs))
+        # print('%s(%s)' % (msg, kwargs))
         return func(*args, **kwargs)
+
     return wrapper
-
-
-class PrintDebugger(object):
-    # TODO: delete and use logger
-    _debug = True
-
-    def debug(self, message):
-        if self._debug:
-            print(' - %s: %s' % (self.name, message))
 
 
 # TODO:

@@ -1,4 +1,4 @@
-'''
+"""
 EXAMPLES
 myNode = Node('pSphere1')
 myNode.addAttr('special_joint', type='message')
@@ -11,10 +11,10 @@ myNode.skinning_joints = ['joint1', 'joint2']
 -- myMetaNode.joint_count = {'value':{'ty':1, 'tx':2} // # error (float to dict)
 --- myMetaNode.all_joints = 'joint1'
 --- myMetaNode.all_joints = ['joint1', 'joint2'] # error (single message to multi message)
-'''
+"""
 
-mm.eval( 'syncExecuterBackupFiles()' )
-mm.eval( 'SavePreferences' )
+mm.eval('syncExecuterBackupFiles()')
+mm.eval('SavePreferences')
 
 import maya.api.OpenMaya as om
 # ############################

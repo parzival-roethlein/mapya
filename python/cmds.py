@@ -1,4 +1,4 @@
-'''
+"""
 # FIRST VERSION
 # dynamically create/return each function on request
 def __init__(self, node):
@@ -37,54 +37,47 @@ class Cmds(object):
                     setattr(cls, callbackName, func)
                 #del func
         return super(Cmds, cls).__new__(cls, *args, **kwargs)
-    
+
     def __init__(self, node):
         self.node = node
-        
+
 print(Cmds(nod))
 print(len(dir(Cmds)))
 c = Cmds(nod)
 print c.listRelatives('pSphere1', parent=1)
 
-'''
+"""
 # TODO:
 # from functools import wraps
 
 import maya.cmds as mc
 
 
-
-
 class Cmds(object):
-    
     initialized = False
-    
+
     @staticmethod
     def initialize_node(node):
         for callbackName in dir(mc):
-            if(not hasattr(mc.__dict__[callbackName], '__call__')):
+            if not hasattr(mc.__dict__[callbackName], '__call__'):
                 continue
             setattr(Cmds, callbackName, Cmds.wrap_node_func(getattr(mc, callbackName), node))
             # TODO: compare performance?
-            #setattr(Cmds, callbackName, Cmds.wrap_node_func(mc.__dict__[callbackName], node))
+            # setattr(Cmds, callbackName, Cmds.wrap_node_func(mc.__dict__[callbackName], node))
         Cmds.initialized = True
-    
+
     @staticmethod
     def wrap_node_func(func_arg, node, *args, **kwargs):
         # TODO:
         # @wraps # copy metadata (documentation string, ...)
         def inner_func(self, *args, **kwargs):
             return func_arg(node.name, *args, **kwargs)
-        inner_func.__name__ = func_arg.__name__ # func.__qualname__ (class+method)
-        inner_func.__doc__ = func_arg.__doc__# TODO: check if always empty?
+
+        inner_func.__name__ = func_arg.__name__  # func.__qualname__ (class+method)
+        inner_func.__doc__ = func_arg.__doc__  # TODO: check if always empty?
         return inner_func
-    
+
     def __init__(self, node):
-        if(not Cmds.initialized):
+        if not Cmds.initialized:
             Cmds.initialize_node(node)
         self.node = node
-    
-
-
-
-

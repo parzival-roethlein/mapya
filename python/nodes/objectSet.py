@@ -1,4 +1,4 @@
-'''
+"""
 should work like a python list
 ['myNode1', 'myNode2', ...]
 
@@ -23,12 +23,14 @@ DECIDE:
 - behavior when removing non-existing members:
 -- python set does error
 -- maya.cmds set command does not error
-'''
+"""
 
 import maya.cmds as mc
 
+from ..node import Node
 
-class ObjectSet(node.Node):
+
+class ObjectSet(Node):
     
     def __len__(self):
         return mc.sets(self.name, q=1, size=1)
