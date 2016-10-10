@@ -1,4 +1,8 @@
 """
+- attribute container
+- get/set node name like any other attribute
+
+
 TODO:
 - maybe make metaclass for __getattr__ __setattr__?
 
@@ -17,7 +21,7 @@ class Node(api.Object):
 
     @staticmethod
     def get_typed_instance(node_name):
-        """check given nodes type inheritance chain and return the first implemented one in .nodes"""
+        """return .nodes instance depending on first match with given nodes inheritance chain """
         # TODO: 
         # load modules dynamically 
         from .nodes import transform
@@ -70,7 +74,6 @@ class Node(api.Object):
 
     @property
     def name(self):
-        """make node name behave like a node attribute (maya by default does not)"""
         sel_list = om.MSelectionList()
         sel_list.add(self.api.MObject)
         return sel_list.getSelectionStrings(0)[0]
@@ -80,7 +83,7 @@ class Node(api.Object):
         mc.rename(self.name, value)
 
     def attr(self, name):
-        """return maya attribute"""
+        """get maya attribute"""
         long_name = mc.attributeQuery(name, node=self.name, longName=1)
         full_name = self.name + '.' + long_name
         if long_name not in self.__attrs__:

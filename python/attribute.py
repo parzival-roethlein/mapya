@@ -43,7 +43,7 @@ class Attribute(api.Object, AttributeOperators):
     def get_long_name(*args, **kwargs):
         """
         give either args or kwargs
-        either node_name + attr_name or full_attr_name
+        either node_name, attr_name or full_attr_name
         :param args: ['my_node_name', 'my_attr_name'] or ['my_full_attr_name']
         :param kwargs: {'node': 'my_node_name', 'attr': 'my_attr_name'} or {'full_attr': 'my_full_attr_name'}
         :return: 'my_node_name.my_attr_name'
@@ -77,12 +77,32 @@ class Attribute(api.Object, AttributeOperators):
     @staticmethod
     def get_short_name(*args, **kwargs):
         """
-        similar to get_long_name()
+        short name version of get_long_name()
         """
         long_name = Attribute.get_long_name(*args, **kwargs)
         node, attr = long_name.split('.')
         short_name = mc.attributeQuery(attr, node=node, shortName=1)
         return node + '.' + short_name
+
+    @staticmethod
+    def __connectAttr__(source, target):
+        # TODO:
+        # fix this test code...
+        source = Attribute.get_long_name(full_attr=source)
+        target = Attribute.get_long_name(full_attr=target)
+        input = mc.listConnections(target, source=1, destination=0, plugs=1)
+        if input:
+            input = input[0]
+            if input == source:
+                print('warning, already connected: %s >> %s' % (source, target))
+                return
+            print('warning, overwriting connection: FROM %s TO %s >> %s' % (input, source, target))
+            mc.disconnectAttr(input, target)
+        try:
+            mc.connectAttr(source, target)
+        except:
+            if input:
+                mc.connectAttr(input, target)
 
     @staticmethod
     def __disconnectAttr__(source, target):
@@ -118,6 +138,8 @@ class Attribute(api.Object, AttributeOperators):
 
     @property
     def name(self):
+        # TODO:
+        # custom AttributeName class that wraps mc.addAttr(), to edit niceName, ...?
         plug_name = self.api.MPlug.name()
         if plug_name.endswith('.'):
             raise NameError('Invalid attribute: %s' % plug_name)
@@ -138,6 +160,7 @@ class Attribute(api.Object, AttributeOperators):
         return self.api.MPlug.partialName(useLongNames=True)
 
     def get(self, **kwargs):
+        """mc.getAttr wrapper"""
         if mc.attributeQuery(self.attr_name, n=self.node_name, message=1):
             if kwargs:
                 raise NameError('message attribute has no flags?!')
@@ -152,6 +175,7 @@ class Attribute(api.Object, AttributeOperators):
         return mc.getAttr(self.name, **kwargs)
 
     def set(self, *args, **kwargs):
+        """mc.setAttr wrapper"""
         # TODO:
         # temporary code...
         # use recursive function for infinite levels? and DRY
@@ -193,32 +217,12 @@ class Attribute(api.Object, AttributeOperators):
         # convert kwargs Attributes as well?
         mc.setAttr(self.name, *args_list, **kwargs)
 
-    @staticmethod
-    def __connectAttr__(source, target):
-        # TODO:
-        # fix this test code...
-        source = Attribute.get_long_name(full_attr=source)
-        target = Attribute.get_long_name(full_attr=target)
-        input = mc.listConnections(target, source=1, destination=0, plugs=1)
-        if input:
-            input = input[0]
-            if input == source:
-                print('warning, already connected: %s >> %s' % (source, target))
-                return
-            print('warning, overwriting connection: FROM %s TO %s >> %s' % (input, source, target))
-            mc.disconnectAttr(input, target)
-        try:
-            mc.connectAttr(source, target)
-        except:
-            if input:
-                mc.connectAttr(input, target)
-
     def connect(self, other):
         self.__connectAttr__(self, other)
 
     def __rshift__(self, other):
         """overwritten to connect attributes (attr1 >> attr2)"""
-        self.__connectAttr__(self, other)
+        self.connect(other)
 
     def __lshift__(self, other):
         """overwritten to connect attributes (attr1 << attr2)"""

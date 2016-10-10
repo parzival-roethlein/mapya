@@ -9,8 +9,8 @@ import maya.api.OpenMaya as om
 
 class Object(object):
     """
-    base class for Node and Attribute.
-    requires api_type variable (is type of one of the other classes in this module)
+    initialize Maya Object(s) (MObject, ..)
+    child classes have to implement api_type variable (by type of one of the other classes in this module)
     """
 
     def __init__(self, name):
