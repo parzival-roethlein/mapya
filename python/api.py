@@ -58,7 +58,6 @@ class MDagPath(MObject):
 
     @property
     def MDagPath(self):
-        print('MDagPath getter')
         if not self.__MDagPath__.isValid() or not self.__MDagPath__.fullPathName():
             raise NameError('__MDagPath__ not valid / no path')
         return self.__MDagPath__
