@@ -127,11 +127,7 @@ class Attribute(api.Object, AttributeOperators):
 
     def is_same_as(self, other):
         """check if given attribute is the same as self"""
-        if isinstance(other, Attribute):
-            other = other.name
-        else:
-            other = Attribute.get_long_name(other)
-        if self.name == other:
+        if Attribute.get_long_name(self) == Attribute.get_long_name(other):
             return True
         else:
             return False
@@ -251,7 +247,7 @@ class Attribute(api.Object, AttributeOperators):
         return outputs
 
     def output(self, **kwargs):
-        outputs = self.outputs(kwargs)
+        outputs = self.outputs(**kwargs)
         if outputs:
             return outputs[0]
         return
