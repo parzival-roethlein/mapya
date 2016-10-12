@@ -87,7 +87,7 @@ class Attribute(api.Object, AttributeOperators):
     @staticmethod
     def __connectAttr__(source, target):
         # TODO:
-        # fix this test code...
+        # refactor
         source = Attribute.get_long_name(full_attr=source)
         target = Attribute.get_long_name(full_attr=target)
         input = mc.listConnections(target, source=1, destination=0, plugs=1)
@@ -106,23 +106,24 @@ class Attribute(api.Object, AttributeOperators):
 
     @staticmethod
     def __disconnectAttr__(source, target):
-        # TODO:
-        # make error (when not connected) a warning
-        # fix this test code
         source = Attribute.get_long_name(full_attr=source)
         target = Attribute.get_long_name(full_attr=target)
         try:
             mc.disconnectAttr(source, target)
         except RuntimeError as e:
+            # TODO
+            # make warning
             print(e)
 
     def __init__(self, name):
         super(Attribute, self).__init__(name)
 
     def __repr__(self):
+        """:returns: pickle"""
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
     def __str__(self):
+        """:returns: name"""
         return self.name
 
     def is_same_as(self, other):
@@ -156,7 +157,7 @@ class Attribute(api.Object, AttributeOperators):
         return self.api.MPlug.partialName(useLongNames=True)
 
     def get(self, **kwargs):
-        """mc.getAttr wrapper"""
+        """mc.getAttr() wrapper"""
         if mc.attributeQuery(self.attr_name, n=self.node_name, message=1):
             if kwargs:
                 raise NameError('message attribute has no flags?!')
@@ -171,7 +172,7 @@ class Attribute(api.Object, AttributeOperators):
         return mc.getAttr(self.name, **kwargs)
 
     def set(self, *args, **kwargs):
-        """mc.setAttr wrapper"""
+        """mc.setAttr() wrapper"""
         # TODO:
         # temporary code...
         # use recursive function for infinite levels? and DRY
@@ -214,39 +215,54 @@ class Attribute(api.Object, AttributeOperators):
         mc.setAttr(self.name, *args_list, **kwargs)
 
     def connect(self, other):
+        """instance version of __connectAttr__()"""
         self.__connectAttr__(self, other)
 
     def __rshift__(self, other):
-        """overwritten to connect attributes (attr1 >> attr2)"""
-        self.connect(other)
+        """operator (>>) for __connectAttr__"""
+        self.__connectAttr__(self, other)
 
     def __lshift__(self, other):
-        """overwritten to connect attributes (attr1 << attr2)"""
+        """reverse operator (<<) for __connectAttr__"""
         self.__connectAttr__(other, self)
 
     def disconnect(self, other):
+        """instance version of __disconnectAttr__"""
         self.__disconnectAttr__(self, other)
 
     def __floordiv__(self, other):
-        """overwritten to disconnect attributes: self.disconnect(other)"""
-        self.disconnect(other)
+        """operator (//) for __disconnectAttr__"""
+        self.__disconnectAttr__(self, other)
+
+    def inputs(self, **kwargs):
+        """wraps mc.listConnections(destination=0, plugs=1)"""
+        attr_input = mc.listConnections(self.name,
+                                        destination=kwargs.pop('destination', 0),
+                                        plugs=kwargs.pop('plugs', 1),
+                                        **kwargs)
+        if attr_input:
+            return attr_input
+        return []
 
     def input(self, **kwargs):
-        # TODO:
-        # find way to easily overwrite flags used here with kwargs
-        # maybe make utils function that gets kwargs and default values
-        attr_input = mc.listConnections(self.name, source=1, destination=0, plugs=1, **kwargs)
+        """:returns: single/first element of self.inputs()"""
+        attr_input = self.inputs(**kwargs)
         if attr_input:
             return attr_input[0]
-        return
+        return None
 
     def outputs(self, **kwargs):
-        outputs = mc.listConnections(self.name, source=0, destination=1, plugs=1, **kwargs)
+        """wraps mc.listConnections(source=0, plugs=1)"""
+        outputs = mc.listConnections(self.name,
+                                     source=kwargs.pop('source', 0),
+                                     plugs=kwargs.pop('plugs', 1),
+                                     **kwargs)
         if outputs is None:
             return []
         return outputs
 
     def output(self, **kwargs):
+        """:returns: single/first element of self.outputs()"""
         outputs = self.outputs(**kwargs)
         if outputs:
             return outputs[0]
