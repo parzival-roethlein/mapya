@@ -16,7 +16,8 @@ other representations:
 
 
 TODO:
-- inherit from list (then only replace __repr__ needed for list functionality?)
+- make sequence (or more?):
+  requires two methods, not sure which, something like: __len__ and __indexItem__
 
 
 DECIDE:
@@ -38,10 +39,11 @@ class ObjectSet(Node):
     '''
     def add(self):
         pass
-   
     def remove(self):
         pass
-    
+    def remove_try(self):
+        # remove object, but without error if non-member? look up naming convention
+        pass
     def addMaya(self):
         'behaves like maya.cmds.sets: only adds an object once'
         pass
