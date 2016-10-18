@@ -76,9 +76,7 @@ class Attribute(api.Object, AttributeOperators):
 
     @staticmethod
     def get_short_name(*args, **kwargs):
-        """
-        short name version of get_long_name()
-        """
+        """short name version of get_long_name()"""
         long_name = Attribute.get_long_name(*args, **kwargs)
         node, attr = long_name.split('.')
         short_name = mc.attributeQuery(attr, node=node, shortName=1)
