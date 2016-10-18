@@ -16,4 +16,7 @@ class DagNode(Node):
             parent = parent[0]
         return parent
 
-
+    def is_visible(self):
+        """is node visible in the scene (incl hierarchy check)"""
+        # use api function call for speed
+        pass
