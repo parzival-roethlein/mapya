@@ -2,16 +2,14 @@ mPySerial = maya python serializer
 
 FEATURES
 - pythonic + mayaic serializer (if you know python and maya, everything should be as expected. priority python > maya)
-- create/attach classes as fast as possible:
--- keep classes as small as possible
-- runs functions as fast as possible:
--- uses python api 2.0. BUT if it does not have undo/redo there has to be a maya.cmds version/option (default is always the undoable/redoable version)
-- minimalistic / small (only essential functionality, no opinions/studio specifics implemented) 
-- serialize / attach / interact with python classes on maya objects (serializer? or metaprogramming?)
+- attach / interact with python classes on maya objects (=auto serializer?)
 -- either custom user classes (r9Meta) or from the nodetype library (PyNode)
+- pythonic maya node wrapper with extra node type based functionality library
+- as fast as possible
+-- python api 2.0 (if undo/redo works, else there must be a maya.cmds version [only or both])
+-- short classes / only basics implemented. no opinions/studio specifics
 - properties/setter for maya attributes BUT python variables etc with the same name as attr have priority: use mynode.attr('name') = 'bla'
 -- attach complex python attributes to maya nodes (dict, attributeMap?, ...)
-- pythonic maya node wrapper with extra node type based functionality library
 - use the default Node class for highspeed, when no special function is needed. getting specified class instances (Transform, ...) is optional
 - fix maya.cmds inconsistencies cmds.set(objects, rm=set_name) cmds.set(objects, add=set_name)
 
@@ -24,7 +22,7 @@ FEATURES (small)
 RULES
 - pythonic > mayaic
 - PEP8
-- same import namespaces everywhere (maya.cmds as mc, ..)
+- python api 2.0 always, except if undo/redo don't work, then maya.cmds must be used (optional also python api 2.0 for speed)
 
 
 RULES (maybe)
@@ -32,19 +30,26 @@ RULES (maybe)
 - use underscore for python only variables that are not visible in the attr editor: self._variable - to avoid collisions with maya attr names
 
 
+different from pymel
+- faster: python api 2.0 instead of old one, smaller classes
+- pymel is object oriented, but not pythonic
+-- properties instead of getter/setter methods [myNode.tx.set(1) -> myNode.tx = 1]
+-- multiple ways to do the same: pyattr.set(keyable=1), pyattr.setKeyable(1), pm.setAttr(attrX, keyable=1)
+- stable:
+-- undo/redo works for all commands,
+-- works with different maya settings (meters, cm, ..)
+-- all unittested = fewer/no bugs
+- easily attach own python classes to maya objects
+
+
 different from red9:
 - connected node attrs like a pointer, allows multiple. (not like red9 only one and in the "wrong" direction)
 - __metaclass__ not overwritten like red9 does? for abstract classes + ...?
 - message attr only returns list if it is a multiMessage attr
 
-different from pymel
-- a lot faster (smaller classes, python api 2.0 instead of 1.0)
-- pythonic properties/setter instead of unpythonic getter/setter methods [myNode.tx.set(1) -> myNode.tx = 1]
-- easily attach own python classes to maya objects
-
 
 MAYBE:
-- PICKLE code instances on maya objects? (but probably has to ignore api MObjects, since the adress changes when restarting?)
+- PICKLE code instances on maya objects? (but probably has to ignore api MObjects, since the address changes when restarting?)
 - multithreading? GPU? when running computational heave methods?
 - easier / better reload / initialize than red9?
 - "states": maya attributes can have multiple default values depending on state? attribute on main metanode, create attribute map for each state, so attribute settings for rigging, published state
