@@ -1,7 +1,7 @@
 mPySerial = maya python serializer
 
 FEATURES
-- pythonic + mayaic serializer (if you know python and maya, everything should be as expected. priority python > maya)
+- pythonic + mayaic serializer (if you know python and maya, everything should be as expected. priority python > maya -> really? also for argument names? could be confusing when used together with maya flags)
 - attach / interact with python classes on maya objects (=auto serializer?)
 -- either custom user classes (r9Meta) or from the nodetype library (PyNode)
 - pythonic maya node wrapper with extra node type based functionality library
