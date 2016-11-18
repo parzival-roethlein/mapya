@@ -46,6 +46,7 @@ different from red9:
 - connected node attrs like a pointer, allows multiple. (not like red9 only one and in the "wrong" direction)
 - __metaclass__ not overwritten like red9 does? for abstract classes + ...?
 - message attr only returns list if it is a multiMessage attr
+- addAttr for serialized attributes can not be refactored (string when created)
 
 
 MAYBE:

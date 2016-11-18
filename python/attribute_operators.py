@@ -6,7 +6,7 @@ import operator
 
 class AttributeOperators(object):
     """
-    makes operators use the attribute values, not the attribute instances
+    makes operators use the attribute values, not the attribute instmances
 
     NOTE:
     - floordiv (//) ignored, since it is used to disconnect attributes
