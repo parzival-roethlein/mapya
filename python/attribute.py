@@ -265,5 +265,3 @@ class Attribute(api.Object, AttributeOperators):
         if outputs:
             return outputs[0]
         return
-
-
