@@ -2,13 +2,12 @@
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-from ..node import Node
 from .. import api
+from .. import node
 
 
-class DagNode(Node):
-    api_type = api.MDagPath
-    
+class DagNode(node.Node, api.MDagPath):
+
     @property
     def parent(self):
         parent = mc.listRelatives(self.name, parent=1)

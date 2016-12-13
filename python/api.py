@@ -1,30 +1,11 @@
 """
 maya api objects wrapper
-- ensures the objects are still valid before accessing
+- store MObjects
+- validate MObjects before accessing
 
 """
 
 import maya.api.OpenMaya as om
-
-
-class Object(object):
-    """
-    initialize Maya Object(s) (MObject, ..)
-    child classes have to implement api_type variable (by type of one of the other classes in this module)
-    """
-
-    def __init__(self, name):
-        object.__setattr__(self, '__api__', self.api_type(name))
-
-    @property
-    def api(self):
-        return self.__api__
-
-    @property
-    def api_type(self):
-        # TODO:
-        # find better way?
-        raise NotImplementedError()
 
 
 class MObject(object):
@@ -33,8 +14,8 @@ class MObject(object):
             raise NameError('MObject requires a node name, not attr: %s' % node_name)
         sel_list = om.MSelectionList()
         sel_list.add(node_name)
-        self.__MObject__ = sel_list.getDependNode(0)
-        self.__MObjectHandle__ = om.MObjectHandle(self.__MObject__)
+        object.__setattr__(self, '__MObject__', sel_list.getDependNode(0))
+        object.__setattr__(self, '__MObjectHandle__', om.MObjectHandle(self.__MObject__))
 
     @property
     def MObject(self):
@@ -54,7 +35,7 @@ class MDagPath(MObject):
         super(MDagPath, self).__init__(node_name=node_name)
         sel_list = om.MSelectionList()
         sel_list.add(node_name)
-        self.__MDagPath__ = sel_list.getDagPath(0)
+        object.__setattr__(self, '__MDagPath__', sel_list.getDagPath(0))
 
     @property
     def MDagPath(self):
@@ -65,12 +46,11 @@ class MDagPath(MObject):
 
 class MPlug(MObject):
     def __init__(self, attr_name):
-        sel_list = om.MSelectionList()
-        sel_list.add(attr_name)
-        self.__MPlug__ = om.MPlug(sel_list.getPlug(0))
-
         node_name = attr_name[:attr_name.rfind('.')]
         super(MPlug, self).__init__(node_name)
+        sel_list = om.MSelectionList()
+        sel_list.add(attr_name)
+        object.__setattr__(self, '__MPlug__', om.MPlug(sel_list.getPlug(0)))
 
     @property
     def MPlug(self):

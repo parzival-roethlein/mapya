@@ -28,8 +28,7 @@ from . import api
 from .attribute_operators import AttributeOperators
 
 
-class Attribute(api.Object, AttributeOperators):
-    api_type = api.MPlug
+class Attribute(api.MPlug, AttributeOperators):
 
     @staticmethod
     def exists(node, attr):
@@ -135,7 +134,7 @@ class Attribute(api.Object, AttributeOperators):
     def name(self):
         # TODO:
         # custom AttributeName class that wraps mc.addAttr(), to edit niceName, ...?
-        plug_name = self.api.MPlug.name()
+        plug_name = self.MPlug.name()
         if plug_name.endswith('.'):
             raise NameError('Invalid attribute: %s' % plug_name)
         return plug_name
@@ -147,12 +146,12 @@ class Attribute(api.Object, AttributeOperators):
     @property
     def node_name(self):
         sel_list = om.MSelectionList()
-        sel_list.add(self.api.MObject)
+        sel_list.add(self.MObject)
         return sel_list.getSelectionStrings(0)[0]
 
     @property
     def attr_name(self):
-        return self.api.MPlug.partialName(useLongNames=True)
+        return self.MPlug.partialName(useLongNames=True)
 
     def get(self, **kwargs):
         """mc.getAttr() wrapper"""

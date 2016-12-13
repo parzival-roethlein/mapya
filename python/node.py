@@ -16,8 +16,7 @@ from . import api
 from .cmds import Cmds
 
 
-class Node(api.Object):
-    api_type = api.MObject
+class Node(api.MObject):
 
     @staticmethod
     def get_typed_instance(node_name):
@@ -75,7 +74,7 @@ class Node(api.Object):
     @property
     def name(self):
         sel_list = om.MSelectionList()
-        sel_list.add(self.api.MObject)
+        sel_list.add(self.MObject)
         return sel_list.getSelectionStrings(0)[0]
 
     @name.setter
@@ -88,7 +87,7 @@ class Node(api.Object):
         full_name = self.name + '.' + long_name
         if long_name not in self.__attrs__:
             self.__attrs__[long_name] = Attribute(full_name)
-        elif self.__attrs__[long_name].api.MPlug.isDynamic:
+        elif self.__attrs__[long_name].MPlug.isDynamic:
             # look for name changes
             instance_name = self.__attrs__[long_name].attrName()
             if instance_name != long_name:
