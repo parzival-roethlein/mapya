@@ -45,6 +45,7 @@ class MDagPath(MObject):
 
 
 class MPlug(MObject):
+
     def __init__(self, attr_name):
         node_name = attr_name[:attr_name.rfind('.')]
         super(MPlug, self).__init__(node_name)
@@ -83,22 +84,21 @@ class MPlug(MObject):
         return self.__MPlug__
 
     '''
+    @staticmethod
+    def get_api_type(m_plug):
+        pass
+
     @property
-    def apiType(self):
-        if(not hasattr(self, '__apiType__')):
-            # TODO: get type...
-            self.__apiType__ = None
-        return self.__apiType__
-    
-    # compound / array attr get/set
-    # https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_attributes.htm
-    def get_api(self):
+    def MPlug_value(self):
         # TODO: add all type options
         if(self.api.type == 'kFloat'):# TODO: ...
             return self.api.MPlug.asFloat()
         else:
             raise NameError('Unknown api attr type: %s' % self._apiType)
-    
+        # compound / array attr get/set
+        # https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_attributes.htm
+
+    @MPlug_value.setter
     def set_api(self, value):
         # TODO: more special cases?
         if(self.api.MPlug.isCompound):
