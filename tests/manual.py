@@ -12,25 +12,27 @@ myNode.skinning_joints = ['joint1', 'joint2']
 --- myMetaNode.all_joints = 'joint1'
 --- myMetaNode.all_joints = ['joint1', 'joint2'] # error (single message to multi message)
 """
+import maya.cmds as mc
 
-mm.eval('syncExecuterBackupFiles()')
-mm.eval('SavePreferences')
-
-import maya.api.OpenMaya as om
 # ############################
 # NODE
 # ############################
+mc.file(new=True, force=True)
+mc.polySphere()
+mc.polySphere()
 from prmmeta.python import utils;reload(utils);utils.reload_all()
 from prmmeta.python.node import Node
 nod1 = Node('pSphere1')
 nod2 = Node('pSphere2')
+help(nod1)
 print(nod1.name)
-print(dir(nod1))
-print(help(nod1))
 print(nod1.tx)
+print(nod1.tx.get())
+nod1.tx = 1
+nod1.tx.set(1.5)
 nod1.tx += 1
-nod1.tx = nod1.tx /2
-nod1.ty
+nod1.tx -= 0.5
+nod1.tx = nod1.tx / 1.5
 nod1.tx >> nod2.ty
 nod1.tx // nod2.ty
 # ######################

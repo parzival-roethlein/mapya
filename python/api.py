@@ -14,8 +14,8 @@ class MObject(object):
             raise NameError('MObject requires a node name, not attr: %s' % node_name)
         sel_list = om.MSelectionList()
         sel_list.add(node_name)
-        object.__setattr__(self, '__MObject__', sel_list.getDependNode(0))
-        object.__setattr__(self, '__MObjectHandle__', om.MObjectHandle(self.__MObject__))
+        MObject.__setattr__(self, '__MObject__', sel_list.getDependNode(0))
+        MObject.__setattr__(self, '__MObjectHandle__', om.MObjectHandle(self.__MObject__))
 
     @property
     def MObject(self):
@@ -35,7 +35,7 @@ class MDagPath(MObject):
         super(MDagPath, self).__init__(node_name=node_name)
         sel_list = om.MSelectionList()
         sel_list.add(node_name)
-        object.__setattr__(self, '__MDagPath__', sel_list.getDagPath(0))
+        MDagPath.__setattr__(self, '__MDagPath__', sel_list.getDagPath(0))
 
     @property
     def MDagPath(self):
@@ -50,7 +50,7 @@ class MPlug(MObject):
         super(MPlug, self).__init__(node_name)
         sel_list = om.MSelectionList()
         sel_list.add(attr_name)
-        object.__setattr__(self, '__MPlug__', om.MPlug(sel_list.getPlug(0)))
+        MPlug.__setattr__(self, '__MPlug__', om.MPlug(sel_list.getPlug(0)))
 
     @property
     def MPlug(self):

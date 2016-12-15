@@ -37,7 +37,6 @@ class Node(api.MObject):
             return Node(node_name)
 
     def __init__(self, name):
-        """create/attach maya objects of own type"""
         super(Node, self).__init__(name)
         self.mc = Cmds(self)
         self.__attrs__ = {}
@@ -45,26 +44,28 @@ class Node(api.MObject):
         # run bind_data?
 
     def __repr__(self):
-        """return type and name (pickle-able)"""
+        """return type and name (pickle-able?)"""
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
     def __str__(self):
-        """returns node name string"""
+        """returns node name"""
         return self.name
 
     def __getattr__(self, name):
-        """return maya attribute (if name matches) else default behavior"""
+        """get maya node attr (if it exists). Else default Python"""
         if Attribute.exists(self.name, name):
             return self.attr(name)
         else:
             return object.__getattribute__(self, name)
 
     def __setattr__(self, attr, value):
-        """set maya attribute"""
+        """set maya node attr (if it exists). Else default Python"""
         # TODO:
         # use missing function (same as in Attribute.set()
-        if isinstance(value, Attribute):
-            value = value.get()
+
+        # this should happen in Attribute automatically
+        #if isinstance(value, Attribute):
+        #    value = value.get()
 
         if attr not in dir(self) and Attribute.exists(self.name, attr):
             self.attr(attr).set(value)
@@ -82,7 +83,7 @@ class Node(api.MObject):
         mc.rename(self.name, value)
 
     def attr(self, name):
-        """get maya attribute"""
+        """get maya node attribute"""
         long_name = mc.attributeQuery(name, node=self.name, longName=1)
         full_name = self.name + '.' + long_name
         if long_name not in self.__attrs__:
