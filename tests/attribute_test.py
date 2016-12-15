@@ -1,4 +1,14 @@
 """
+code
+- instantiation
+- validation
+
+maya
+- create (custom attr only)
+- edit
+- delete
+
+
 # ######################
 # unittests - local
 # ######################

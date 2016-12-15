@@ -1,10 +1,8 @@
 """
-object oriented maya.cmds wrapper to run on nodes
-- auto convert Node / Attribute instance args to their name? # doesnt this happen with Node.__str__ already?
+MayaPy object oriented maya.cmds wrapper to run on nodes
 
-
-
-myNode.mc.listRelatives()
+example:
+- mc.listRelatives(my_node, args) = my_node.mc.listRelatives(args)
 
 
 
@@ -56,13 +54,10 @@ c = Cmds(nod)
 print c.listRelatives('pSphere1', parent=1)
 
 """
-# TODO:
 from functools import wraps
 
 import maya.cmds as mc
 
-from .node import Node
-from .attribute import Attribute
 
 class Cmds(object):
     initialized = False
@@ -81,14 +76,9 @@ class Cmds(object):
     def wrap_node_func(func_arg, node, *args, **kwargs):
         @wraps
         def inner_func(self, *args, **kwargs):
-            for x, arg in enumerate(args):
-                if isinstance(arg, Node) or isinstance(arg, Attribute):
-                    # TODO: should attribute return name or value?
-                    args[x] = arg.name
-            for k, val in kwargs.iteritems():
-                if isinstance(val, Node) or isinstance(val, Attribute):
-                    kwargs[k] = val.name
-            return func_arg(node.name, *args, **kwargs)
+            value = func_arg(node.name, *args, **kwargs)
+            # TODO: convert return values to Node / Attr instances?
+            return value
         return inner_func
 
     def __init__(self, node):
