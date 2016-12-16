@@ -45,10 +45,11 @@ class Node(api.MObject):
 
     def __repr__(self):
         """return type and name (pickle-able?)"""
+        # TODO: same as __str__ to auto convert when passing instance?
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
     def __str__(self):
-        """returns node name"""
+        """node name"""
         return self.name
 
     def __getattr__(self, name):
@@ -59,14 +60,7 @@ class Node(api.MObject):
             return object.__getattribute__(self, name)
 
     def __setattr__(self, attr, value):
-        """set maya node attr (if it exists). Else default Python"""
-        # TODO:
-        # use missing function (same as in Attribute.set()
-
-        # this should happen in Attribute automatically
-        #if isinstance(value, Attribute):
-        #    value = value.get()
-
+        """try to set maya node attr first, else default Python behavior"""
         if attr not in dir(self) and Attribute.exists(self.name, attr):
             self.attr(attr).set(value)
         else:

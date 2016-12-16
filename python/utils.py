@@ -1,6 +1,7 @@
 from functools import wraps
 from .logger import log
 
+
 def reload_all():
     """reload all project modules in the right order"""
     from . import attribute_operators
@@ -22,22 +23,11 @@ def reload_all():
 
 
 def debug(func):
-    """
-    if hasattr(func, '__qualname__'):
-        msg = func.__qualname__
-    else:
-        msg = func.__name__
-    """
-
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # func.__qualname__ is python 3.3+ (?)
-        msg = func.__name__
         # args: RuntimeError: maximum recursion depth exceeded while getting the repr of a tuple #
-        print('%s(%s, %s)' % (msg, args, kwargs))
-        # print('%s(%s)' % (msg, kwargs))
+        print('%s(%s, %s)' % (func.__name__, args, kwargs))
         return func(*args, **kwargs)
-
     return wrapper
 
 

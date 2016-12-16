@@ -1,9 +1,8 @@
 """
-MayaPy object oriented maya.cmds wrapper to run on nodes
-
-example:
-- mc.listRelatives(my_node, args) = my_node.mc.listRelatives(args)
-
+Attach maya.cmds to a node
+- automatically give it's name as first argument
+-- mc.listRelatives(my_node, args) = my_node.mc.listRelatives(args)
+- returned attributes, nodes are automatically converted to Node / Attribute instances
 
 
 # FIRST VERSION
@@ -68,8 +67,6 @@ class Cmds(object):
             if not hasattr(mc.__dict__[callbackName], '__call__'):
                 continue
             setattr(Cmds, callbackName, Cmds.wrap_node_func(getattr(mc, callbackName), node))
-            # TODO: compare performance?
-            # setattr(Cmds, callbackName, Cmds.wrap_node_func(mc.__dict__[callbackName], node))
         Cmds.initialized = True
 
     @staticmethod
