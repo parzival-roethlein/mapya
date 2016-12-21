@@ -155,6 +155,8 @@ class Attribute(api.MPlug, AttributeOperators):
 
     def get(self, **kwargs):
         """mc.getAttr() wrapper"""
+        # TODO: return translate/scale/rotate not as [(x,y,z)], but [x,y,z]
+        # (maybe same for all compound/multi attrs?)
         if mc.attributeQuery(self.attr_name, n=self.node_name, message=1):
             if kwargs:
                 raise NameError('message attribute has no flags?!')
@@ -175,6 +177,7 @@ class Attribute(api.MPlug, AttributeOperators):
         # use recursive function for infinite levels? and DRY
         # and flatten lists / tuples to work with mc.setAttr
         # MAYBE also flatten lists in .get() function?
+
 
         # 1. step: make flat list (args can be tuples, ..)
         args_list1 = []
