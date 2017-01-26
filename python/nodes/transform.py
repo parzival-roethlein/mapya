@@ -6,12 +6,10 @@ from .dagNode import DagNode
 
 
 class Transform(DagNode):
-    @DagNode.parent.setter
-    def parent(self, parent_name):
-        # TODO:
-        # DECIDE to catch error if parent_name is already parent???
-        # MEL does only warning, maya.cmds does warning+error
-        mc.parent(self.name, parent_name)
+
+    # ########################
+    # make existing attrs settable
+    # ########################
 
     # TODO:
     # find SetterProperty that ignores getter?
@@ -54,3 +52,16 @@ class Transform(DagNode):
         mc.setAttr(self.name + '.rotate', rotation.x, rotation.y, rotation.z)
         mc.setAttr(self.name + '.scale', scale[0], scale[1], scale[2])
         """
+
+    # ########################
+    # new attrs
+    # ########################
+
+    @DagNode.parent.setter
+    def parent(self, parent_name):
+        # TODO:
+        # DECIDE to catch error if parent_name is already parent???
+        # MEL does only warning, maya.cmds does warning+error
+        mc.parent(self.name, parent_name)
+
+

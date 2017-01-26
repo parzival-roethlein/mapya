@@ -1,7 +1,11 @@
 """
+DESCRIPTION
 - attribute container
-- get/set node name like any other attribute
+- pythonic maya node attribute access
 
+POSSIBLE ATTRIBUTE IMPLEMENTATIONS
+- make existing attributes accessible through python (transform: matrix settable, mesh: pnts settable, ...)
+- add existing behavior act like an attribute (dgNode: name, DAG node: parent, ..)
 
 TODO:
 - maybe make metaclass for __getattr__ __setattr__?
@@ -28,7 +32,7 @@ class Node(api.MObject):
         node_type_modules = {'dagNode': dagNode.DagNode,
                              'transform': transform.Transform}
 
-        all_types = mc.nodeType(node_name, inherited=1)
+        all_types = mc.nodeType(node_name, inherited=True)
         all_types.reverse()
         for each in all_types:
             if each in node_type_modules:
@@ -44,8 +48,6 @@ class Node(api.MObject):
         # run bind_data?
 
     def __repr__(self):
-        """return type and name (pickle-able?)"""
-        # TODO: same as __str__ to auto convert when passing instance?
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
     def __str__(self):
@@ -66,19 +68,9 @@ class Node(api.MObject):
         else:
             object.__setattr__(self, attr, value)
 
-    @property
-    def name(self):
-        sel_list = om.MSelectionList()
-        sel_list.add(self.MObject)
-        return sel_list.getSelectionStrings(0)[0]
-
-    @name.setter
-    def name(self, value):
-        mc.rename(self.name, value)
-
     def attr(self, name):
         """get maya node attribute"""
-        long_name = mc.attributeQuery(name, node=self.name, longName=1)
+        long_name = mc.attributeQuery(name, node=self.name, longName=True)
         full_name = self.name + '.' + long_name
         if long_name not in self.__attrs__:
             self.__attrs__[long_name] = Attribute(full_name)
@@ -89,3 +81,13 @@ class Node(api.MObject):
                 self.__attrs__[instance_name] = self.__attrs__[long_name]
                 self.__attrs__[long_name] = Attribute(full_name)
         return self.__attrs__[long_name]
+
+    @property
+    def name(self):
+        sel_list = om.MSelectionList()
+        sel_list.add(self.MObject)
+        return sel_list.getSelectionStrings(0)[0]
+
+    @name.setter
+    def name(self, value):
+        mc.rename(self.name, value)
