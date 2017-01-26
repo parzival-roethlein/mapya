@@ -1,11 +1,15 @@
 """
 DESCRIPTION
+- python representation (instance) of a maya node
+- python instance attached to a maya node
 - attribute container
+
+PURPOSE
 - pythonic maya node attribute access
 
 POSSIBLE ATTRIBUTE IMPLEMENTATIONS
-- make existing attributes accessible through python (transform: matrix settable, mesh: pnts settable, ...)
-- add existing behavior act like an attribute (dgNode: name, DAG node: parent, ..)
+- make read only attributes settable (transform.matrix, mesh.pnts, ...)
+- make everything an attribute (dgNode.name, dagNode.parent)
 
 TODO:
 - maybe make metaclass for __getattr__ __setattr__?

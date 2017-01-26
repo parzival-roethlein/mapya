@@ -17,7 +17,7 @@ FEATURES (small)
 - class instance should save class version, that way it can be noticed and converted etc
 -- maybe extra util module for each class that does update nodes? (if it exists do... to convert)
 -- would be quite usefull for rigging modules that change and can easily be updated
-
+-- all unittested = fewer/no bugs
 
 RULES
 - pythonic > mayaic
@@ -38,9 +38,9 @@ different from pymel
 - stable:
 -- undo/redo works for all commands,
 -- works with different maya settings (meters, cm, ..)
--- all unittested = fewer/no bugs
-- easily attach own python classes to maya objects
-
+- easier to create own classes / attach to maya objects
+- shape functions not accessible from parent transform (python zen, explicit is better than implicit) mytrans.getPoints() = mytrans.child.pnts
+-- maybe this should be taken over, since it is also maya.cmds behavior?
 
 different from red9:
 - connected node attrs like a pointer, allows multiple. (not like red9 only one and in the "wrong" direction)
