@@ -3,10 +3,10 @@ import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 from .. import api
-from .. import node
+from .dependNode import DependNode
 
 
-class DagNode(node.Node, api.MDagPath):
+class DagNode(DependNode, api.MDagPath):
 
     @property
     def parent(self):
