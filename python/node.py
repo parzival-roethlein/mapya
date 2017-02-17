@@ -4,6 +4,8 @@ DESCRIPTION
 - makes maya node name behave like any other maya attribute
 
 TODO:
+- maya attributes should not share same namespace as mapya methods: mytrans.a.tx // mytrans.mp.parent
+-- maybe internally everything in namespaces and for user / top level it will search in order: mapya > maya attr?
 - maybe make metaclass for __getattr__ __setattr__?
 
 """

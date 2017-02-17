@@ -64,7 +64,7 @@ different from red9:
 
 MAYBE:
 - PICKLE code instances on maya objects? (but probably has to ignore api MObjects, since the address changes when restarting?)
-- multithreading? GPU? when running computational heave methods?
+- GPU? when running computational heave methods?
 - easier / better reload / initialize than red9?
 - "states": maya attributes can have multiple default values depending on state? attribute on main metanode, create attribute map for each state, so attribute settings for rigging, published state
 -- or state attribute can have any string value, which is connected with attribute maps? so user is free to say "template tweak", "template", "rig", ... and/or option when rig_build is executed automatically say "rig" state, etc? automatically look for attr map when state changes
@@ -73,7 +73,8 @@ MAYBE:
 - attribute maps for stages template/rigged (overwrite with template (not reference) nodes that should not be touched when positioning template)
 
 
-
+RELATED:
+https://github.com/dannywynne/maya_meta_node
 
 
 
