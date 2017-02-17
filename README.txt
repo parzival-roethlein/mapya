@@ -1,7 +1,20 @@
-mPySerial = maya python serializer
+mapya
+- attach mapya default node classes or custom user classes to maya nodes (serializer)
+- maya node = python class instance, maya attribute = python attribute
+- makes more maya node behavior an attribute:
+-- get+set: name, lock, parent
+-- get: child, children
+
+POSSIBLE ATTRIBUTE IMPLEMENTATIONS
+- make read only attributes settable (transform.matrix, mesh.pnts, ...)
+- make everything an attribute (dgNode.name, dagNode.parent)
+
+
+CODE / API RULES:
+- pythonic (PEP8) > maya style
+-
 
 FEATURES
-- pythonic + mayaic serializer (if you know python and maya, everything should be as expected. priority python > maya -> really? also for argument names? could be confusing when used together with maya flags)
 - attach / interact with python classes on maya objects (=auto serializer?)
 -- either custom user classes (r9Meta) or from the nodetype library (PyNode)
 - pythonic maya node wrapper with extra node type based functionality library

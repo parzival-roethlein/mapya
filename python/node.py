@@ -1,15 +1,7 @@
 """
 DESCRIPTION
-- python representation (instance) of a maya node
-- python instance attached to a maya node
-- attribute container
-
-PURPOSE
-- pythonic maya node attribute access
-
-POSSIBLE ATTRIBUTE IMPLEMENTATIONS
-- make read only attributes settable (transform.matrix, mesh.pnts, ...)
-- make everything an attribute (dgNode.name, dagNode.parent)
+- makes maya attributes behave like python attributes
+- makes maya node name behave like any other maya attribute
 
 TODO:
 - maybe make metaclass for __getattr__ __setattr__?
@@ -22,6 +14,8 @@ import maya.cmds as mc
 from .attribute import Attribute
 from . import api
 from .cmds import Cmds
+
+# defaults = {'return_typed_instances': True}
 
 
 class Node(api.MObject):
@@ -43,7 +37,14 @@ class Node(api.MObject):
                 return node_type_modules[each](node_name)
         else:
             return Node(node_name)
-
+    '''
+    def __new__(cls, name, **kwargs):
+        # ChainMap # python 3.3+
+        defaults.update(kwargs)
+        if defaults['return_typed_instances']:
+            return Node.get_typed_instance(name)
+        return Node(name)
+    '''
     def __init__(self, name):
         super(Node, self).__init__(name)
         self.mc = Cmds(self)

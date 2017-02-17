@@ -64,4 +64,9 @@ class Transform(DagNode):
         # MEL does only warning, maya.cmds does warning+error
         mc.parent(self.name, parent_name)
 
+    @property
+    def children(self):
+        print('todo children')
+        return []
+
 

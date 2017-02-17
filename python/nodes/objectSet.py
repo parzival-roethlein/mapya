@@ -1,11 +1,11 @@
 """
-should work like a python list
+should work like a python set / list / iterator
 ['myNode1', 'myNode2', ...]
 
 different from maya:
 - maya does not add existing members (list does)
 -- maya ui and set command limit usage equivalent to python set (unique members)
---- but user can avoid that by making manually connections (=python list)
+--- but user can avoid that by making manually connections (=python list) -> give warning when that happens?
 - empty set returns None (instead of empty list [])
 - maya does not error when removing non-member (python list does)
 - fix inconsistency of cmds.set(objects, rm=set_name) // cmds.set(objects, add=set_name)
