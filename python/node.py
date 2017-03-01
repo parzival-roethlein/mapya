@@ -1,12 +1,18 @@
 """
 DESCRIPTION
-- makes maya attributes behave like python attributes
-- makes maya node name behave like any other maya attribute
+node name access
+attribute container
 
-TODO:
-- maya attributes should not share same namespace as mapya methods: mytrans.a.tx // mytrans.mp.parent
--- maybe internally everything in namespaces and for user / top level it will search in order: mapya > maya attr?
-- maybe make metaclass for __getattr__ __setattr__?
+PURPOSE
+makes maya attributes behave like python attributes
+makes maya node name behave like any other maya attribute
+
+MAYBE:
+separate namespace for maya attributes / python class methods: mytrans.a.tx
+- pro: no overwrite / confusion with python class names and maya attr names
+- con: confusing, not pythonic, ugly extra namespace, user can use mytrans.attr('tx') to be explicit
+- implement both, so user has option to access with extra namespace
+make metaclass for __getattr__ __setattr__?
 
 """
 
@@ -39,14 +45,7 @@ class Node(api.MObject):
                 return node_type_modules[each](node_name)
         else:
             return Node(node_name)
-    '''
-    def __new__(cls, name, **kwargs):
-        # ChainMap # python 3.3+
-        defaults.update(kwargs)
-        if defaults['return_typed_instances']:
-            return Node.get_typed_instance(name)
-        return Node(name)
-    '''
+
     def __init__(self, name):
         super(Node, self).__init__(name)
         self.mc = Cmds(self)

@@ -1,10 +1,9 @@
 """
-RULES
+CODE RULES
 - always use longName if possible (some operators (comparison, ...?) should consider short names)
   reason: it should always be either longName or always shortName and
          - longName is more readable
          - listConnections and probably all maya.cmds return the longname
-
 
 IDEAS:
 - probably not: decide to inherit string functions
@@ -116,16 +115,13 @@ class Attribute(api.MPlug, AttributeOperators):
         super(Attribute, self).__init__(name)
 
     def __repr__(self):
-        """:returns: pickle"""
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
     def __str__(self):
-        """:returns: name"""
         return self.name
 
-    def is_same_as(self, other):
-        """check if given attribute is the same as self"""
-        if Attribute.get_long_name(self) == Attribute.get_long_name(other):
+    def is_same_as(self, attribute):
+        if Attribute.get_long_name(self) == Attribute.get_long_name(attribute):
             return True
         else:
             return False

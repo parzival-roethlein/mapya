@@ -3,6 +3,8 @@ maya api objects wrapper
 - store MObjects
 - validate MObjects before accessing
 
+TODO: custom exception: Invalid MObject
+
 """
 
 import maya.api.OpenMaya as om

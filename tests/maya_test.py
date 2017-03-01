@@ -4,7 +4,9 @@ import maya.cmds as mc
 
 
 OPTIONS = {
-    'scene': 'C:/Users/pz/Documents/git/prmmeta/tests/maya/scene_v001.ma',
+    'scene': 'C:/Users/pz/Documents/git/mapya/tests/maya/scene_v001.ma',
+    'transform_1': 'pSphere1',
+    'transform_2': 'pSphere2',
 }
 
 

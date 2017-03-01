@@ -14,6 +14,9 @@ from .. import node
 
 class DependNode(node.Node):
 
+    def __init__(self, *args, **kwargs):
+        super(DependNode, self).__init__(*args, **kwargs)
+
     @property
     def locked(self):
         return False

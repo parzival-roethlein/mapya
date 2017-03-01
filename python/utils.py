@@ -12,14 +12,21 @@ def reload_all():
     reload(attribute)
     from . import node
     reload(node)
+    from .nodes import dependNode
+    reload(dependNode)
     from .nodes import dagNode
     reload(dagNode)
     from .nodes import transform
     reload(transform)
     from ..tests import maya_test
     reload(maya_test)
+    from ..tests import api_test
+    reload(api_test)
     from ..tests import attribute_test
     reload(attribute_test)
+    from ..tests import node_test
+    reload(node_test)
+
 
 
 def debug(func):
