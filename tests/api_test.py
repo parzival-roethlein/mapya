@@ -29,33 +29,51 @@ from ..python import api
 
 
 class TestMObject(maya_test.MayaTest):
-    def test_access(self):
+    def test_valid_creation(self):
+        transform = api.MObject(maya_test.OPTIONS['transform_1'])
+        transform.MObject
+        transform.MObjectHandle
+
+    def test_invalid_creation_node_does_not_exist(self):
+        mc.delete(maya_test.OPTIONS['transform_1'])
+        with self.assertRaises(RuntimeError):
+            transform = api.MObject(maya_test.OPTIONS['transform_1'])
+            transform.MObject
+            transform.MObjectHandle
+
+    def test_invalid_creation_attribute_given(self):
+        with self.assertRaises(ValueError):
+            transform = api.MObject(maya_test.OPTIONS['transform_1_attr_tx'])
+            transform.MObject
+            transform.MObjectHandle
+
+    def test_invalid_access(self):
         transform = api.MObject(maya_test.OPTIONS['transform_1'])
         transform.MObject
         transform.MObjectHandle
         mc.delete(maya_test.OPTIONS['transform_1'])
-        with self.assertRaises(NameError):
+        with self.assertRaises(api.InvalidMayaObjectError):
             transform.MObject
-        with self.assertRaises(NameError):
+        with self.assertRaises(api.InvalidMayaObjectError):
             transform.MObjectHandle
 
 
 class TestMDagPath(maya_test.MayaTest):
-    def test_access(self):
+    def test_invalid_access(self):
         transform = api.MDagPath(maya_test.OPTIONS['transform_1'])
         transform.MDagPath
         mc.delete(maya_test.OPTIONS['transform_1'])
-        with self.assertRaises(NameError):
+        with self.assertRaises(api.InvalidMayaObjectError):
             transform.MDagPath
 
 
 class TestMPlug(maya_test.MayaTest):
-    def test_access(self):
+    def test_invalid_access(self):
         transform = api.MPlug(maya_test.OPTIONS['transform_1']+'.tx')
         transform.__MPlug__
         transform.MPlug
         mc.delete(maya_test.OPTIONS['transform_1'])
-        with self.assertRaises(NameError):
+        with self.assertRaises(api.InvalidMayaObjectError):
             transform.MPlug
 
 
