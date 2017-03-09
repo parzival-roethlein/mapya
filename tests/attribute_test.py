@@ -17,7 +17,6 @@ meta_utils.reload_all()
 import prmmeta.tests.attribute_test as attribute_test
 attribute_test.run()
 
-
 """
 
 import unittest
@@ -37,6 +36,46 @@ SHORT_NAME = {
     'default_compound_a': 'pSphere1.t',
     'default_compound_b': 'pSphere2.t',
 }
+
+DYNAMIC_ATTRIBUTES = [
+    {'at': 'bool'},
+    {'at': 'long'},
+    {'at': 'short'},
+    {'at': 'byte'},
+    {'at': 'char'},
+    {'at': 'enum', 'enumName': 'zero:one:two:thousand=1000'},
+    {'at': 'float'},
+    {'at': 'double'},
+    {'at': 'doubleAngle'},
+    {'at': 'doubleLinear'},
+
+    {'dt': 'string'},
+    {'dt': 'stringArray'},
+
+    # {'at': 'compound'},
+    {'at': 'message'},
+    {'at': 'time'},
+
+    {'dt': 'matrix'},
+
+    {'at': 'fltMatrix'},
+]
+
+for attr in DYNAMIC_ATTRIBUTES:
+    if 'at' in attr:
+        attr_type = attr['at']
+    elif 'dt' in attr:
+        attr_type = attr['dt']
+    else:
+        raise ValueError()
+    attr['longName'] = attr_type+'_user_attr'
+
+
+def create_dynamic_attributes(node):
+    for attribute_flags in DYNAMIC_ATTRIBUTES:
+        mc.addAttr(node, **attribute_flags)
+
+
 
 
 class TestInstance(MayaTest):

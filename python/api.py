@@ -13,6 +13,7 @@ class InvalidMayaObjectError(Exception):
 
 
 class MObject(object):
+
     def __init__(self, node_name):
         if node_name.find('.') != -1:
             raise ValueError('node expected, got attr: %s' % node_name)
@@ -35,6 +36,7 @@ class MObject(object):
 
 
 class MDagPath(MObject):
+
     def __init__(self, node_name):
         super(MDagPath, self).__init__(node_name=node_name)
         sel_list = om.MSelectionList()
