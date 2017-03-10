@@ -3,7 +3,7 @@ import unittest
 import maya.cmds as mc
 
 
-OPTIONS = {
+DEFAULTS = {
     'scene': 'C:/Users/pz/Documents/git/mapya/tests/maya/scene_v001.ma',
     'transform_1': 'pSphere1',
     'transform_2': 'pSphere2',
@@ -14,8 +14,8 @@ OPTIONS = {
 class MayaTest(unittest.TestCase):
 
     def setUp(self):
-        mc.file(OPTIONS['scene'], open=1, force=1)
-        mc.file(rename=OPTIONS['scene'].replace('.ma', '_TMP.ma'))
+        mc.file(DEFAULTS['scene'], open=1, force=1)
+        mc.file(rename=DEFAULTS['scene'].replace('.ma', '_TMP.ma'))
         mc.file(renameToSave=True)
 
     def tearDown(self):
