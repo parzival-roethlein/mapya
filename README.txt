@@ -71,7 +71,7 @@ MAYBE:
 -- separate from "state" or maybe both: option to write attribute map in scene folder, by default use state as file_name, allow user input. then extra UI that just reads those files "rig clean" "rig wip" (show all controls)
 - when reading/writing script is smart and tries to use different name at same hierarchy spot, but give popup if it should be replaced. or use an attribute + value on node to identify it (does not work after duplicate?)
 - attribute maps for stages template/rigged (overwrite with template (not reference) nodes that should not be touched when positioning template)
-
+- slots version of all node classes / attributes?
 
 RELATED:
 https://github.com/dannywynne/maya_meta_node
