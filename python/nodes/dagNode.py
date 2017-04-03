@@ -1,4 +1,6 @@
-
+"""
+DependNode > (containerBase > entity >) dagNode
+"""
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 

@@ -23,7 +23,7 @@ from .attribute import Attribute
 from . import api
 from .cmds import Cmds
 
-# defaults = {'return_typed_instances': True}
+# DEFAULTS = {'return_typed_instances': True}
 
 
 class Node(api.MObject):
