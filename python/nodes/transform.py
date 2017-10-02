@@ -15,43 +15,19 @@ class Transform(DagNode):
     # find SetterProperty that ignores getter?
     @property
     def matrix(self):
-        print('Transform matrix getter')
         return self.attr('matrix').get()
 
     @matrix.setter
     def matrix(self, value):
-        print('matrix setter: %s' % value)
         mc.xform(self.name, matrix=value)
-        """
-        value_matrix = om.MTransformationMatrix(om.MMatrix(value))
-        translation = value_matrix.translation(om.MSpace.kWorld)
-        rotation = value_matrix.rotation()
-        scale = value_matrix.scale(om.MSpace.kWorld)
-        mc.setAttr(self.name + '.translate', translation.x, translation.y, translation.z)
-        mc.setAttr(self.name + '.rotate', rotation.x, rotation.y, rotation.z)
-        mc.setAttr(self.name + '.scale', scale[0], scale[1], scale[2])
-        """
 
     @property
     def worldMatrix(self):
-        print('Transform worldMatrix getter')
         return self.__getattr__('worldMatrix')
 
     @worldMatrix.setter
     def worldMatrix(self, value):
-        print('worldMatrix setter: %s' % value)
-        mc.xform(self.name, matrix=value)
-        """
-        # TODO:
-        # value * self.parentInverseMatrix
-        value_matrix = om.MTransformationMatrix(om.MMatrix(value))
-        translation = value_matrix.translation(om.MSpace.kWorld)
-        rotation = value_matrix.rotation()
-        scale = value_matrix.scale(om.MSpace.kWorld)
-        mc.setAttr(self.name + '.translate', translation.x, translation.y, translation.z)
-        mc.setAttr(self.name + '.rotate', rotation.x, rotation.y, rotation.z)
-        mc.setAttr(self.name + '.scale', scale[0], scale[1], scale[2])
-        """
+        mc.xform(self.name, matrix=value, worldSpace=True)
 
     # ########################
     # new attrs
