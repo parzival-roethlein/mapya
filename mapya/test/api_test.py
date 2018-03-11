@@ -12,7 +12,7 @@ maya
 # ######################
 # unittests - local
 # ######################
-from mapya.python import utils as meta_utils;reload(meta_utils)
+from mapya import utils as meta_utils;reload(meta_utils)
 meta_utils.reload_all()
 import mapya.tests.api_test as api_test
 api_test.run()
@@ -25,7 +25,7 @@ import unittest
 import maya.cmds as mc
 
 from . import maya_test
-from ..python import api
+from .. import api
 
 
 class TestMObject(maya_test.MayaTest):

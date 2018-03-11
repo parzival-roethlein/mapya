@@ -28,10 +28,10 @@ DECIDE:
 
 import maya.cmds as mc
 
-from .dependNode import DependNode
+from . import dependNode
 
 
-class ObjectSet(DependNode):
+class ObjectSet(dependNode.DependNode):
     
     def __len__(self):
         return mc.sets(self.name, q=1, size=1)

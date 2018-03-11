@@ -24,10 +24,10 @@ import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 from . import api
-from .attribute_operators import AttributeOperators
+from . import attribute_operators
 
 
-class Attribute(api.MPlug, AttributeOperators):
+class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     @staticmethod
     def exists(node, attr):
@@ -173,7 +173,6 @@ class Attribute(api.MPlug, AttributeOperators):
         # use recursive function for infinite levels? and DRY
         # and flatten lists / tuples to work with mc.setAttr
         # MAYBE also flatten lists in .get() function?
-
 
         # 1. step: make flat list (args can be tuples, ..)
         args_list1 = []

@@ -5,14 +5,11 @@ either make node behavior to properties (lock, deletable, defaultNode)
 or
 .get(flags) / .set(flags) for everything
 
-
 """
-import maya.cmds as mc
-
-from .. import node
+from .. import pynode
 
 
-class DependNode(node.Node):
+class DependNode(pynode.Node):
 
     def __init__(self, *args, **kwargs):
         super(DependNode, self).__init__(*args, **kwargs)

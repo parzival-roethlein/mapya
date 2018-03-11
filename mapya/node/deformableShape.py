@@ -2,12 +2,10 @@
 dagNode > (shape > geometryShape >) deformableShape
 
 """
-import maya.cmds as mc
-
-from .dagNode import DagNode
+from . import dagNode
 
 
-class DeformableShape(DagNode):
+class DeformableShape(dagNode.DagNode):
 
     # ########################
     # make existing attrs settable

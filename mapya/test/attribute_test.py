@@ -24,7 +24,7 @@ import unittest
 import maya.cmds as mc
 
 from .maya_test import MayaTest
-from ..python.attribute import Attribute
+from .. import attribute
 
 LONG_NAME = {
     'default_compound_a': 'pSphere1.translate',
@@ -81,7 +81,7 @@ def create_dynamic_attributes(node):
 class TestInstance(MayaTest):
     def test_creation(self):
         for name in LONG_NAME.values():
-            attr = Attribute(name)
+            attr = attribute.Attribute(name)
             self.assertEqual(attr.name, name)
 
             # new scene, good error catching / no crashes when accessing old / invalid instances
@@ -90,24 +90,24 @@ class TestInstance(MayaTest):
 class TestName(MayaTest):
     def test_name_getter(self):
         for v in LONG_NAME.values():
-            attr = Attribute(v)
+            attr = attribute.Attribute(v)
             self.assertEqual(attr.name, v)
 
     def test_name_setter(self):
         for user_defined in ['user_int_a', 'user_float_a']:
-            attr = Attribute(LONG_NAME[user_defined])
+            attr = attribute.Attribute(LONG_NAME[user_defined])
             new_name = attr.attr_name + 'ABC'
             attr.name = new_name
             self.assertEqual(attr.name, attr.node_name + '.' + new_name)
 
     def test_node_name(self):
         for v in LONG_NAME.values():
-            attr = Attribute(v)
+            attr = attribute.Attribute(v)
             self.assertEqual(attr.node_name, v[:v.find('.')])
 
     def test_attr_name(self):
         for v in LONG_NAME.values():
-            attr = Attribute(v)
+            attr = attribute.Attribute(v)
             self.assertEqual(attr.attr_name, v[v.find('.') + 1:])
 
 

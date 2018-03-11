@@ -1,11 +1,8 @@
-import maya.api.OpenMaya as om
 import maya.cmds as mc
+from . import dagNode
 
 
-from .dagNode import DagNode
-
-
-class Transform(DagNode):
+class Transform(dagNode.DagNode):
 
     # ########################
     # make existing attrs settable
@@ -33,7 +30,7 @@ class Transform(DagNode):
     # new attrs
     # ########################
 
-    @DagNode.parent.setter
+    @dagNode.DagNode.parent.setter
     def parent(self, parent_name):
         # TODO:
         # DECIDE to catch error if parent_name is already parent???

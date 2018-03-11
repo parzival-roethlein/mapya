@@ -1,6 +1,7 @@
 mapya
-- attach mapya default node classes or custom user classes to maya nodes (serializer)
-- maya node = python class instance, maya attribute = python attribute (but also python class instance)
+- make maya nodes and attributes python class instances for pythonic manipulation
+- serializer?
+- node = mapya instance // node.attr = mapya instance attribute // attribute = mapya instance
 - makes more properties behave like any other attribute:
 -- maya node
 --- get+set: name, lock, parent

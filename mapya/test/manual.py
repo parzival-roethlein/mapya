@@ -20,8 +20,8 @@ mc.polyCube()
 mc.file(new=True, force=True)
 mc.polySphere()
 mc.polySphere()
-from mapya.python import utils;reload(utils);utils.reload_all()
-from mapya.python.node import Node
+from mapya import utils;reload(utils);utils.reload_all()
+from mapya.node import Node
 nod1 = Node('pSphere1')
 nod2 = Node('pSphere2')
 help(nod1)
@@ -38,16 +38,16 @@ nod1.tx // nod2.ty
 # ######################
 # DagNode
 # ######################
-from mapya.python import utils;reload(utils);utils.reload_all()
-from mapya.python.nodes import dagNode;reload(dagNode)
+from mapya import utils;reload(utils);utils.reload_all()
+from mapya.nodes import dagNode;reload(dagNode)
 dag1 = dagNode.DagNode('pSphere1')
 dag2 = dagNode.DagNode('pSphere2')
 print(dag1.matrix)
 # ######################
 # Transform
 # ######################
-from mapya.python import utils;reload(utils);utils.reload_all()
-from mapya.python.nodes.transform import Transform
+from mapya import utils;reload(utils);utils.reload_all()
+from mapya.nodes.transform import Transform
 tra1 = Transform('pSphere1')
 tra2 = Transform('pSphere2')
 print(tra1.matrix)
@@ -55,8 +55,8 @@ tra1.matrix = tra2.matrix
 # ######################
 # Attribute
 # ######################
-from mapya.python import utils;reload(utils);utils.reload_all()
-from mapya.python.attribute import Attribute
+from mapya import utils;reload(utils);utils.reload_all()
+from mapya.attribute import Attribute
 attr1 = Attribute('pSphere1.tx')
 attr2 = Attribute('pSphere2.ty')
 print(dir(attr1))
@@ -85,8 +85,8 @@ attr1 // "pSphere2.translateZ"
 # ######################
 # api
 # ######################
-from mapya.python import utils;reload(utils);utils.reload_all()
-from mapya.python import api
+from mapya import utils;reload(utils);utils.reload_all()
+from mapya import api
 apiobj = api.MObject('pSphere1')
 help(apiobj)
 print(dir(apiobj))
@@ -96,8 +96,8 @@ print(dir(apiplug))
 # ############################
 # MC
 # ############################
-from mapya.python import utils;reload(utils);utils.reload_all()
-from mapya.python.node import Node
+from mapya import utils;reload(utils);utils.reload_all()
+from mapya.node import Node
 nodmc = Node('pSphere1')
 print(nodmc.mc.listRelatives(parent=1))
 print(nodmc.mc.ls(showType=1))

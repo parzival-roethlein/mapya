@@ -12,19 +12,19 @@ def reload_all():
     reload(attribute)
     from . import node
     reload(node)
-    from .nodes import dependNode
+    from .node import dependNode
     reload(dependNode)
-    from .nodes import dagNode
+    from .node import dagNode
     reload(dagNode)
-    from .nodes import transform
+    from .node import transform
     reload(transform)
-    from ..tests import maya_test
+    from .test import maya_test
     reload(maya_test)
-    from ..tests import api_test
+    from .test import api_test
     reload(api_test)
-    from ..tests import attribute_test
+    from .test import attribute_test
     reload(attribute_test)
-    from ..tests import node_test
+    from .test import node_test
     reload(node_test)
 
 

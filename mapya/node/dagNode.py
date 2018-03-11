@@ -1,14 +1,13 @@
 """
 DependNode > (containerBase > entity >) dagNode
 """
-import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 from .. import api
-from .dependNode import DependNode
+from . import dependNode
 
 
-class DagNode(DependNode, api.MDagPath):
+class DagNode(dependNode.DependNode, api.MDagPath):
 
     @property
     def parent(self):
