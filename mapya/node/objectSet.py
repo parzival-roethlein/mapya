@@ -34,7 +34,7 @@ from . import dependNode
 class ObjectSet(dependNode.DependNode):
     
     def __len__(self):
-        return mc.sets(self.name, q=1, size=1)
+        return mc.sets(self.name, q=True, size=True)
     
     '''
     def add(self):

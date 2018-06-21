@@ -9,14 +9,16 @@ from . import dependNode
 
 class DagNode(dependNode.DependNode, api.MDagPath):
 
+    # ########################
+    # mapya attributes
+    # ########################
+
     @property
     def parent(self):
-        parent = mc.listRelatives(self.name, parent=1)
-        if parent:
-            parent = parent[0]
+        parent = (mc.listRelatives(self.name, parent=True) or [''])[0]
+        if parent and len(mc.ls(parent)) > 1:
+            parent = mc.listRelatives(self.name, parent=True, fullPath=True)[0]
         return parent
 
-    def is_visible(self):
-        """is node visible in the scene (incl hierarchy check)"""
-        # use api function call for speed
-        pass
+    def isVisible(self):
+        return self.MDagPath.isVisible()

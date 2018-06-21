@@ -56,8 +56,11 @@ class Node(api.MObject):
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
     def __str__(self):
-        """node name"""
         return self.name
+
+    # ########################
+    # maya attribute access
+    # ########################
 
     def __getattr__(self, name):
         """get maya node attr (if it exists). Else default Python"""
@@ -86,6 +89,10 @@ class Node(api.MObject):
                 self.__attrs__[instance_name] = self.__attrs__[long_name]
                 self.__attrs__[long_name] = attribute.Attribute(full_name)
         return self.__attrs__[long_name]
+
+    # ########################
+    # mapya attributes
+    # ########################
 
     @property
     def name(self):

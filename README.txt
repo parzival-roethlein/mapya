@@ -47,8 +47,8 @@ RULES (maybe)
 - use underscore for python only variables that are not visible in the attr editor: self._variable - to avoid collisions with maya attr names
 
 different from pymel
-- faster: python api 2.0 instead of old one, smaller classes
-- pymel is object oriented, but not pythonic
+- faster: python api 2.0 instead of old one + smaller classes might also help? + other things I don't know about that make pymel slow?
+- pymel is object oriented, but not pythonic (java esque?)
 -- properties instead of getter/setter methods [myNode.tx.set(1) -> myNode.tx = 1]
 -- multiple ways to do the same: pyattr.set(keyable=1), pyattr.setKeyable(1), pm.setAttr(attrX, keyable=1)
 - stable:

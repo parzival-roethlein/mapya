@@ -5,7 +5,7 @@ from . import dagNode
 class Transform(dagNode.DagNode):
 
     # ########################
-    # make existing attrs settable
+    # maya attributes settable
     # ########################
 
     # TODO:
@@ -27,19 +27,17 @@ class Transform(dagNode.DagNode):
         mc.xform(self.name, matrix=value, worldSpace=True)
 
     # ########################
-    # new attrs
+    # mapya attributes
     # ########################
 
     @dagNode.DagNode.parent.setter
-    def parent(self, parent_name):
-        # TODO:
-        # DECIDE to catch error if parent_name is already parent???
-        # MEL does only warning, maya.cmds does warning+error
-        mc.parent(self.name, parent_name)
+    def parent(self, parent):
+        if not parent:
+            mc.parent(self.name, world=True)
+        elif parent != self.parent:
+            mc.parent(self.name, parent)
 
     @property
     def children(self):
-        print('todo children')
-        return []
-
+        return mc.listRelatives(self.name) or []
 

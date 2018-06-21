@@ -16,8 +16,6 @@ IDEAS:
 
 - instead of .get() / .set() use a .value property?
 
-
-
 """
 
 import maya.api.OpenMaya as om
@@ -241,10 +239,7 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     def input(self, **kwargs):
         """:returns: single/first element of self.inputs()"""
-        attr_input = self.inputs(**kwargs)
-        if attr_input:
-            return attr_input[0]
-        return None
+        return (self.inputs(**kwargs) or [None])[0]
 
     def outputs(self, **kwargs):
         """wraps mc.listConnections(source=0, plugs=1)"""
@@ -258,7 +253,4 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     def output(self, **kwargs):
         """:returns: single/first element of self.outputs()"""
-        outputs = self.outputs(**kwargs)
-        if outputs:
-            return outputs[0]
-        return
+        return (self.outputs(**kwargs) or [None])[0]
