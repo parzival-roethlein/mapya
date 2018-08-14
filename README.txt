@@ -1,14 +1,16 @@
+early prototype of a pythonic maya node api. not used in production
+
 mapya
 - make maya nodes and attributes python class instances for pythonic manipulation
-- serializer?
 - node = mapya instance // node.attr = mapya instance attribute // attribute = mapya instance
-- makes more properties behave like any other attribute:
+- serializer?
+- makes more node properties behave like maya attributes:
 -- maya node
 --- get+set: name, lock, parent
---- get: child, children, shape
+--- get: child, children, shape (maybe)
 -- maya attribute
 --- get+set: value, default_value, name, lock, keyable, channel_box, min, max, mute, node
---- add set: transform.matrix, mesh.pnts, ...
+--- set: transform.matrix, mesh.pnts, ...
 
 FEATURES
 - attach / interact with python classes on maya objects (=auto serializer?)
@@ -16,7 +18,7 @@ FEATURES
 - pythonic maya node wrapper with extra node type based functionality library
 - as fast as possible
 -- python api 2.0 (if undo/redo works, else there must be a maya.cmds version [only or both])
--- mpxcommand for computation heavy commands (set mesh.pnts)
+-- mpxcommand for computation heavy commands (mesh.pnts.set())
 -- small classes / only basics implemented. no opinions/studio specifics
 - properties/setter for maya attributes BUT python variables etc with the same name as attr have priority: use mynode.attr('name') = 'bla' -> but also give (mutable) warning
 -- attach complex python attributes to maya nodes (dict, attributeMap?, ...)
@@ -39,7 +41,7 @@ FEATURES (maybe):
 - slots version of all node classes / attributes?
 
 RULES
-- pythonic (PEP8) > maya style
+- pythonic (PEP8) > maya style (maybe)
 - python api 2.0 always, except if undo/redo don't work, then maya.cmds must be used (optional also python api 2.0 for speed)
 
 RULES (maybe)
@@ -48,11 +50,11 @@ RULES (maybe)
 
 different from pymel
 - faster: python api 2.0 instead of old one + smaller classes might also help? + other things I don't know about that make pymel slow?
-- pymel is object oriented, but not pythonic (java esque?)
+- pythonic, not java-esque
 -- properties instead of getter/setter methods [myNode.tx.set(1) -> myNode.tx = 1]
--- multiple ways to do the same: pyattr.set(keyable=1), pyattr.setKeyable(1), pm.setAttr(attrX, keyable=1)
+-- not multiple ways to do the same: pyattr.set(keyable=1), pyattr.setKeyable(1), pm.setAttr(attrX, keyable=1)
 - stable:
--- undo/redo works for all commands,
+-- undo/redo works for all commands
 -- works with different maya settings (meters, cm, ..)
 - easier to create own classes / attach to maya objects
 - shape functions not accessible from parent transform (python zen, explicit is better than implicit) mytrans.getPoints() = mytrans.child.pnts
@@ -68,11 +70,4 @@ RELATED:
 PyMEL
 red9meta
 https://github.com/dannywynne/maya_meta_node
-
-
-
-
-
-
-
 
