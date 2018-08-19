@@ -7,18 +7,26 @@ or
 
 """
 import maya.cmds as mc
+import maya.api.OpenMaya as om
 
-from .. import pynode
+from ..node import Node
 
 
-class DependNode(pynode.Node):
+class DependNode(Node):
 
     def __init__(self, *args, **kwargs):
         super(DependNode, self).__init__(*args, **kwargs)
 
-    # ########################
-    # mapya attributes
-    # ########################
+    '''
+    @property
+    def name(self):
+        sel_list = om.MSelectionList()
+        sel_list.add(self.MObject)
+        return sel_list.getSelectionStrings(0)[0]
+
+    @name.setter
+    def name(self, value):
+        mc.rename(self.name, value)
 
     @property
     def locked(self):
@@ -27,4 +35,5 @@ class DependNode(pynode.Node):
     @locked.setter
     def locked(self, value):
         mc.lockNode(self.name, lock=value)
+    '''
 
