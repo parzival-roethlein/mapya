@@ -1,22 +1,5 @@
-"""
-DESCRIPTION
-node name access
-attribute container
 
-PURPOSE
-makes maya attributes behave like python attributes
-makes maya node name behave like any other maya attribute
 
-MAYBE:
-separate namespace for maya attributes / python class methods: mytrans.a.tx
-- pro: no overwrite / confusion with python class names and maya attr names
-- con: confusing, not pythonic, ugly extra namespace, user can use mytrans.attr('tx') to be explicit
-- implement both, so user has option to access with extra namespace
-make metaclass for __getattr__ __setattr__?
-
-"""
-
-import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 from . import attribute
@@ -27,21 +10,23 @@ from .cmds import Cmds
 
 
 class Node(api.MObject):
+    """attribute container that makes maya attributes behave like python attributes"""
 
     @staticmethod
     def get_typed_instance(node_name):
-        """return .nodes instance depending on first match with given nodes inheritance chain """
-        # TODO: 
-        # load modules dynamically 
-        from . import node
-        node_type_modules = {'dagNode': node.dagNode.DagNode,
-                             'transform': node.transform.Transform}
+        """return first match with given nodes inheritance chain """
+        from . import node_type
+        type_modules = {'dagNode': node_type.dagNode.DagNode,
+                        'deformableShape': node_type.deformableShape.DeformableShape,
+                        'transform': node_type.transform.Transform,
+                        'mesh': node_type.mesh.Mesh,
+                        'objectSet': node_type.objectSet.ObjectSet}
 
-        all_types = mc.nodeType(node_name, inherited=True)
-        all_types.reverse()
-        for each in all_types:
-            if each in node_type_modules:
-                return node_type_modules[each](node_name)
+        node_types = mc.nodeType(node_name, inherited=True)
+        node_types.reverse()
+        for type_ in node_types:
+            if type_ in type_modules:
+                return type_modules[type_](node_name)
         else:
             return Node(node_name)
 
@@ -49,8 +34,6 @@ class Node(api.MObject):
         super(Node, self).__init__(name)
         self.mc = Cmds(self)
         self.__attrs__ = {}
-        # TODO:
-        # run bind_data?
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.name)
@@ -59,7 +42,7 @@ class Node(api.MObject):
         return self.name
 
     # ########################
-    # maya attribute access
+    # maya attribute ingest
     # ########################
 
     def __getattr__(self, name):
@@ -77,9 +60,9 @@ class Node(api.MObject):
             object.__setattr__(self, attr, value)
 
     def attr(self, name):
-        """get maya node attribute"""
+        """get maya attribute from string"""
         long_name = mc.attributeQuery(name, node=self.name, longName=True)
-        full_name = self.name + '.' + long_name
+        full_name = '{0}.{1}'.format(self.name, long_name)
         if long_name not in self.__attrs__:
             self.__attrs__[long_name] = attribute.Attribute(full_name)
         elif self.__attrs__[long_name].MPlug.isDynamic:
@@ -90,16 +73,3 @@ class Node(api.MObject):
                 self.__attrs__[long_name] = attribute.Attribute(full_name)
         return self.__attrs__[long_name]
 
-    # ########################
-    # mapya attributes
-    # ########################
-
-    @property
-    def name(self):
-        sel_list = om.MSelectionList()
-        sel_list.add(self.MObject)
-        return sel_list.getSelectionStrings(0)[0]
-
-    @name.setter
-    def name(self, value):
-        mc.rename(self.name, value)
