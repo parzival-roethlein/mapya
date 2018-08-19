@@ -3,18 +3,12 @@ prototype of a pythonic maya node api
 
 DESCRIPTION
 connect python classes to maya objects (node = instance, node.attr = instance attribute, plug = instance)
-makes more maya object properties behave like maya attributes:
-- maya node
--- get+set: name, lock, parent
--- get: child, children, shape (maybe)
-- maya attribute
--- get+set: value, default_value, name, lock, keyable, channel_box, min, max, mute, node
--- set: transform.matrix, mesh.pnts, ...
+pythonic attribute interaction, not java-esque (properties instead of getters/setters)
+makes some attributes settable: transform.matrix, mesh.pnts, ...
 stable: undo/redo should always work (unlike many pymel commands)
 stable: everything should work with different maya settings (scene units, ...) (unlike pymel) -> make unit tests run with all different settings?
 fast: python api 2.0, mpxcommand for computation heavy commands (mesh.pnts.set())
 stable is more important than speed (speed implementation can be done on top, but is optional)
-pythonic attribute interaction, not java-esque (properties instead of getters/setters)
 
 
 USAGE
@@ -53,6 +47,12 @@ DECISIONS
 - api module changes
 -- should node types classes detect api class automatically?
 -- merge api module code into the node_type classes?
+makes more maya object properties behave like maya attributes:
+- maya node
+-- get+set: name, lock, parent
+-- get: child, children, shape (maybe)
+- maya attribute
+-- get+set: value, default_value, name, lock, keyable, channel_box, min, max, mute, node
 
 
 TODO (maybe):
