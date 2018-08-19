@@ -1,21 +1,15 @@
 """
-CODE RULES
-- always use longName if possible (some operators (comparison, ...?) should consider short names)
-  reason: it should always be either longName or always shortName and
-         - longName is more readable
-         - listConnections and probably all maya.cmds return the longname
+NOTES
+always use longName if possible (some operators (comparison, ...?) should consider short names), because:
+- it should be either shortName or longName
+- longName is more readable
+- listConnections and probably all maya.cmds return the longname
 
-IDEAS:
-- probably not: decide to inherit string functions
-  or call some/all functions in self.__getattr__?
-  or convert the Attribute instance arguments to strings in each function?
-
-- probably not: overwrite id calls / (is operator) return value with attr name
+MAYBE
+- instead of .get() / .set() use a .value property?
+- overwrite id calls / (is operator) return value with attr name
   myAttr1 is myAttr2
   better use extra function .is_same() function
-
-- instead of .get() / .set() use a .value property?
-
 """
 
 import maya.api.OpenMaya as om
@@ -159,7 +153,7 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
             # also not working when executed twice (overwrites node var with unicode)
             input = self.input()
             if input:
-                from node import Node
+                from node_type import Node
                 return Node(input[:input.rfind('.')])
             return
         return mc.getAttr(self.name, **kwargs)
