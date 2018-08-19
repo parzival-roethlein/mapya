@@ -4,10 +4,10 @@ DependNode > (containerBase > entity >) dagNode
 import maya.cmds as mc
 
 from .. import api
-from . import dependNode
+from .dependNode import DependNode
 
 
-class DagNode(dependNode.DependNode, api.MDagPath):
+class DagNode(DependNode, api.MDagPath):
 
     # ########################
     # mapya attributes
