@@ -1,14 +1,13 @@
-prototype of a pythonic maya node api
+pythonic maya node api prototype
 
 
 DESCRIPTION
 connect python classes to maya objects (node = instance, node.attr = instance attribute, plug = instance)
 pythonic attribute interaction, not java-esque (properties instead of getters/setters)
 makes some attributes settable: transform.matrix, mesh.pnts, ...
-stable: undo/redo should always work (unlike many pymel commands)
-stable: everything should work with different maya settings (scene units, ...) (unlike pymel) -> make unit tests run with all different settings?
+stable: undo/redo should always work
+stable: everything should work with different maya settings (scene units, ...)  -> make unit tests run with all different settings?
 fast: python api 2.0, mpxcommand for computation heavy commands (mesh.pnts.set())
-stable is more important than speed (speed implementation can be done on top, but is optional)
 
 
 USAGE
@@ -33,9 +32,9 @@ sphere.mc.listRelatives(children=True) # same as mc.listRelatives(sphere.name, c
 
 
 DECISIONS
-- instead of node type classes, just implement attribute types? since nodes are just attribute containers that could make it more simple, just a long list of attribute classes. api MObjects are needed only once on node thou
+- instead of node type classes, just implement attribute types? since nodes are just attribute containers that could make it more simple, just a long list of attribute classes. api MObjects are needed only once on node thou -> used attributes dynamically load required MObject in node?
 - there should not be the option of name clashes of python features and maya attribute names (node.name can be the mapya feature or an existing node attribute)
--- option: all mapya custom behavior in a namespace: my_node.mp.name = 'adsf', my_node.mp.lock = True # similar to the maya.cmds wrapper
+-- option: all mapya custom behavior in a namespace: my_node.mp.name = 'adsf', my_node.mp.lock = True (lock or locked?)# similar to the maya.cmds wrapper
 -- option: all maya attribute access in node.attr('tx'). but then it is getters/setters again
 -- option: split mapya into two APIs one just for attribute interaction, one for attaching custom python classes to maya objects where python names have priority in case of clash with maya attribute name
 - repr return instance constructor or maya name?
