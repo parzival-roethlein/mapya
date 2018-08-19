@@ -29,8 +29,8 @@ cube.attr('tx').set(2)
 sphere.matrix = cube.matrix
 #sphere.pnts = cube.pnts # add plugin to mapya
 # makes more maya object properties behave like attributes
-sphere.name = 'test'
-sphere.name = cube.name
+#sphere.name = 'test'
+#sphere.name = cube.name
 # get/set for nodes and attributes
 #sphere.set(lock=True)
 #sphere.tx.set(lock=True, keyable=False)
@@ -50,6 +50,9 @@ DECISIONS
 - maybe don't add existing one line functions from maya.cmds or maya.api.OpenMaya (example, myDagNode.isVisible() is unnecessary since user can: myDagNode.api.MDagPath.isVisible())
 - stick to maya convention that shape commands can be run on shape transforms? against python zen "explicit is better than implicit" shapetransform.pnts -> shapetransform.shape.pnts should probably stick to maya behavior
 - auto convert return values to mapya.Node/Attribute? probably not
+- api module changes
+-- should node types classes detect api class automatically?
+-- merge api module code into the node_type classes?
 
 
 TODO (maybe):
