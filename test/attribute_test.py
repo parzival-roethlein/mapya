@@ -24,7 +24,7 @@ import unittest
 import maya.cmds as mc
 
 from .maya_test import MayaTest
-from .. import attribute
+from mapya import attribute
 
 LONG_NAME = {
     'default_compound_a': 'pSphere1.translate',

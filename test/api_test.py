@@ -25,7 +25,7 @@ import unittest
 import maya.cmds as mc
 
 from . import maya_test
-from .. import api
+from mapya import api
 
 
 class TestMObject(maya_test.MayaTest):

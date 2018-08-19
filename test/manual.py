@@ -1,4 +1,7 @@
 """
+import sys
+sys.path.append(r'C:\Users\paz\Documents\git\mapya')
+
 EXAMPLES
 myNode = Node('pSphere1')
 myNode.addAttr('special_joint', type='message')
@@ -21,7 +24,7 @@ mc.file(new=True, force=True)
 mc.polySphere()
 mc.polySphere()
 from mapya import utils;reload(utils);utils.reload_all()
-from mapya.node import Node
+from mapya.node_type import Node
 nod1 = Node('pSphere1')
 nod2 = Node('pSphere2')
 help(nod1)
@@ -97,7 +100,7 @@ print(dir(apiplug))
 # MC
 # ############################
 from mapya import utils;reload(utils);utils.reload_all()
-from mapya.node import Node
+from mapya.node_type import Node
 nodmc = Node('pSphere1')
 print(nodmc.mc.listRelatives(parent=1))
 print(nodmc.mc.ls(showType=1))
