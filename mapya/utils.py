@@ -10,22 +10,14 @@ def reload_all():
     reload(api)
     from . import attribute
     reload(attribute)
-    from . import node
-    reload(node)
-    from .node import dependNode
+    from . import node_type
+    reload(node_type)
+    from .node_type import dependNode
     reload(dependNode)
-    from .node import dagNode
+    from .node_type import dagNode
     reload(dagNode)
-    from .node import transform
+    from .node_type import transform
     reload(transform)
-    from .test import maya_test
-    reload(maya_test)
-    from .test import api_test
-    reload(api_test)
-    from .test import attribute_test
-    reload(attribute_test)
-    from .test import node_test
-    reload(node_test)
 
 
 def debug(func):
@@ -38,8 +30,6 @@ def debug(func):
 
 
 class SetterProperty(object):
-    # TODO:
-    # maybe getter auto inherit here with obj.super?
     def __init__(self, func, doc=None):
         self.func = func
         self.__doc__ = doc if doc is not None else func.__doc__
