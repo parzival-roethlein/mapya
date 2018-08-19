@@ -2,10 +2,10 @@
 dagNode > (shape > geometryShape >) deformableShape
 
 """
-from . import dagNode
+from dagNode import DagNode
 
 
-class DeformableShape(dagNode.DagNode):
+class DeformableShape(DagNode):
 
     # ########################
     # make existing attrs settable
