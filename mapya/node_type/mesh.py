@@ -19,5 +19,6 @@ class Mesh(DeformableShape):
 
     @utils.SetterProperty
     def pnts(self, value):
+        """does only set positions of existing vertices"""
         mc.pntsSetPr(self.name, value)
 

@@ -1,57 +1,73 @@
-pythonic maya node api prototype
+pythonic maya node api - currently prototype stage, unstable, not for production
 
 
 DESCRIPTION
 connect python classes to maya objects (node = instance, node.attr = instance attribute, plug = instance)
-pythonic attribute interaction, not java-esque (properties instead of getters/setters)
+pythonic attribute interaction (properties), not only java-esque (getter/setter)
 makes some attributes settable: transform.matrix, mesh.pnts, ...
-stable: undo/redo should always work
-stable: everything should work with different maya settings (scene units, ...)  -> make unit tests run with all different settings?
+stable: undo/redo should always work -> TODO: unittests
+stable: works with different maya settings (scene units, ...)  -> TODO: unittests
 fast: python api 2.0, mpxcommand for computation heavy commands (mesh.pnts.set())
 
 
 USAGE
-import maya.cmds as mc
+import mapya
+from mapya import utils
+utils.reload_all()
 from mapya.node import Node
-cube = Node(mc.polyCube()[0])
+import maya.cmds as mc
+
+# standard Node
+cube = mapya.node.Node(mc.polyCube()[0])
 sphere = Node(mc.polySphere()[0])
-# easy attribute interaction
-cube.translateY = 3
-cube.attr('tx').set(2)
-# makes more attributes settable
+cube # Result: Node(u'pCube1') #
+repr(cube) # Node(u'pCube1')
+str(cube) # Result: 'pCube1' #
+cube.name # Result: u'pCube1' #
+cube.name = 'my_cube' # my_cube
+cube.name = sphere.name # pSphere2
+mc.getAttr(cube.ty) # Result: 0.0 #
+cube.ty = 2
+mc.getAttr(cube.ty) # Result: 2.0 #
+mc.getAttr(cube.ty) == cube.ty.get() # Result: True #
+sphere.ty = cube.ty
+sphere.ty.get() # Result: 2.0 #
+
+# node type features (to demonstrate settable matrix attribute)
+TypedNode = Node.get_typed_instance
+cube = TypedNode(cube.name)
+sphere = TypedNode(sphere.name)
+sphere # Result: Transform(u'pSphere1') #
+cube.tx = 3
+sphere.tx.get() # Result: 0.0 #
 sphere.matrix = cube.matrix
-#sphere.pnts = cube.pnts # add plugin to mapya
-# makes more maya object properties behave like attributes
-#sphere.name = 'test'
-#sphere.name = cube.name
-# get/set for nodes and attributes
-#sphere.set(lock=True)
-#sphere.tx.set(lock=True, keyable=False)
+sphere.tx.get() # Result: 3.0 #
+
 # maya.cmds wrapper
-sphere.mc.listRelatives(children=True) # same as mc.listRelatives(sphere.name, children=True)
+#sphere.mc.listRelatives(children=True)
 
 
 DECISIONS
-- instead of node type classes, just implement attribute types? since nodes are just attribute containers that could make it more simple, just a long list of attribute classes. api MObjects are needed only once on node thou -> used attributes dynamically load required MObject in node?
+- instead of node type modules, implement attribute type modules? since nodes are just attribute containers that could make it more simple, just a long list of attribute classes. api MObjects are needed only once on node thou -> used attributes dynamically load required MObject in node?
 - there should not be the option of name clashes of python features and maya attribute names (node.name can be the mapya feature or an existing node attribute)
--- option: all mapya custom behavior in a namespace: my_node.mp.name = 'adsf', my_node.mp.lock = True (lock or locked?)# similar to the maya.cmds wrapper
--- option: all maya attribute access in node.attr('tx'). but then it is getters/setters again
+-- option: all mapya custom behavior in a namespace (similar to the mapya maya.cmds wrapper): my_node.mp.name = 'adsf'
+-- option: only allow maya attribute access with node.attr('tx'). but then it is only getters/setters again?
 -- option: split mapya into two APIs one just for attribute interaction, one for attaching custom python classes to maya objects where python names have priority in case of clash with maya attribute name
-- repr return instance constructor or maya name?
-- interface to serialize python data in maya attributes? (maya string attribute probably)
+- should repr return instance info or maya name?
+- interface to serialize python data in maya attributes? (in maya string attribute probably)
 - pythonic (PEP8) or maya style guide # should probably stick to maya conventions
 - maybe don't add existing one line functions from maya.cmds or maya.api.OpenMaya (example, myDagNode.isVisible() is unnecessary since user can: myDagNode.api.MDagPath.isVisible())
 - stick to maya convention that shape commands can be run on shape transforms? against python zen "explicit is better than implicit" shapetransform.pnts -> shapetransform.shape.pnts should probably stick to maya behavior
-- auto convert return values to mapya.Node/Attribute? probably not
+- auto convert return values to mapya Node/Attribute instances? probably not
 - api module changes
 -- should node types classes detect api class automatically?
 -- merge api module code into the node_type classes?
-makes more maya object properties behave like maya attributes:
-- maya node
--- get+set: name, lock, parent
--- get: child, children, shape (maybe)
-- maya attribute
--- get+set: value, default_value, name, lock, keyable, channel_box, min, max, mute, node
+- makes more maya object properties behave like maya attributes (this certainly only if mapya features have separate namespace, otherwise too many name clashes)
+-- maya node
+--- get+set: name, lock, parent
+--- get: child, children, shape (maybe)
+-- maya attribute
+--- get+set: value, default_value, name, lock, keyable, channel_box, min, max, mute, node
 
 
 TODO (maybe):

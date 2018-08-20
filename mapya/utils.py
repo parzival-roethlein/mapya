@@ -10,14 +10,21 @@ def reload_all():
     reload(api)
     from . import attribute
     reload(attribute)
-    from . import node_type
-    reload(node_type)
+    from . import node
+    reload(node)
+    # TODO: reload node_type package
     from .node_type import dependNode
     reload(dependNode)
     from .node_type import dagNode
     reload(dagNode)
     from .node_type import transform
     reload(transform)
+    from .node_type import objectSet
+    reload(objectSet)
+    from .node_type import deformableShape
+    reload(deformableShape)
+    from .node_type import mesh
+    reload(mesh)
 
 
 def debug(func):

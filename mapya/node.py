@@ -1,5 +1,5 @@
 
-
+import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 from . import attribute
@@ -42,7 +42,7 @@ class Node(api.MObject):
         return self.name
 
     # ########################
-    # maya attribute ingest
+    # maya attribute access
     # ########################
 
     def __getattr__(self, name):
@@ -66,10 +66,24 @@ class Node(api.MObject):
         if long_name not in self.__attrs__:
             self.__attrs__[long_name] = attribute.Attribute(full_name)
         elif self.__attrs__[long_name].MPlug.isDynamic:
-            # look for name changes
+            # catch name changes
             instance_name = self.__attrs__[long_name].attrName()
             if instance_name != long_name:
                 self.__attrs__[instance_name] = self.__attrs__[long_name]
                 self.__attrs__[long_name] = attribute.Attribute(full_name)
         return self.__attrs__[long_name]
+
+    # ########################
+    # new mapya attribute
+    # ########################
+
+    @property
+    def name(self):
+        sel_list = om.MSelectionList()
+        sel_list.add(self.MObject)
+        return sel_list.getSelectionStrings(0)[0]
+
+    @name.setter
+    def name(self, value):
+        mc.rename(self.name, value)
 

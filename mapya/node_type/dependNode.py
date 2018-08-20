@@ -18,15 +18,7 @@ class DependNode(Node):
         super(DependNode, self).__init__(*args, **kwargs)
 
     '''
-    @property
-    def name(self):
-        sel_list = om.MSelectionList()
-        sel_list.add(self.MObject)
-        return sel_list.getSelectionStrings(0)[0]
-
-    @name.setter
-    def name(self, value):
-        mc.rename(self.name, value)
+    
 
     @property
     def locked(self):
