@@ -41,5 +41,6 @@ class ObjectSet(DependNode):
     @members.setter
     def members(self, value):
         mc.sets(clear=self.name)
-        mc.sets(value, include=self.name)
+        if value:
+            mc.sets(value, include=self.name)
 

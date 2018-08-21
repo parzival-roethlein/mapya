@@ -20,7 +20,7 @@ utils.reload_all()
 from mapya.node import Node
 
 mc.file(new=True, force=True)
-# default Node
+# Node
 cube = Node(mc.polyCube()[0])
 sphere = Node(mc.polySphere()[0])
 cube # Node(u'pCube1')
@@ -36,14 +36,14 @@ sphere.ty < cube.ty # True
 cube.name # u'pCube1'
 cube.name = 'my_cube' # my_cube
 
-# maya type node 
+# Transform 
 TypedNode = Node.get_typed_instance
 cube = TypedNode(str(cube))
-cube # Transform(u'pSphere1_cube')
+cube # Transform(u'my_cube')
 sphere = TypedNode(str(sphere))
-# node type specific settable attributes
+# node type specific attributes made settable
 sphere.matrix = cube.matrix
-# node type specific new mapya attributes
+# new node type specific mapya attributes
 sphere.parent = cube
 cube.children # [u'my_cubeShape', u'pSphere1']
 sphere.locked = True
@@ -52,19 +52,29 @@ cube.v = False
 sphere.v.get() # True
 sphere.visible # False
 
+# ObjectSet
+set_ = TypedNode(mc.sets(empty=True))
+multiply_divide = mc.createNode('multiplyDivide')
+# make settable
+set_.dagSetMembers = [cube, sphere]
+set_.dnSetMembers = multiply_divide
+# new
+set_.members # [u'pSphere1', u'my_cube', u'multiplyDivide1']
+set_.members = []
+
 # maya.cmds wrapper
-sphere.mc.listRelatives(children=True) # [u'pSphere1_cubeShape', u'pSphere1']
+sphere.mc.listRelatives(children=True) # [u'my_cubeShape', u'pSphere1']
 ```
 
 ### DECISIONS
 * there should not be the possibility of name clashes between mapya and maya attributes (node.name, transform.parent) 
-  * option: allow few exceptions: node.api.MObject, node.mc.listRelatives()?
+  * option: allow few exceptions that apply to all nodes: node.api.MObject, node.mc.listRelatives()?
   * option: create mapya namespace: similar to the mapya maya.cmds wrapper: my_node.mp.name = 'new_name'.
   * option: don't create new mapya attributes in the first place
   * option: maya attr namespace or function: only allow maya access with node.attr('tx'), namespace: node.attr.tx?
 * should node.my_attr return value and not attribute instance?
 * instead of node type modules, implement attribute type modules? since nodes are just attribute containers that could make it more simple, just a long list of attribute classes. api MObjects are needed only once on node thou -> used attributes dynamically load required MObject in node?
-* should repr return instance info or maya name?
+* should node and attribute repr return instance info or maya name?
 * pythonic (PEP8) or maya style guide # should probably stick to maya conventions
 * maybe don't add existing one line functions from maya.cmds or maya.api.OpenMaya (example, myDagNode.isVisible() is unnecessary since user can: myDagNode.api.MDagPath.isVisible())
 * stick to maya convention that shape commands can be run on shape transforms? against python zen "explicit is better than implicit" shapetransform.pnts -> shapetransform.shape.pnts should probably stick to maya behavior
