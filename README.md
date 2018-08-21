@@ -52,7 +52,7 @@ sphere.mc.listRelatives(children=True) # [u'pSphere1_cubeShape', u'pSphere1']
 ```
 
 ### DECISIONS
-* there should not be the option of name clashes between mapya and maya attributes (node.name, transform.parent) 
+* there should not be the possibility of name clashes between mapya and maya attributes (node.name, transform.parent) 
   * option: allow few exceptions: node.api.MObject, node.mc.listRelatives()?
   * option: create mapya namespace: similar to the mapya maya.cmds wrapper): my_node.mp.name = 'new_name'.
   * option: don't create new mapya attributes in the first place

@@ -11,6 +11,12 @@ maya
 # ######################
 # unittests - local
 # ######################
+import sys
+sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
+import api_test
+reload(api_test)
+api_test.run()
+
 from mapya import utils
 reload(utils)
 utils.reload_all()
@@ -25,10 +31,11 @@ import unittest
 import maya.cmds as mc
 
 from mapya import api
-from . import maya_test
+import maya_test
+from maya_test import MayaTest
 
 
-class TestMObject(maya_test.MayaTest):
+class TestMObject(MayaTest):
     def test_valid_creation(self):
         transform = api.MObject(maya_test.DEFAULTS['transform_1'])
         transform.MObject
@@ -58,7 +65,7 @@ class TestMObject(maya_test.MayaTest):
             transform.MObjectHandle
 
 
-class TestMDagPath(maya_test.MayaTest):
+class TestMDagPath(MayaTest):
     def test_invalid_access(self):
         transform = api.MDagPath(maya_test.DEFAULTS['transform_1'])
         transform.MDagPath
@@ -67,7 +74,7 @@ class TestMDagPath(maya_test.MayaTest):
             transform.MDagPath
 
 
-class TestMPlug(maya_test.MayaTest):
+class TestMPlug(MayaTest):
     def test_invalid_access(self):
         transform = api.MPlug(maya_test.DEFAULTS['transform_1'] + '.tx')
         transform.__MPlug__

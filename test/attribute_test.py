@@ -15,7 +15,7 @@ maya
 import sys
 sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
 import attribute_test
-reload(attribute_test
+reload(attribute_test)
 attribute_test.run()
 
 """
@@ -25,7 +25,7 @@ import unittest
 import maya.cmds as mc
 
 from mapya import attribute
-from .maya_test import MayaTest
+from maya_test import MayaTest
 
 
 LONG_NAME = {

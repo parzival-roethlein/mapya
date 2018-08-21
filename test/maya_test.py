@@ -4,7 +4,7 @@ import maya.cmds as mc
 
 
 DEFAULTS = {
-    'scene': 'C:/Users/pz/Documents/git/mapya/tests/maya/scene_v001.ma',
+    'scene': 'C:/Users/paz/Documents/git/mapya/test/maya/scene_v001.ma',
     'transform_1': 'pSphere1',
     'transform_2': 'pSphere2',
     'transform_1_attr_tx': 'pSphere1.tx',
