@@ -59,36 +59,36 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
             node = full_attr[:full_attr.find('.')]
             attr = full_attr[full_attr.find('.') + 1:]
 
-        long_name = mc.attributeQuery(attr, node=node, longName=1)
-        return node + '.' + long_name
+        long_name = mc.attributeQuery(attr, node=node, longName=True)
+        return '{0}.{1}'.format(node, long_name)
 
     @staticmethod
     def get_short_name(*args, **kwargs):
         """short name version of get_long_name()"""
         long_name = Attribute.get_long_name(*args, **kwargs)
         node, attr = long_name.split('.')
-        short_name = mc.attributeQuery(attr, node=node, shortName=1)
-        return node + '.' + short_name
+        short_name = mc.attributeQuery(attr, node=node, shortName=True)
+        return '{0}.{1}'.format(node, short_name)
 
     @staticmethod
     def __connectAttr__(source, target):
         # TODO refactor
         source = Attribute.get_long_name(full_attr=source)
         target = Attribute.get_long_name(full_attr=target)
-        input = mc.listConnections(target, source=1, destination=0, plugs=1)
-        if input:
-            input = input[0]
-            if input == source:
+        input_ = mc.listConnections(target, source=True, destination=False, plugs=True)
+        if input_:
+            input_ = input_[0]
+            if input_ == source:
                 # TODO: warning/logger?
                 print('warning, already connected: %s >> %s' % (source, target))
                 return
-            print('warning, overwriting connection: FROM %s TO %s >> %s' % (input, source, target))
-            mc.disconnectAttr(input, target)
+            print('warning, overwriting connection: FROM %s TO %s >> %s' % (input_, source, target))
+            mc.disconnectAttr(input_, target)
         try:
             mc.connectAttr(source, target)
         except:
-            if input:
-                mc.connectAttr(input, target)
+            if input_:
+                mc.connectAttr(input_, target)
 
     @staticmethod
     def __disconnectAttr__(source, target):
@@ -138,12 +138,10 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
         """mc.getAttr() wrapper"""
         # TODO: return translate/scale/rotate not as [(x,y,z)], but [x,y,z]?
         # (maybe same for all compound/multi attrs?)
-        if mc.attributeQuery(self.attr_name, n=self.node_name, message=1):
+        if mc.attributeQuery(self.attr_name, n=self.node_name, message=True):
             if kwargs:
                 raise NameError('message attribute has no flags?!')
-            # TODO:
-            # cleanup...
-            # also not working when executed twice (overwrites node var with unicode)
+            # TODO: cleanup... also not working when executed twice (overwrites node var with unicode)
             input = self.input()
             if input:
                 from node_type import Node
@@ -153,7 +151,7 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     def set(self, *args, **kwargs):
         """mc.setAttr() wrapper"""
-        # TODO fix temp code:
+        # TODO refactor. this is just temp code:
         # use recursive function for infinite levels? and DRY
         # and flatten lists / tuples to work with mc.setAttr
         # MAYBE also flatten lists in .get() function?
@@ -213,10 +211,10 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
         self.__disconnectAttr__(self, other)
 
     def inputs(self, **kwargs):
-        """wraps mc.listConnections(destination=0, plugs=1)"""
+        """wraps mc.listConnections(destination=False, plugs=True)"""
         attr_input = mc.listConnections(self.name,
-                                        destination=kwargs.pop('destination', 0),
-                                        plugs=kwargs.pop('plugs', 1),
+                                        destination=kwargs.pop('destination', False),
+                                        plugs=kwargs.pop('plugs', True),
                                         **kwargs)
         if attr_input:
             return attr_input
@@ -227,10 +225,10 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
         return (self.inputs(**kwargs) or [None])[0]
 
     def outputs(self, **kwargs):
-        """wraps mc.listConnections(source=0, plugs=1)"""
+        """wraps mc.listConnections(source=False, plugs=True)"""
         outputs = mc.listConnections(self.name,
-                                     source=kwargs.pop('source', 0),
-                                     plugs=kwargs.pop('plugs', 1),
+                                     source=kwargs.pop('source', False),
+                                     plugs=kwargs.pop('plugs', True),
                                      **kwargs)
         if outputs is None:
             return []

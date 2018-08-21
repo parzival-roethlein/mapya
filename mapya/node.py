@@ -16,11 +16,12 @@ class Node(api.MObject):
     def get_typed_instance(node_name):
         """return first match with given nodes inheritance chain """
         from . import node_type
+        # TODO: dynamically load all node_type modules
         type_modules = {'dagNode': node_type.dagNode.DagNode,
                         'deformableShape': node_type.deformableShape.DeformableShape,
-                        'transform': node_type.transform.Transform,
                         'mesh': node_type.mesh.Mesh,
-                        'objectSet': node_type.objectSet.ObjectSet}
+                        'objectSet': node_type.objectSet.ObjectSet,
+                        'transform': node_type.transform.Transform}
 
         node_types = mc.nodeType(node_name, inherited=True)
         node_types.reverse()
@@ -32,6 +33,7 @@ class Node(api.MObject):
 
     def __init__(self, name):
         super(Node, self).__init__(name)
+        # TODO: argument to return typed instance
         self.mc = Cmds(self)
         self.__attrs__ = {}
 
@@ -74,7 +76,7 @@ class Node(api.MObject):
         return self.__attrs__[long_name]
 
     # ########################
-    # mapya attribute
+    # new
     # ########################
 
     @property
