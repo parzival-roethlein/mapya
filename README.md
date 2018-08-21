@@ -33,7 +33,7 @@ sphere.ty == cube.ty # True
 sphere.ty -= 1
 sphere.ty < cube.ty # True
 # new mapya attributes
-cube.name # u'pSphere2'
+cube.name # u'pCube1'
 cube.name = 'my_cube' # my_cube
 
 # maya type node 
