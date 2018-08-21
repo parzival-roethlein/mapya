@@ -6,22 +6,22 @@
  u'geometryShape',
  u'deformableShape']
 """
-from dagNode import DagNode
-from ..utils import SetterProperty
+from mapya.node_type.dagNode import DagNode
 
 
 class DeformableShape(DagNode):
 
     # ########################
-    # maya attributes settable
+    # make settable
     # ########################
 
     @property
     def boundingBox(self):
+        print('boundingBox getter')
         # TODO: fix in attribute class?
+        # return self.attr('boundingBox').get()
         # RuntimeError: The attribute is compound with mixed type elements. #
-        #return self.attr('boundingBox').get()
-        return self.__getattr__('boundingBox')
+        pass
 
     @boundingBox.setter
     def boundingBox(self, value):

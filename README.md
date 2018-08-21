@@ -1,8 +1,8 @@
-pythonic maya node api - currently prototype stage, unstable, not for production
+pythonic maya node api - prototype stage, unstable, not for production
 
 
 ### DESCRIPTION
-* connect python classes to maya objects
+* connect python classes to maya nodes and attributes
 * pythonic attribute interaction (properties) in addition to getters and setter
 * makes more attributes settable: transform.matrix, mesh.pnts, ...
 * new attributes: node.name, transform.parent
@@ -29,7 +29,7 @@ str(cube) # 'pCube1'
 cube.ty = 2
 sphere.ty = cube.ty
 sphere.ty == cube.ty # True
-sphere.ty = cube.ty - 1
+sphere.ty -= 1
 sphere.ty < cube.ty # True
 # new mapya attributes
 cube.name # u'pSphere2'

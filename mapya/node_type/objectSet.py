@@ -1,17 +1,42 @@
 
+import maya.cmds as mc
 
-from .. import utils
-from .dependNode import DependNode
+from mapya.node_type.dependNode import DependNode
 
 
 class ObjectSet(DependNode):
-    @utils.SetterProperty
-    def dnSetMembers(self, value):
-        pass
 
-    @utils.SetterProperty
+    # ########################
+    # make settable
+    # ########################
+
+    @property
+    def dnSetMembers(self):
+        return self.attr('dnSetMembers').get()
+
+    @dnSetMembers.setter
+    def dnSetMembers(self, value):
+        mc.xform(self.name, matrix=value)
+
+    @property
+    def dagSetMembers(self):
+        return self.attr('dagSetMembers').get()
+
+    @dagSetMembers.setter
     def dagSetMembers(self, value):
-        pass
+        mc.xform(self.name, matrix=value)
+
+    # ########################
+    # new mapya attributes
+    # ########################
+
+    @property
+    def members(self):
+        return self.attr('dagSetMembers').get()
+
+    @members.setter
+    def members(self, value):
+        mc.xform(self.name, matrix=value)
 
     '''
     def __len__(self):

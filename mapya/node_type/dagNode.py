@@ -3,14 +3,14 @@ DependNode > (containerBase > entity >) dagNode
 """
 import maya.cmds as mc
 
-from .. import api
-from .dependNode import DependNode
+from mapya import api
+from mapya.node_type.dependNode import DependNode
 
 
 class DagNode(DependNode, api.MDagPath):
 
     # ########################
-    # mapya attributes
+    # new mapya attributes
     # ########################
 
     @property
@@ -20,5 +20,6 @@ class DagNode(DependNode, api.MDagPath):
             parent = mc.listRelatives(self.name, parent=True, fullPath=True)[0]
         return parent
 
-    def isVisible(self):
+    @property
+    def visible(self):
         return self.MDagPath.isVisible()

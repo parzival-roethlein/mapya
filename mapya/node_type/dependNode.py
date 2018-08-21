@@ -1,12 +1,16 @@
 
 import maya.cmds as mc
-from ..node import Node
+from mapya.node import Node
 
 
 class DependNode(Node):
 
     def __init__(self, *args, **kwargs):
         super(DependNode, self).__init__(*args, **kwargs)
+
+    # ########################
+    # new mapya attributes
+    # ########################
 
     @property
     def locked(self):

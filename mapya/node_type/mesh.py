@@ -11,13 +11,21 @@
 
 """
 import maya.cmds as mc
-from .. import utils
-from .deformableShape import DeformableShape
+
+from mapya.node_type.deformableShape import DeformableShape
 
 
 class Mesh(DeformableShape):
 
-    @utils.SetterProperty
+    # ########################
+    # make settable
+    # ########################
+
+    @property
+    def pnts(self):
+        return self.attr('pnts').get()
+
+    @pnts.setter
     def pnts(self, value):
         """does only set positions of existing vertices"""
         mc.pntsSetPr(self.name, value)

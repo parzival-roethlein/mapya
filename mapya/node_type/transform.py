@@ -1,11 +1,13 @@
+
 import maya.cmds as mc
-from . import dagNode
+
+from mapya.node_type.dagNode import DagNode
 
 
-class Transform(dagNode.DagNode):
+class Transform(DagNode):
 
     # ########################
-    # maya attributes settable
+    # make settable
     # ########################
 
     @property
@@ -25,7 +27,7 @@ class Transform(dagNode.DagNode):
         mc.xform(self.name, matrix=value, worldSpace=True)
 
     # ########################
-    # mapya attributes
+    # new mapya attributes
     # ########################
 
     @dagNode.DagNode.parent.setter
