@@ -11,16 +11,13 @@ maya
 # ######################
 # unittests - local
 # ######################
+from mapya import utils
+reload(utils)
+utils.reload_all()
 import sys
 sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
 import api_test
 reload(api_test)
-api_test.run()
-
-from mapya import utils
-reload(utils)
-utils.reload_all()
-import mapya.test.api_test as api_test
 api_test.run()
 
 

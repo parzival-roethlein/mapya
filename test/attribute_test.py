@@ -12,6 +12,9 @@ maya
 # ######################
 # unittests - local
 # ######################
+from mapya import utils
+reload(utils)
+utils.reload_all()
 import sys
 sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
 import attribute_test
