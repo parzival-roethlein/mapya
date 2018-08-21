@@ -57,24 +57,16 @@ import maya.cmds as mc
 
 
 class Cmds(object):
-    initialized = False
 
     @staticmethod
-    def wrap_node_func(func_arg, node, *args, **kwargs):
-        def inner_func(self, *args, **kwargs):
+    def wrap_node_func(func_arg, node):
+        def inner_func(*args, **kwargs):
             value = func_arg(node.name, *args, **kwargs)
             return value
         return inner_func
 
-    @staticmethod
-    def initialize_node(node):
+    def __init__(self, node):
         for callbackName in dir(mc):
             if not hasattr(mc.__dict__[callbackName], '__call__'):
                 continue
-            setattr(Cmds, callbackName, Cmds.wrap_node_func(getattr(mc, callbackName), node))
-        Cmds.initialized = True
-
-    def __init__(self, node):
-        if not Cmds.initialized:
-            Cmds.initialize_node(node)
-        self.node = node
+            setattr(self, callbackName, Cmds.wrap_node_func(getattr(mc, callbackName), node))

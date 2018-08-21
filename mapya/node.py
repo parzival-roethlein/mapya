@@ -32,8 +32,8 @@ class Node(api.MObject):
             return Node(node_name)
 
     def __init__(self, name):
+        # TODO: add option (argument) to return typed instance
         super(Node, self).__init__(name)
-        # TODO: argument to return typed instance
         self.mc = Cmds(self)
         self.__attrs__ = {}
 
