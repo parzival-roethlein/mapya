@@ -14,9 +14,9 @@ pythonic maya node api - prototype stage, unstable, not for production
 ```python
 import maya.cmds as mc
 import mapya
-import maya.utils
-reload(mapya.utils)
-mapya.utils.reload_all()
+from mapya import utils
+reload(utils)
+utils.reload_all()
 from mapya.node import Node
 
 mc.file(new=True, force=True)
@@ -45,7 +45,7 @@ sphere = TypedNode(str(sphere))
 sphere.matrix = cube.matrix
 # node type specific new mapya attributes
 sphere.parent = cube
-cube.children # [u'pSphere1_cubeShape', u'pSphere1']
+cube.children # [u'my_cubeShape', u'pSphere1']
 sphere.locked = True
 #mc.delete(sphere) # RuntimeError: Cannot delete locked node 'pSphere1'. # 
 cube.v = False
