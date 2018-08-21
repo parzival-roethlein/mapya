@@ -2,7 +2,6 @@
 Attach maya.cmds to a node
 - automatically give it's name as first argument
 -- mc.listRelatives(my_node, args) = my_node.mc.listRelatives(args)
-- returned attributes, nodes are automatically converted to Node / Attribute instances
 
 
 # FIRST VERSION
@@ -53,7 +52,6 @@ c = Cmds(nod)
 print c.listRelatives('pSphere1', parent=1)
 
 """
-from functools import wraps
 
 import maya.cmds as mc
 
@@ -62,21 +60,19 @@ class Cmds(object):
     initialized = False
 
     @staticmethod
+    def wrap_node_func(func_arg, node, *args, **kwargs):
+        def inner_func(self, *args, **kwargs):
+            value = func_arg(node.name, *args, **kwargs)
+            return value
+        return inner_func
+
+    @staticmethod
     def initialize_node(node):
         for callbackName in dir(mc):
             if not hasattr(mc.__dict__[callbackName], '__call__'):
                 continue
             setattr(Cmds, callbackName, Cmds.wrap_node_func(getattr(mc, callbackName), node))
         Cmds.initialized = True
-
-    @staticmethod
-    def wrap_node_func(func_arg, node, *args, **kwargs):
-        @wraps
-        def inner_func(self, *args, **kwargs):
-            value = func_arg(node.name, *args, **kwargs)
-            # TODO: convert return values to Node / Attr instances?
-            return value
-        return inner_func
 
     def __init__(self, node):
         if not Cmds.initialized:

@@ -74,7 +74,7 @@ class Node(api.MObject):
         return self.__attrs__[long_name]
 
     # ########################
-    # new mapya attribute
+    # mapya attribute
     # ########################
 
     @property

@@ -23,11 +23,9 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     @staticmethod
     def exists(node, attr):
-        """check if attribute exists in current maya scene"""
-        if mc.objExists(node + '.' + attr):
-            return True
-        else:
-            return False
+        """maya.cmds.objExists"""
+        # TODO: delete?
+        return mc.objExists('{0}.{1}'.format(node, attr))
 
     @staticmethod
     def get_long_name(*args, **kwargs):
@@ -74,14 +72,14 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     @staticmethod
     def __connectAttr__(source, target):
-        # TODO:
-        # refactor
+        # TODO refactor
         source = Attribute.get_long_name(full_attr=source)
         target = Attribute.get_long_name(full_attr=target)
         input = mc.listConnections(target, source=1, destination=0, plugs=1)
         if input:
             input = input[0]
             if input == source:
+                # TODO: warning/logger?
                 print('warning, already connected: %s >> %s' % (source, target))
                 return
             print('warning, overwriting connection: FROM %s TO %s >> %s' % (input, source, target))
@@ -99,8 +97,7 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
         try:
             mc.disconnectAttr(source, target)
         except RuntimeError as e:
-            # TODO
-            # make warning
+            # TODO: warning/logger?
             print(e)
 
     def __init__(self, name):
@@ -113,15 +110,11 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
         return self.name
 
     def is_same_as(self, attribute):
-        if Attribute.get_long_name(self) == Attribute.get_long_name(attribute):
-            return True
-        else:
-            return False
+        return Attribute.get_long_name(self) == Attribute.get_long_name(attribute)
 
     @property
     def name(self):
-        # TODO:
-        # custom AttributeName class that wraps mc.addAttr(), to edit niceName, ...?
+        # TODO: custom AttributeName class that wraps mc.addAttr(), to edit niceName, ...?
         plug_name = self.MPlug.name()
         if plug_name.endswith('.'):
             raise NameError('Invalid attribute: %s' % plug_name)
@@ -143,7 +136,7 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     def get(self, **kwargs):
         """mc.getAttr() wrapper"""
-        # TODO: return translate/scale/rotate not as [(x,y,z)], but [x,y,z]
+        # TODO: return translate/scale/rotate not as [(x,y,z)], but [x,y,z]?
         # (maybe same for all compound/multi attrs?)
         if mc.attributeQuery(self.attr_name, n=self.node_name, message=1):
             if kwargs:
@@ -160,45 +153,43 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     def set(self, *args, **kwargs):
         """mc.setAttr() wrapper"""
-        # TODO:
-        # temporary code...
+        # TODO fix temp code:
         # use recursive function for infinite levels? and DRY
         # and flatten lists / tuples to work with mc.setAttr
         # MAYBE also flatten lists in .get() function?
 
         # 1. step: make flat list (args can be tuples, ..)
         args_list1 = []
-        for x, each in enumerate(args):
-            if isinstance(each, (list, tuple)):
-                for each_child in each:
-                    if isinstance(each_child, (list, tuple)):
-                        for each_child_child in each_child:
-                            args_list1.append(each_child_child)
+        for x, arg in enumerate(args):
+            if isinstance(arg, (list, tuple)):
+                for arg_child in arg:
+                    if isinstance(arg_child, (list, tuple)):
+                        for arg_child_child in arg_child:
+                            args_list1.append(arg_child_child)
                     else:
-                        args_list1.append(each_child)
+                        args_list1.append(arg_child)
             else:
-                args_list1.append(each)
+                args_list1.append(arg)
 
         # 2. step convert attr instances to their value 
-        for x, each in enumerate(args_list1):
-            if isinstance(each, Attribute):
-                args_list1[x] = each.get()
+        for x, arg in enumerate(args_list1):
+            if isinstance(arg, Attribute):
+                args_list1[x] = arg.get()
 
         # 3. step: make list flat again (attribute.get() can be list of tuples again...)
         args_list = []
-        for x, each in enumerate(args_list1):
-            if isinstance(each, (list, tuple)):
-                for each_child in each:
-                    if isinstance(each_child, (list, tuple)):
-                        for each_child_child in each_child:
-                            args_list.append(each_child_child)
+        for x, arg in enumerate(args_list1):
+            if isinstance(arg, (list, tuple)):
+                for arg_child in arg:
+                    if isinstance(arg_child, (list, tuple)):
+                        for arg_child_child in arg_child:
+                            args_list.append(arg_child_child)
                     else:
-                        args_list.append(each_child)
+                        args_list.append(arg_child)
             else:
-                args_list.append(each)
+                args_list.append(arg)
 
-        # TODO:
-        # convert kwargs Attributes as well?
+        # TODO convert kwargs Attributes as well?
         mc.setAttr(self.name, *args_list, **kwargs)
 
     def connect(self, other):

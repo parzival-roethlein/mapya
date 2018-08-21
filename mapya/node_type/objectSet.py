@@ -6,11 +6,11 @@ from .dependNode import DependNode
 
 class ObjectSet(DependNode):
     @utils.SetterProperty
-    def dnMembers(self, value):
+    def dnSetMembers(self, value):
         pass
 
     @utils.SetterProperty
-    def dagMembers(self, value):
+    def dagSetMembers(self, value):
         pass
 
     '''

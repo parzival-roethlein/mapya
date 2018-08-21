@@ -8,7 +8,6 @@ class Transform(dagNode.DagNode):
     # maya attributes settable
     # ########################
 
-    # TODO use SetterProperty?
     @property
     def matrix(self):
         return self.attr('matrix').get()
@@ -19,13 +18,12 @@ class Transform(dagNode.DagNode):
 
     @property
     def worldMatrix(self):
-        return self.__getattr__('worldMatrix')
+        return self.attr('worldMatrix').get()
 
     @worldMatrix.setter
     def worldMatrix(self, value):
         mc.xform(self.name, matrix=value, worldSpace=True)
 
-    '''
     # ########################
     # mapya attributes
     # ########################
@@ -40,5 +38,4 @@ class Transform(dagNode.DagNode):
     @property
     def children(self):
         return mc.listRelatives(self.name) or []
-    '''
 

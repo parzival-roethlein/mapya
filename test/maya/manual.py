@@ -9,11 +9,11 @@ myNode.special_joint = 'joint1'
 myNode.addAttr('skinning_joints', type='messageArray')
 myNode.skinning_joints = ['joint1', 'joint2']
 
-- attributes can not change type
--- myMetaNode.joint_count = 2.0
--- myMetaNode.joint_count = {'value':{'ty':1, 'tx':2} // # error (float to dict)
---- myMetaNode.all_joints = 'joint1'
---- myMetaNode.all_joints = ['joint1', 'joint2'] # error (single message to multi message)
+attributes can not change type
+- myMetaNode.joint_count = 2.0
+- myMetaNode.joint_count = {'value':{'ty':1, 'tx':2} // # error (float to dict)
+-- myMetaNode.all_joints = 'joint1'
+-- myMetaNode.all_joints = ['joint1', 'joint2'] # error (single message to multi message)
 """
 import maya.cmds as mc
 mc.polyCube()
@@ -24,7 +24,7 @@ mc.file(new=True, force=True)
 mc.polySphere()
 mc.polySphere()
 from mapya import utils;reload(utils);utils.reload_all()
-from mapya.node_type import Node
+from mapya.node import Node
 nod1 = Node('pSphere1')
 nod2 = Node('pSphere2')
 help(nod1)
@@ -42,7 +42,7 @@ nod1.tx // nod2.ty
 # DagNode
 # ######################
 from mapya import utils;reload(utils);utils.reload_all()
-from mapya.nodes import dagNode;reload(dagNode)
+from mapya.node_type import dagNode;reload(dagNode)
 dag1 = dagNode.DagNode('pSphere1')
 dag2 = dagNode.DagNode('pSphere2')
 print(dag1.matrix)
@@ -50,7 +50,7 @@ print(dag1.matrix)
 # Transform
 # ######################
 from mapya import utils;reload(utils);utils.reload_all()
-from mapya.nodes.transform import Transform
+from mapya.node_type.transform import Transform
 tra1 = Transform('pSphere1')
 tra2 = Transform('pSphere2')
 print(tra1.matrix)

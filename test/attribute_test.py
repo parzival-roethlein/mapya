@@ -12,9 +12,10 @@ maya
 # ######################
 # unittests - local
 # ######################
-from prmmeta.python import utils as meta_utils;reload(meta_utils)
-meta_utils.reload_all()
-import prmmeta.tests.attribute_test as attribute_test
+import sys
+sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
+import attribute_test
+reload(attribute_test
 attribute_test.run()
 
 """
@@ -23,8 +24,9 @@ import unittest
 
 import maya.cmds as mc
 
-from .maya_test import MayaTest
 from mapya import attribute
+from .maya_test import MayaTest
+
 
 LONG_NAME = {
     'default_compound_a': 'pSphere1.translate',
@@ -76,14 +78,11 @@ def create_dynamic_attributes(node):
         mc.addAttr(node, **attribute_flags)
 
 
-
-
 class TestInstance(MayaTest):
     def test_creation(self):
         for name in LONG_NAME.values():
             attr = attribute.Attribute(name)
             self.assertEqual(attr.name, name)
-
             # new scene, good error catching / no crashes when accessing old / invalid instances
 
 

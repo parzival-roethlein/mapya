@@ -4,6 +4,8 @@ from .logger import log
 
 def reload_all():
     """reload all project modules in the right order"""
+    from . import cmds
+    reload(cmds)
     from . import attribute_operators
     reload(attribute_operators)
     from . import api
@@ -36,6 +38,7 @@ def debug(func):
     return wrapper
 
 
+# TODO: create maya attribute setter property, so standard getter behavior does not have to get repeated
 class SetterProperty(object):
     def __init__(self, func, doc=None):
         self.func = func

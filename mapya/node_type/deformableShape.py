@@ -1,24 +1,30 @@
 """
-dagNode > (shape > geometryShape >) deformableShape
-
+[u'containerBase',
+ u'entity',
+ u'dagNode',
+ u'shape',
+ u'geometryShape',
+ u'deformableShape']
 """
 from dagNode import DagNode
+from ..utils import SetterProperty
 
 
 class DeformableShape(DagNode):
 
     # ########################
-    # make existing attrs settable
+    # maya attributes settable
     # ########################
 
-    # TODO:
-    # find SetterProperty that ignores getter?
     @property
     def boundingBox(self):
-        print('boundingBox getter')
-        return self.attr('boundingBox').get()
+        # TODO: fix in attribute class?
+        # RuntimeError: The attribute is compound with mixed type elements. #
+        #return self.attr('boundingBox').get()
+        return self.__getattr__('boundingBox')
 
     @boundingBox.setter
     def boundingBox(self, value):
+        # TODO: scale points to fit new bounding box?
         print('boundingBox setter: %s' % value)
-        # scale points to fit new bounding box
+

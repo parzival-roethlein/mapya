@@ -8,13 +8,13 @@ maya
 - edit
 - delete
 
-
 # ######################
 # unittests - local
 # ######################
-from mapya import utils as meta_utils;reload(meta_utils)
-meta_utils.reload_all()
-import mapya.tests.api_test as api_test
+from mapya import utils
+reload(utils)
+utils.reload_all()
+import mapya.test.api_test as api_test
 api_test.run()
 
 
@@ -24,8 +24,8 @@ import unittest
 
 import maya.cmds as mc
 
-from . import maya_test
 from mapya import api
+from . import maya_test
 
 
 class TestMObject(maya_test.MayaTest):
