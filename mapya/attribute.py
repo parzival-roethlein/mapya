@@ -15,8 +15,8 @@ MAYBE
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-from . import api
-from . import attribute_operators
+from mapya import api
+from mapya import attribute_operators
 
 
 class Attribute(api.MPlug, attribute_operators.AttributeOperators):

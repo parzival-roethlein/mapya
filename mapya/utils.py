@@ -1,5 +1,7 @@
+
 from functools import wraps
-from .logger import log
+
+from mapya.logger import log
 
 
 def reload_all():
@@ -17,12 +19,12 @@ def reload_all():
     # TODO: reload node_type package
     from .node_type import dependNode
     reload(dependNode)
+    from .node_type import objectSet
+    reload(objectSet)
     from .node_type import dagNode
     reload(dagNode)
     from .node_type import transform
     reload(transform)
-    from .node_type import objectSet
-    reload(objectSet)
     from .node_type import deformableShape
     reload(deformableShape)
     from .node_type import mesh

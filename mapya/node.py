@@ -2,9 +2,9 @@
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-from . import attribute
-from . import api
-from .cmds import Cmds
+from mapya import attribute
+from mapya import api
+from mapya.cmds import Cmds
 
 # DEFAULTS = {'return_typed_instances': True}
 
