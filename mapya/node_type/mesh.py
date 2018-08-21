@@ -18,7 +18,7 @@ from mapya.node_type.deformableShape import DeformableShape
 class Mesh(DeformableShape):
 
     # ########################
-    # make settable
+    # modify existing
     # ########################
 
     @property
@@ -28,5 +28,5 @@ class Mesh(DeformableShape):
     @pnts.setter
     def pnts(self, value):
         """does only set positions of existing vertices"""
-        mc.pntsSetPr(self.name, value)
+        mc.prPntsSetCmd(self.name, value)
 

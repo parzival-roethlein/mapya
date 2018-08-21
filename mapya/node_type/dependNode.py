@@ -1,4 +1,6 @@
-
+"""
+rename to 'containerBase' or 'entity'? utility nodes have other root parent
+"""
 import maya.cmds as mc
 from mapya.node import Node
 
@@ -9,7 +11,7 @@ class DependNode(Node):
         super(DependNode, self).__init__(*args, **kwargs)
 
     # ########################
-    # new mapya attributes
+    # new
     # ########################
 
     @property

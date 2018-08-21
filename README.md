@@ -12,13 +12,14 @@ pythonic maya node api - prototype stage, unstable, not for production
 
 ### USAGE
 ```python
-#mc.file(new=True, force=True)
 import maya.cmds as mc
 import mapya
-#reload(mapya.utils)
-#mapya.utils.reload_all()
+import maya.utils
+reload(mapya.utils)
+mapya.utils.reload_all()
 from mapya.node import Node
 
+mc.file(new=True, force=True)
 # default Node
 cube = Node(mc.polyCube()[0])
 sphere = Node(mc.polySphere()[0])
@@ -34,7 +35,6 @@ sphere.ty < cube.ty # True
 # new mapya attributes
 cube.name # u'pSphere2'
 cube.name = 'my_cube' # my_cube
-cube.name = '{}_cube'.format(sphere.name)# pSphere2
 
 # maya type node 
 TypedNode = Node.get_typed_instance
@@ -45,10 +45,15 @@ sphere = TypedNode(str(sphere))
 sphere.matrix = cube.matrix
 # node type specific new mapya attributes
 sphere.parent = cube
+cube.children # [u'pSphere1_cubeShape', u'pSphere1']
+sphere.locked = True
+#mc.delete(sphere) # RuntimeError: Cannot delete locked node 'pSphere1'. # 
+cube.v = False
+sphere.v.get() # True
+sphere.visible # False
 
 # maya.cmds wrapper
 sphere.mc.listRelatives(children=True) # [u'pSphere1_cubeShape', u'pSphere1']
-
 ```
 
 ### DECISIONS
@@ -57,6 +62,7 @@ sphere.mc.listRelatives(children=True) # [u'pSphere1_cubeShape', u'pSphere1']
   * option: create mapya namespace: similar to the mapya maya.cmds wrapper): my_node.mp.name = 'new_name'.
   * option: don't create new mapya attributes in the first place
   * option: maya attr namespace or function: only allow maya access with node.attr('tx'), namespace: node.attr.tx?
+* should node.my_attr return value and not attribute instance?
 * instead of node type modules, implement attribute type modules? since nodes are just attribute containers that could make it more simple, just a long list of attribute classes. api MObjects are needed only once on node thou -> used attributes dynamically load required MObject in node?
 * should repr return instance info or maya name?
 * pythonic (PEP8) or maya style guide # should probably stick to maya conventions
@@ -66,12 +72,6 @@ sphere.mc.listRelatives(children=True) # [u'pSphere1_cubeShape', u'pSphere1']
 * api module changes
   * should node types classes detect api class automatically?
   * merge api module code into the node_type classes?
-* makes more maya object properties behave like maya attributes (this certainly only if mapya features have separate namespace, otherwise too many name clashes)
-  * maya node
-    * get+set: name, lock, parent
-    * get: child, children, shape (maybe)
-  * maya attribute
-    * get+set: value, default_value, name, lock, keyable, channel_box, min, max, mute, node
 
 
 ### TODO (maybe):

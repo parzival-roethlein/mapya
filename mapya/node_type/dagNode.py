@@ -10,7 +10,7 @@ from mapya.node_type.dependNode import DependNode
 class DagNode(DependNode, api.MDagPath):
 
     # ########################
-    # new mapya attributes
+    # new
     # ########################
 
     @property

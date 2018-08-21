@@ -7,52 +7,39 @@ from mapya.node_type.dependNode import DependNode
 class ObjectSet(DependNode):
 
     # ########################
-    # make settable
+    # modify existing
     # ########################
 
     @property
     def dnSetMembers(self):
-        return self.attr('dnSetMembers').get()
+        return mc.listConnections('{}.dnSetMembers'.format(self.name), destination=False) or []
 
     @dnSetMembers.setter
     def dnSetMembers(self, value):
-        mc.xform(self.name, matrix=value)
+        if self.dnSetMembers:
+            mc.sets(self.dnSetMembers, remove=self.name)
+        mc.sets(value, include=self.name)
 
     @property
     def dagSetMembers(self):
-        return self.attr('dagSetMembers').get()
+        return mc.listConnections('{}.dagSetMembers'.format(self.name), destination=False) or []
 
     @dagSetMembers.setter
     def dagSetMembers(self, value):
-        mc.xform(self.name, matrix=value)
+        if self.dagSetMembers:
+            mc.sets(self.dagSetMembers, remove=self.name)
+        mc.sets(value, include=self.name)
 
     # ########################
-    # new mapya attributes
+    # new
     # ########################
 
     @property
     def members(self):
-        return self.attr('dagSetMembers').get()
+        return self.dagSetMembers + self.dnSetMembers
 
     @members.setter
     def members(self, value):
-        mc.xform(self.name, matrix=value)
+        mc.sets(clear=self.name)
+        mc.sets(value, include=self.name)
 
-    '''
-    def __len__(self):
-        return len(self.members)
-        #return mc.sets(self.name, q=True, size=True)
-    def add(self):
-        pass
-    def remove(self):
-        pass
-    def remove_try(self):
-        # remove object, but without error if non-member? look up naming convention
-        pass
-    def addMaya(self):
-        'behaves like maya.cmds.sets: only adds an object once'
-        pass
-    def removeMaya(self):
-        'behaves like maya.cmds.sets: no error when removing non-member'
-        pass
-   '''

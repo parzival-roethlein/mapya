@@ -7,7 +7,7 @@ from mapya.node_type.dagNode import DagNode
 class Transform(DagNode):
 
     # ########################
-    # make settable
+    # modify existing
     # ########################
 
     @property
@@ -27,10 +27,10 @@ class Transform(DagNode):
         mc.xform(self.name, matrix=value, worldSpace=True)
 
     # ########################
-    # new mapya attributes
+    # new
     # ########################
 
-    @dagNode.DagNode.parent.setter
+    @DagNode.parent.setter
     def parent(self, parent):
         if not parent:
             mc.parent(self.name, world=True)
