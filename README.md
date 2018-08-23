@@ -13,7 +13,6 @@ pythonic maya node api - prototype stage, unstable, not for production
 ### USAGE
 ```python
 import maya.cmds as mc
-import mapya
 from mapya import utils
 reload(utils)
 utils.reload_all()
@@ -21,58 +20,68 @@ from mapya.node import Node
 
 mc.file(new=True, force=True)
 # Node
-cube = Node(mc.polyCube()[0])
-sphere = Node(mc.polySphere()[0])
-cube # Node(u'pCube1')
-repr(cube) # Node(u'pCube1')
-str(cube) # 'pCube1'
+cube_node = Node(mc.polyCube()[0])
+sphere_node = Node(mc.polySphere()[0])
+cube_node # Node(u'pCube1')
+repr(cube_node) # Node(u'pCube1')
+str(cube_node) # 'pCube1'
 # pythonic attribute interaction
-cube.ty = 2
-sphere.ty = cube.ty
-sphere.ty == cube.ty # True
-sphere.ty -= 1
-sphere.ty < cube.ty # True
+cube_node.ty = 2
+sphere_node.ty = cube_node.ty
+sphere_node.ty == cube_node.ty # True
+sphere_node.ty -= 1
+sphere_node.ty < cube_node.ty # True
 # new mapya attributes
-cube.name # u'pCube1'
-cube.name = 'my_cube' # my_cube
+cube_node.name # u'pCube1'
+cube_node.name = 'my_cube' # my_cube
 
 # Transform 
 TypedNode = Node.get_typed_instance
-cube = TypedNode(str(cube))
-cube # Transform(u'my_cube')
-sphere = TypedNode(str(sphere))
+cube_transform = TypedNode(str(cube_node))
+cube_transform # Transform(u'my_cube')
+sphere_transform = TypedNode(str(sphere_node))
 # node type specific attributes made settable
-sphere.matrix = cube.matrix
+sphere_transform.matrix = cube_transform.matrix
 # new node type specific mapya attributes
-sphere.parent = cube
-cube.children # [u'my_cubeShape', u'pSphere1']
-sphere.locked = True
-#mc.delete(sphere) # RuntimeError: Cannot delete locked node 'pSphere1'. # 
-cube.v = False
-sphere.v.get() # True
-sphere.visible # False
+sphere_transform.locked = True
+#mc.delete(sphere_transform) # RuntimeError: Cannot delete locked node 'pSphere1'. # 
+sphere_transform.locked = False
+sphere_transform.parent = cube_transform
+cube_transform.children # [u'my_cubeShape', u'pSphere1']
+cube_transform.v = False
+sphere_transform.v.get() # True
+sphere_transform.visible # False
+cube_transform.v = True
+sphere_transform.matrix = cube_transform.matrix
+
 
 # ObjectSet
 set_ = TypedNode(mc.sets(empty=True))
 multiply_divide = mc.createNode('multiplyDivide')
 # make settable
-set_.dagSetMembers = [cube, sphere]
+set_.dagSetMembers = [cube_node, sphere_transform]
 set_.dnSetMembers = multiply_divide
 # new
 set_.members # [u'pSphere1', u'my_cube', u'multiplyDivide1']
 set_.members = []
 
+# Mesh
+sphere_mesh = TypedNode(sphere_transform.children[0])
+cube_mesh = TypedNode(cube_transform.children[0])
+sphere_mesh.pnts = {3: [0, 0, 0]}
+sphere_mesh.pnts = [[1, 1, 1], [2,2,2]]
+sphere_mesh.pnts = cube_mesh.pnts
+
 # maya.cmds wrapper
-cube.mc.listRelatives() # [u'my_cubeShape', u'pSphere1']
-sphere.mc.listRelatives() # [u'pSphereShape1']
+cube_node.mc.listRelatives() # [u'my_cubeShape', u'pSphere1']
 ```
 
 ### DECISIONS
 * there should not be the possibility of name clashes between mapya and maya attributes (node.name, transform.parent) 
-  * option: allow few exceptions that apply to all nodes: node.api.MObject, node.mc.listRelatives()?
-  * option: create mapya namespace: similar to the maya.cmds wrapper: my_node.mp.name = 'new_name'.
-  * option: don't create new mapya attributes in the first place
   * option: maya attr namespace or function: only allow maya access with node.attr('tx'), namespace: node.attr.tx?
+  * option: mapya attribute namespace: my_node.mp.name = 'new_name', my_set.mp.members
+  * option: allow few exceptions that apply to all nodes: node.api.MObject, node.mc.listRelatives()?
+  * option: don't create new mapya attributes in the first place
 * should node.my_attr return value and not attribute instance?
 * instead of node type modules, implement attribute type modules? since nodes are just attribute containers that could make it more simple, just a long list of attribute classes. api MObjects are needed only once on node thou -> used attributes dynamically load required MObject in node?
 * should node and attribute repr return instance info or maya name?

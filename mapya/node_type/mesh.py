@@ -10,9 +10,11 @@
  'mesh']
 
 """
+import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 from mapya.node_type.deformableShape import DeformableShape
+from mapya.plugins.prSetPntsCmd import py_prSetPntsCmd
 
 
 class Mesh(DeformableShape):
@@ -23,10 +25,12 @@ class Mesh(DeformableShape):
 
     @property
     def pnts(self):
-        return self.attr('pnts').get()
+        return om.MFnMesh(self.__MDagPath__).getPoints()
 
     @pnts.setter
     def pnts(self, value):
-        """does only set positions of existing vertices"""
-        mc.prPntsSetCmd(self.name, value)
+        if not mc.pluginInfo('prSetPntsCmd', q=True, loaded=True):
+            from mapya.plugins import prSetPntsCmd
+            mc.loadPlugin(prSetPntsCmd.__file__.replace('.pyc', '.py'))
+        py_prSetPntsCmd(self.name, positions=value)
 
