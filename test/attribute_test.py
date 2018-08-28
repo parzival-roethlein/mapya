@@ -9,7 +9,7 @@ import sys
 sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
 import attribute_test
 reload(attribute_test)
-attribute_test.add_user_attributes
+attribute_test.add_user_attributes()
 
 
 # RUN
@@ -19,9 +19,12 @@ utils.reload_all()
 
 import sys
 sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
+import maya_test
+reload(maya_test)
 import attribute_test
 reload(attribute_test)
 attribute_test.run()
+
 
 """
 
@@ -35,34 +38,37 @@ from mapya.attribute import Attribute
 from mapya.api import InvalidMayaObjectError
 
 
-def add_user_attributes(node):
+def add_user_attributes(nodes=None):
     """mc.addAttr() wrapper. used manually in the scene to create user attributes for testing"""
-    for attr in [
-            {'at': 'bool'},
-            {'at': 'long'},
-            {'at': 'short'},
-            {'at': 'byte'},
-            {'at': 'char'},
-            {'at': 'enum', 'enumName': 'zero:one:two:thousand=1000'},
-            {'at': 'float'},
-            {'at': 'double'},
-            {'at': 'doubleAngle'},
-            {'at': 'doubleLinear'},
+    if not nodes:
+        nodes = mc.ls(selection=True)
+    for node in nodes:
+        for attr in [
+                {'at': 'bool'},
+                {'at': 'long'},
+                {'at': 'short'},
+                {'at': 'byte'},
+                {'at': 'char'},
+                {'at': 'enum', 'enumName': 'zero:one:two:thousand=1000'},
+                {'at': 'float'},
+                {'at': 'double'},
+                {'at': 'doubleAngle'},
+                {'at': 'doubleLinear'},
 
-            {'dt': 'string'},
-            {'dt': 'stringArray'},
+                {'dt': 'string'},
+                {'dt': 'stringArray'},
 
-            # {'at': 'compound'},
-            {'at': 'message'},
-            {'at': 'time'},
+                # {'at': 'compound'},
+                {'at': 'message'},
+                {'at': 'time'},
 
-            {'dt': 'matrix'},
+                {'dt': 'matrix'},
 
-            {'at': 'fltMatrix'}]:
-        attr_type = attr.get('at', '') or attr.get('dt', '')
-        if not attr_type:
-            raise ValueError
-        mc.addAttr(node, longName='{0}_user'.format(attr_type), **attr)
+                {'at': 'fltMatrix'}]:
+            attr_type = attr.get('at', '') or attr.get('dt', '')
+            if not attr_type:
+                raise ValueError
+            mc.addAttr(node, longName='{0}_user'.format(attr_type), **attr)
 
 
 def get_attributes(node, maya_attributes=True, user_attributes=True):
@@ -70,7 +76,7 @@ def get_attributes(node, maya_attributes=True, user_attributes=True):
     if maya_attributes:
         attributes += mc.listAttr(node, settable=True, write=True, unlocked=True, output=True, hasData=True, visible=True) or []
     if user_attributes:
-        attributes += mc.listAttr(node, userDefined=True) or []
+        attributes += mc.listAttr(node, userDefined=True, settable=True, output=True) or []
 
     # temp filter
     filtered_attributes = []
@@ -132,6 +138,8 @@ class TestInstance(MayaTest):
 class TestGetSet(MayaTest):
     def test_get(self):
         for name, instance in get_scene_attribute_dict().iteritems():
+            if mc.attributeQuery(instance.attr_name, n=instance.node_name, message=True):
+                continue
             self.assertEqual(mc.getAttr(name), instance.get())
 
     def test_set(self):

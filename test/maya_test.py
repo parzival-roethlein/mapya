@@ -5,7 +5,7 @@ import maya.cmds as mc
 
 class MayaTest(unittest.TestCase):
     SCENE = {
-        'path': 'C:/Users/paz/Documents/git/mapya/test/maya/maya_test_scene_v002.ma',
+        'path': 'C:/Users/paz/Documents/git/mapya/test/maya/maya_test_scene_v003.ma',
         'transform_1': 'test_transform1',
         'transform_1_attr_1': 'test_transform1.translateX',
         'transform_2': 'test_transform2',

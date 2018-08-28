@@ -6,6 +6,7 @@ maya api objects wrapper
 """
 
 import maya.api.OpenMaya as om
+import maya.cmds as mc
 
 
 class InvalidMayaObjectError(Exception):
@@ -84,9 +85,13 @@ class MPlug(MObject):
         # if(not self.__MPlug.asMDataHandle().data().isNull()):
         #    raise InvalidMayaObjectError('MPlug asMDataHandle is null')
         #
+        #
         # workaround: validate node MObjectHandle
         if self.__MPlug__.isNull or not self.MObjectHandle:
             raise InvalidMayaObjectError()
+        if not mc.objExists(self.__MPlug__.name()):
+            # TODO: this does crash maya in some deleteAttr redo/undo combinations, also evaluates strange when undo deleteAttr
+            raise InvalidMayaObjectError('Does not exist: {}'.format(self.__MPlug__.name()))
         return self.__MPlug__
 
     '''

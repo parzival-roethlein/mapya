@@ -136,17 +136,10 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     def get(self, **kwargs):
         """mc.getAttr() wrapper"""
-        # TODO: return translate/scale/rotate not as [(x,y,z)], but [x,y,z]?
-        # (maybe same for all compound/multi attrs?)
-        if mc.attributeQuery(self.attr_name, n=self.node_name, message=True):
+        if mc.attributeQuery(self.attr_name, node=self.node_name, message=True):
             if kwargs:
                 raise NameError('message attribute has no flags?!')
-            # TODO: cleanup... also not working when executed twice (overwrites node var with unicode)
-            input = self.input()
-            if input:
-                from node_type import Node
-                return Node(input[:input.rfind('.')])
-            return
+            return self.input()
         return mc.getAttr(self.name, **kwargs)
 
     def set(self, *args, **kwargs):
@@ -155,6 +148,7 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
         # use recursive function for infinite levels? and DRY
         # and flatten lists / tuples to work with mc.setAttr
         # MAYBE also flatten lists in .get() function?
+        # TODO maya compound attr get returns [(x,y,z)] ... should be supported
 
         # 1. step: make flat list (args can be tuples, ..)
         args_list1 = []

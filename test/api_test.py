@@ -6,6 +6,8 @@ utils.reload_all()
 
 import sys
 sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
+import maya_test
+reload(maya_test)
 import api_test
 reload(api_test)
 api_test.run()
