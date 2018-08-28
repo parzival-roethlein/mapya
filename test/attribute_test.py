@@ -197,9 +197,9 @@ class TestMapyaProperties(MayaTest):
 
 
 def run():
-    print('\n%s\nattribute_test start\n%s' % ('-' * 70, '-' * 70))
+    print('\n{0}\n{1} start\n{2}'.format('-' * 70, __name__, '-' * 70))
     all_tests = unittest.TestSuite()
     for each in [TestInstance, TestGetSet, TestMapyaProperties, TestConnect]:
         all_tests.addTest(unittest.makeSuite(each))
     result = unittest.TextTestRunner(verbosity=2).run(all_tests)
-    print('%s\ntest result:\n%s\n%s\n' % ('-' * 70, result, '-' * 70))
+    print('{0}\n{1} result:\n{2}\n{3}\n'.format('-' * 70, __name__, result, '-' * 70))

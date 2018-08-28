@@ -25,7 +25,7 @@ class Mesh(DeformableShape):
 
     @property
     def pnts(self):
-        return om.MFnMesh(self.__MDagPath__).getPoints()
+        return om.MFnMesh(self.MDagPath).getPoints()
 
     @pnts.setter
     def pnts(self, value):
