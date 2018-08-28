@@ -1,27 +1,25 @@
+"""
+make operators use the attribute value, not the attribute instance
+
+NOTE:
+- floordiv (//) ignored, since it is used to disconnect attributes
+- rshift (>>), lshift (<<) ignored since it is used to connect attributes
+
+TODO:
+- add Identity operators (is, is not) to compare maya attributes (my_node.attr1 is my_node.attr2 # false)
+- add bitwise operators? (currently used for (dis-)connecting)
+- inner_operator functool.wraps
+"""
 import operator
 
 
-# TODO:
-# from functools import wraps
-
 class AttributeOperators(object):
-    """
-    makes operators use the attribute values, not the attribute instmances
-
-    NOTE:
-    - floordiv (//) ignored, since it is used to disconnect attributes
-    - rshift (>>), lshift (<<) ignored since it is used to connect attributes
-
-    TODO:
-    - overwrite "is" operator to compare maya attribute representations?
-    - add the unused bitwise operators?
-    """
     pass
 
 
 def wrap_operator(operator_func, inplace=False):
     # TODO:
-    # @wraps # copy metadata (documentation string, ...)
+    # @wraps
     def inner_operator(self, other):
         if isinstance(other, AttributeOperators):
             other = other.get()
@@ -35,10 +33,10 @@ def wrap_operator(operator_func, inplace=False):
     return inner_operator
 
 
-math_op = ['__add__', '__sub__', '__mul__', '__pow__', '__div__', '__truediv__', '__mod__']
-logic_op = ['__lt__', '__le__', '__eq__', '__ne__', '__gt__', '__ge__']
-for each in math_op + logic_op:
-    setattr(AttributeOperators, each, wrap_operator(getattr(operator, each)))
-math_iop = [each.replace('__', '__i', 1) for each in math_op]
-for each in math_iop:
-    setattr(AttributeOperators, each, wrap_operator(getattr(operator, each), inplace=True))
+math_operators = ['__add__', '__sub__', '__mul__', '__pow__', '__div__', '__truediv__', '__mod__']
+logic_operators = ['__lt__', '__le__', '__eq__', '__ne__', '__gt__', '__ge__']
+for op in math_operators + logic_operators:
+    setattr(AttributeOperators, op, wrap_operator(getattr(operator, op)))
+math_inplace_operators = [op.replace('__', '__i', 1) for op in math_operators]
+for inplace_op in math_inplace_operators:
+    setattr(AttributeOperators, inplace_op, wrap_operator(getattr(operator, inplace_op), inplace=True))

@@ -74,28 +74,26 @@ cube_node.mc.listRelatives() # [u'my_cubeShape', u'pSphere1']
 ```
 
 ### BIG DECISIONS
-* there should not be the possibility of name clashes between python functions / properties and maya attributes (node.name, transform.parent) 
+* there should not be the possibility of name clashes between mapya functions / properties and maya attributes
   * option: maya attr namespace and/or function: my_transform.attr.tx / my_transform.attr('tx')
   * option: python property/function namespace: my_node.py.name, my_node.py.MObject, my_set.py.members
-  * option: option to disable python functions / properties
+  * option: option to disable mapya functions / properties
 * instead of node type modules, implement attribute type modules? since nodes are just attribute containers that could simplify the project
 
 ### SMALL DECISIONS
 * should my_node.my_attr return value instead of attribute instance?
-* pythonic (PEP8) or maya style guide # should probably stick to maya conventions
 * do or do not implement functions/properties that can be done in one (short) line with maya.cmds or maya.api.OpenMaya (my_dag_node.visible user can: dag_node.\_\_MDagPath\_\_.isVisible())
 * should node and attribute repr return instance info or maya name?
 * follow maya convention that shape commands can be run on the shapes transform? against python zen "explicit is better than implicit"? shapetransform.pnts -> shapetransform.shape.pnts should probably stick to maya behavior
 * auto convert return values to mapya Node/Attribute instances? probably not
 * api module changes
-  * should node types classes detect api class automatically?
+  * should node type classes detect api class automatically?
   * merge api module code into the node_type classes?
-* remove attribute bitshift operators for (dis-)connecting attributes?
 
 ### TODO
+* mixedCase maya naming
 * stability tests: check undo/redo for everything
 * stability tests: run tests with different maya settings (scene units, ..) 
-* performance tests: in the future when performance becomes a factor
 
 ### TODO (maybe)
 * interface to serialize python data in maya attributes? (in maya string attribute probably)
@@ -104,7 +102,7 @@ cube_node.mc.listRelatives() # [u'my_cubeShape', u'pSphere1']
 * use UUID instead of MObject or maybe for other purposes (serializer)?
   * PICKLE code instances on maya objects? (but probably has to ignore api MObjects, since the address changes when restarting? use UUID?)
 * fix maya.cmds inconsistencies cmds.set(objects, rm=set_name) cmds.set(objects, add=set_name) -> probably not, stick to maya behavior
-* slots version of all node classes / attributes for speed purposes? only if things get slow in the future
+* performance tests, slots class versions
 
 ### RELATED
 * PyMEL: https://github.com/LumaPictures/pymel

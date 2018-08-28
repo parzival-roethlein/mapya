@@ -36,7 +36,7 @@ def py_prSetPntsCmd(mesh, positions, space=om.MSpace.kObject):
     """
     prSetPntsCmd wrapper
     :param mesh: mesh shape name
-    :param positions: list or dictionary {vertex_id: [x, y, z], ...}
+    :param positions: list [[v1_x, v1_y, v1_z], ...] or dictionary {v_id: [v1_x, v1_y, v1_z], ...}
     :param space: default om.kSpace.kObject
     :return:
     """
