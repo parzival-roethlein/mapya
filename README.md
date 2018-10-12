@@ -4,7 +4,7 @@ pythonic maya node api - prototype stage, not for production
 * interact with maya nodes and attributes through python classes
 * pythonic: properties (in addition to getters and setter), object oriented
 * makes more maya attributes settable: transform.matrix, mesh.pnts, ...
-* introduces new convenience attributes: node.name, transform.parent
+* introduces new convenience properties: node.name, transform.parent
 * fast: python api 2.0 and MPxCommands for compute-intensive commands (mesh.pnts.set())
 
 ### USAGE
@@ -34,9 +34,9 @@ cube_node.name = 'my_cube' # my_cube
 
 # Transform 
 TypedNode = Node.get_typed_instance
-cube_transform = TypedNode(str(cube_node))
+cube_transform = TypedNode(cube_node.name)
 cube_transform # Transform(u'my_cube')
-sphere_transform = TypedNode(str(sphere_node))
+sphere_transform = TypedNode(sphere_node.name)
 # made settable
 sphere_transform.matrix = cube_transform.matrix
 # new mapya attributes
@@ -82,7 +82,7 @@ cube_node.mc.listRelatives() # [u'my_cubeShape', u'pSphere1']
 
 ### SMALL DECISIONS
 * should my_node.my_attr return value instead of attribute instance?
-* do or do not implement functions/properties that can be done in one (short) line with maya.cmds or maya.api.OpenMaya (my_dag_node.visible user can: dag_node.\_\_MDagPath\_\_.isVisible())
+* do or do not implement functions/properties that can be done in one (short) line with maya.cmds or maya.api.OpenMaya (my_dag_node.visible user can: dag_node.MDagPath.isVisible())
 * should node and attribute repr return instance info or maya name?
 * follow maya convention that shape commands can be run on the shapes transform? against python zen "explicit is better than implicit"? shapetransform.pnts -> shapetransform.shape.pnts should probably stick to maya behavior
 * auto convert return values to mapya Node/Attribute instances? probably not

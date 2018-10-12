@@ -206,13 +206,8 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     def inputs(self, **kwargs):
         """wraps mc.listConnections(destination=False, plugs=True)"""
-        attr_input = mc.listConnections(self.name,
-                                        destination=kwargs.pop('destination', False),
-                                        plugs=kwargs.pop('plugs', True),
-                                        **kwargs)
-        if attr_input:
-            return attr_input
-        return []
+        return mc.listConnections(self.name, destination=kwargs.pop('destination', False),
+                                  plugs=kwargs.pop('plugs', True), **kwargs) or []
 
     def input(self, **kwargs):
         """:returns: single/first element of self.inputs()"""
@@ -220,13 +215,8 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
 
     def outputs(self, **kwargs):
         """wraps mc.listConnections(source=False, plugs=True)"""
-        outputs = mc.listConnections(self.name,
-                                     source=kwargs.pop('source', False),
-                                     plugs=kwargs.pop('plugs', True),
-                                     **kwargs)
-        if outputs is None:
-            return []
-        return outputs
+        return mc.listConnections(self.name, source=kwargs.pop('source', False),
+                                  plugs=kwargs.pop('plugs', True), **kwargs) or []
 
     def output(self, **kwargs):
         """:returns: single/first element of self.outputs()"""
