@@ -91,6 +91,7 @@ cube_node.mc.listRelatives() # [u'my_cubeShape', u'pSphere1']
   * merge api module code into the node_type classes?
 
 ### TODO
+* mesh.pnts should be mesh.vrts or mesh.vtx[:] (that considers .pnts as offset)
 * mixedCase maya naming
 * stability tests: check undo/redo for everything
 * stability tests: run tests with different maya settings (scene units, ..) 
