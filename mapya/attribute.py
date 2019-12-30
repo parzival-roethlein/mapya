@@ -6,7 +6,6 @@ always use longName if possible (some operators (comparison, ...?) should consid
 - listConnections and probably all maya.cmds return the longname
 
 MAYBE
-- instead of .get() / .set() use a .value property?
 - overwrite id calls / (is operator) return value with attr name
   myAttr1 is myAttr2
   better use extra function .is_same() function
@@ -15,26 +14,20 @@ MAYBE
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-from mapya import api
-from mapya import attribute_operators
+from mapya.mayaObject import MayaObject
+from mapya.mayaObject import InvalidMayaObjectError
 
 
-class Attribute(api.MPlug, attribute_operators.AttributeOperators):
-
-    @staticmethod
-    def exists(node, attr):
-        """maya.cmds.objExists"""
-        # TODO: delete?
-        return mc.objExists('{0}.{1}'.format(node, attr))
+class Attribute(MayaObject):
 
     @staticmethod
     def get_long_name(*args, **kwargs):
         """
         give either args or kwargs
-        either node_name, attr_name or full_attr_name
-        :param args: ['my_node_name', 'my_attr_name'] or ['my_full_attr_name']
-        :param kwargs: {'node': 'my_node_name', 'attr': 'my_attr_name'} or {'full_attr': 'my_full_attr_name'}
-        :return: 'my_node_name.my_attr_name'
+        either nodeName, attrName or full_attrName
+        :param args: ['my_nodeName', 'my_attrName'] or ['my_full_attrName']
+        :param kwargs: {'node': 'my_nodeName', 'attr': 'my_attrName'} or {'full_attr': 'my_full_attrName'}
+        :return: 'my_nodeName.my_attrName'
         """
         if args and kwargs or not args and not kwargs:
             raise ValueError('either args or kwargs must be given:\n*args: {0}\n**kwargs: {1}'.format(args, kwargs))
@@ -100,8 +93,13 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
             # TODO: warning/logger?
             print(e)
 
-    def __init__(self, name):
-        super(Attribute, self).__init__(name)
+    def __init__(self, *nameArgs):
+        """nameArgs: 'myNode.attrName' or ['myNode' / Node('myNode'), 'attrName']"""
+        attrName = self.get_long_name(*nameArgs)
+        super(Attribute, self).__init__(mayaObjectName=attrName)
+        sel_list = om.MSelectionList()
+        sel_list.add(attrName)
+        self.__MPlug__ = om.MPlug(sel_list.getPlug(0))
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.name)
@@ -109,34 +107,101 @@ class Attribute(api.MPlug, attribute_operators.AttributeOperators):
     def __str__(self):
         return self.name
 
+    def validate(self):
+        super(Attribute, self).validate()
+
+        # TODO: FIND WAY TO VALIDATE MPlug (without mc.objExists())
+        #  if(self.__MPlug__.isNull):
+        #     # never triggered (once created never null)
+        #     raise InvalidMayaObjectError('MPlug is null')
+        #  if(self.__MPlug__.attribute().isNull()):
+        #     # never triggered
+        #     raise InvalidMayaObjectError('MPlug MObject is null')
+        #  if(not om.MObjectHandle(self.__MPlug.attribute()).isValid()):
+        #     # not working
+        #     raise InvalidMayaObjectError('MPlug MObject MObjectHandle is null')
+        #  if(not self.__MPlug.asMDataHandle().data().isNull()):
+        #     # is always invalid/null
+        #     raise InvalidMayaObjectError('MPlug asMDataHandle is null')
+
+        name = self.__MPlug__.name()
+        if name.endswith('.'):
+            raise InvalidMayaObjectError('Invalid attribute: {}'.format(name))
+        if not mc.objExists(name):
+            # TODO: this does crash maya in some deleteAttr redo/undo combinations, also evaluates strange when undo deleteAttr
+            raise InvalidMayaObjectError('Does not exist: {}'.format(name))
+
+    @property
+    def MPlug(self):
+        self.validate()
+        return self.__MPlug__
+
+    '''
+    @staticmethod
+    def get_api_type(m_plug):
+        pass
+
+    @property
+    def MPlug_value(self):
+        # TODO: add all type options
+        if(self.api.type == 'kFloat'):# TODO: ...
+            return self.api.MPlug.asFloat()
+        else:
+            raise NameError('Unknown api attr type: %s' % self._apiType)
+        # compound / array attr get/set
+        # https://nccastaff.bournemouth.ac.uk/jmacey/RobTheBloke/www/research/maya/mfn_attributes.htm
+
+    @MPlug_value.setter
+    def set_api(self, value):
+        # TODO: more special cases?
+        if(self.api.MPlug.isCompound):
+            print('compound attr')
+            attr_children = mc.attributeQuery(name, n='a', listChildren=1)
+            if(attr_children):
+                print('attr_children: %s' % attr_children)
+                for x, each_attr in enumerate(attr_children):
+                    Attribute(self.api.MPlug.node(), each_attr).set_api(value[x])
+            else:
+                mc.setAttr(self.name, value)
+            return
+        # TODO: add all type options
+        if(self._apiType == 'kFloat'):# TODO: ...
+            self.api.MPlug.setFloat(value)
+        else:
+            raise NameError('Unknown api attr type: %s' % self._apiType)
+    '''
+
     def is_same_as(self, attribute):
         return Attribute.get_long_name(self) == Attribute.get_long_name(attribute)
 
     @property
     def name(self):
-        # TODO: custom AttributeName class that wraps mc.addAttr(), to edit niceName, ...?
-        plug_name = self.MPlug.name()
-        if plug_name.endswith('.'):
-            raise NameError('Invalid attribute: %s' % plug_name)
-        return plug_name
+        return self.MPlug.name()
 
     @name.setter
     def name(self, value):
         mc.renameAttr(self.name, value)
 
     @property
-    def node_name(self):
-        sel_list = om.MSelectionList()
-        sel_list.add(self.MObject)
-        return sel_list.getSelectionStrings(0)[0]
+    def attrName(self):
+        return self.MPlug.partialName(useLongNames=True)
 
     @property
-    def attr_name(self):
-        return self.MPlug.partialName(useLongNames=True)
+    def nodeName(self):
+        fullName = self.name
+        return fullName[:fullName.rfind('.')]
+
+    @property
+    def value(self):
+        return self.get()
+
+    @value.setter
+    def value(self, value):
+        self.set(value)
 
     def get(self, **kwargs):
         """mc.getAttr() wrapper"""
-        if mc.attributeQuery(self.attr_name, node=self.node_name, message=True):
+        if mc.attributeQuery(self.attrName, node=self.nodeName, message=True):
             if kwargs:
                 raise NameError('message attribute has no flags?!')
             return self.input()

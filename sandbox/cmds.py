@@ -1,7 +1,22 @@
 """
-Attach maya.cmds to a node
-- automatically give it's name as first argument
--- mc.listRelatives(my_node, args) = my_node.mc.listRelatives(args)
+IDEA:
+Attach maya.cmds to a node to make the commands easier to use by automatically
+giving the node name argument. usually it's the first argument:
+mc.listRelatives(my_node, args) == my_node.mc.listRelatives(args)
+
+NOT USED BECAUSE:
+it's not the same change for all maya.cmds. it would require special cases,
+which would make this wrapper less predictable. Example:
+mc.sets([member1, ...], remove='set1')
+mc.sets([member1, ...], include='set1')
+
+
+# usage:
+class Node(MObject):
+    def __init__(self, nodeName):
+        # ...
+        self.cmds = Cmds(self)
+
 
 
 # FIRST VERSION

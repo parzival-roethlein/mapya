@@ -24,7 +24,7 @@ mc.file(new=True, force=True)
 mc.polySphere()
 mc.polySphere()
 from mapya import utils;reload(utils);utils.reload_all()
-from mapya.node import Node
+from mapya.nodeType import Node
 nod1 = Node('pSphere1')
 nod2 = Node('pSphere2')
 help(nod1)
@@ -42,7 +42,7 @@ nod1.tx // nod2.ty
 # DagNode
 # ######################
 from mapya import utils;reload(utils);utils.reload_all()
-from mapya.node_type import dagNode;reload(dagNode)
+from mapya.nodeType import dagNode;reload(dagNode)
 dag1 = dagNode.DagNode('pSphere1')
 dag2 = dagNode.DagNode('pSphere2')
 print(dag1.matrix)
@@ -50,7 +50,7 @@ print(dag1.matrix)
 # Transform
 # ######################
 from mapya import utils;reload(utils);utils.reload_all()
-from mapya.node_type.transform import Transform
+from mapya.nodeType.transform import Transform
 tra1 = Transform('pSphere1')
 tra2 = Transform('pSphere2')
 print(tra1.matrix)
@@ -100,7 +100,7 @@ print(dir(apiplug))
 # MC
 # ############################
 from mapya import utils;reload(utils);utils.reload_all()
-from mapya.node_type import Node
+from mapya.nodeType import Node
 nodmc = Node('pSphere1')
 print(nodmc.mc.listRelatives(parent=1))
 print(nodmc.mc.ls(showType=1))

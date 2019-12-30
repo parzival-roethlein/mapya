@@ -1,4 +1,18 @@
 """
+from mapya import utils
+reload(utils)
+utils.reload_all()
+
+
+
+import sys
+sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
+import attribute_test
+reload(attribute_test)
+attribute_test.run()
+
+
+
 
 # SETUP
 from mapya import utils
@@ -10,22 +24,6 @@ sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
 import attribute_test
 reload(attribute_test)
 attribute_test.add_user_attributes()
-
-
-# RUN
-from mapya import utils
-reload(utils)
-utils.reload_all()
-
-import sys
-sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
-import maya_test
-reload(maya_test)
-import attribute_test
-reload(attribute_test)
-attribute_test.run()
-
-
 """
 
 import unittest
@@ -33,9 +31,9 @@ from itertools import izip
 
 import maya.cmds as mc
 
-from maya_test import MayaTest
 from mapya.attribute import Attribute
-from mapya.api import InvalidMayaObjectError
+from mapya.mayaObject import InvalidMayaObjectError
+from maya_test import MayaTest
 
 
 def add_user_attributes(nodes=None):
@@ -111,34 +109,101 @@ def get_scene_attribute_dict(**get_attributes_kwargs):
     return {n: i for n, i in izip(names, instances)}
 
 
-class TestInstance(MayaTest):
+class TestMPlug(MayaTest):
+    def test_MPlugAccess(self):
+        attr = Attribute(MayaTest.SCENE['transform_1_attr_1'])
+        attr.MPlug
+
+    def test_MPlugAccess_nodeDeleted(self):
+        attr = Attribute(MayaTest.SCENE['transform_1_attr_1'])
+        attr.MPlug
+        mc.delete(MayaTest.SCENE['transform_1'])
+        with self.assertRaises(InvalidMayaObjectError):
+            attr.MPlug
+        mc.undo()
+        attr.MPlug
+        mc.redo()
+        with self.assertRaises(InvalidMayaObjectError):
+            attr.MPlug
+        mc.undo()
+        attr.MPlug
+
+    def test_MPlugAccess_attributeDeleted(self):
+        transform = MayaTest.SCENE['transform_1']
+        attrName = 'myTestAttr'
+        mc.addAttr(transform, ln=attrName, min=-1, max=1, dv=0.5)
+        fullAttrName = '{}.{}'.format(transform, attrName)
+        attr = Attribute(fullAttrName)
+        attr.MPlug
+        mc.deleteAttr(fullAttrName)
+        with self.assertRaises(InvalidMayaObjectError):
+            attr.MPlug
+        mc.undo()
+        attr.MPlug
+        mc.redo()
+        with self.assertRaises(InvalidMayaObjectError):
+            attr.MPlug
+        mc.undo()
+        attr.MPlug
+
+
+class TestAttribute(MayaTest):
     def test_instantiation(self):
         for attr_name in get_scene_attributes():
             attr_instance = Attribute(attr_name)
             self.assertEqual(str(attr_instance), attr_name)
 
-    def test_invalid_deleted_attribute(self):
+    def test_strAttributeDeleted(self):
         for attr_instance in get_scene_attribute_instances(maya_attributes=False):
             mc.deleteAttr(str(attr_instance))
             self.assertRaises(InvalidMayaObjectError, attr_instance.__str__)
+            mc.undo()
+            str(attr_instance)
+            mc.redo()
+            self.assertRaises(InvalidMayaObjectError, attr_instance.__str__)
+            mc.undo()
+            str(attr_instance)
 
-    def test_invalid_deleted_node(self):
-        for node in get_scene_nodes():
-            attr = Attribute(get_attributes(node=node)[0])
-            mc.delete(attr.node_name)
-            self.assertRaises(InvalidMayaObjectError, attr.__str__)
+    def test_strNodeDeleted(self):
+        for attr_instance in get_scene_attribute_instances(maya_attributes=False):
+            mc.delete(attr_instance.nodeName)
+            self.assertRaises(InvalidMayaObjectError, attr_instance.__str__)
+            mc.undo()
+            str(attr_instance)
+            mc.redo()
+            self.assertRaises(InvalidMayaObjectError, attr_instance.__str__)
+            mc.undo()
+            str(attr_instance)
 
-    def test_invalid_new_scene(self):
+    def test_strNewScene(self):
         attribute_instances = get_scene_attribute_instances()
         mc.file(new=True, force=True)
         for instance in attribute_instances:
             self.assertRaises(InvalidMayaObjectError, instance.__str__)
 
+    def test_name(self):
+        for name, instance in get_scene_attribute_dict().iteritems():
+            self.assertEqual(name, instance.name)
+
+    def test_nameSetter(self):
+        for name, instance in get_scene_attribute_dict(maya_attributes=False).iteritems():
+            test_name = '{}_test'.format(name)
+            instance.name = test_name[test_name.find('.')+1:]
+            self.assertEqual(test_name, instance.name)
+
+    def test_attrName(self):
+        for name, instance in get_scene_attribute_dict().iteritems():
+            self.assertEqual(name[name.find('.')+1:], instance.attrName)
+
+    def test_nodeName(self):
+        for name, instance in get_scene_attribute_dict().iteritems():
+            self.assertEqual(name[:name.find('.')], instance.nodeName)
+
 
 class TestGetSet(MayaTest):
     def test_get(self):
         for name, instance in get_scene_attribute_dict().iteritems():
-            if mc.attributeQuery(instance.attr_name, n=instance.node_name, message=True):
+            if mc.attributeQuery(instance.attrName, n=instance.nodeName, message=True):
                 continue
             self.assertEqual(mc.getAttr(name), instance.get())
 
@@ -176,30 +241,10 @@ class TestConnect(MayaTest):
             self.assertEqual(driven_instance.input(), None)
 
 
-class TestMapyaProperties(MayaTest):
-    def test_name(self):
-        for name, instance in get_scene_attribute_dict().iteritems():
-            self.assertEqual(name, instance.name)
-
-    def test_name_setter(self):
-        for name, instance in get_scene_attribute_dict(maya_attributes=False).iteritems():
-            test_name = '{}_test'.format(name)
-            instance.name = test_name[test_name.find('.')+1:]
-            self.assertEqual(test_name, instance.name)
-
-    def test_attrName(self):
-        for name, instance in get_scene_attribute_dict().iteritems():
-            self.assertEqual(name[name.find('.')+1:], instance.attr_name)
-
-    def test_nodeName(self):
-        for name, instance in get_scene_attribute_dict().iteritems():
-            self.assertEqual(name[:name.find('.')], instance.node_name)
-
-
 def run():
     print('\n{0}\n{1} start\n{2}'.format('-' * 70, __name__, '-' * 70))
     all_tests = unittest.TestSuite()
-    for each in [TestInstance, TestGetSet, TestMapyaProperties, TestConnect]:
+    for each in [TestMPlug, TestAttribute, TestGetSet, TestConnect]:
         all_tests.addTest(unittest.makeSuite(each))
     result = unittest.TextTestRunner(verbosity=2).run(all_tests)
     print('{0}\n{1} result:\n{2}\n{3}\n'.format('-' * 70, __name__, result, '-' * 70))

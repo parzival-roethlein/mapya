@@ -1,37 +1,45 @@
-
 from functools import wraps
-
-from mapya.logger import log
 
 
 def reload_all():
     """reload all project modules in the right order"""
-    from . import cmds
-    reload(cmds)
-    from . import attribute_operators
-    reload(attribute_operators)
-    from . import api
-    reload(api)
+    from . import mayaObject
+    reload(mayaObject)
     from . import attribute
     reload(attribute)
     from . import node
     reload(node)
-    # TODO: reload node_type package
-    from .node_type import dependNode
-    reload(dependNode)
-    from .node_type import objectSet
+    from .nodeType import objectSet
     reload(objectSet)
-    from .node_type import dagNode
+    from .nodeType import dagNode
     reload(dagNode)
-    from .node_type import transform
+    from .nodeType import transform
     reload(transform)
-    from .node_type import deformableShape
+    from .nodeType import deformableShape
     reload(deformableShape)
-    from .node_type import mesh
+    from .nodeType import mesh
     reload(mesh)
 
 
+def MapyaObject(mayaObjectName, typedNodes=True):
+    """
+    from maya object name return mapya object instance
+    mayaObjectName: node or attribute name
+    # TODO: support lists, ...
+    """
+    from .attribute import Attribute
+    from .node import Node
+    if '.' in mayaObjectName:
+        return Attribute(mayaObjectName)
+    else:
+        if typedNodes:
+            return Node.get_typed_instance(mayaObjectName)
+        else:
+            return Node(mayaObjectName)
+
+
 def debug(func):
+    """function debug decorator, prints arguments and return value"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         # args: RuntimeError: maximum recursion depth exceeded while getting the repr of a tuple #
@@ -40,8 +48,8 @@ def debug(func):
     return wrapper
 
 
-# TODO: create maya attribute setter property, so standard getter behavior does not have to get repeated
-class SetterProperty(object):
+'''
+class MayaAttrSetterProperty(object):
     def __init__(self, func, doc=None):
         self.func = func
         self.__doc__ = doc if doc is not None else func.__doc__
@@ -50,13 +58,9 @@ class SetterProperty(object):
         return self.func(obj, value)
 
 
-def set_dict_values_with_warnings(dictionary, **kwargs):
-    for key, value in kwargs.iteritems():
-        if key in dictionary:
-            log.WARNING('overwriting keys (%s) existing value (%s) with (%s)' % (key, dictionary[key], value))
-        else:
-            dictionary[key] = None
-        dictionary[key] = value
-    return dictionary
+class MayaAttrProperty(MayaAttrSetterProperty):
 
+    def __get__(self, obj, owner):
+        return self.func(obj)
+'''
 

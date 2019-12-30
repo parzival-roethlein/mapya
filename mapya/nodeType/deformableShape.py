@@ -6,14 +6,12 @@
  u'geometryShape',
  u'deformableShape']
 """
-from mapya.node_type.dagNode import DagNode
+from mapya.nodeType.dagNode import DagNode
 
 
 class DeformableShape(DagNode):
 
-    # ########################
-    # modify existing
-    # ########################
+    # TODO: move maya attr overwrites to Attribute()!?
 
     @property
     def boundingBox(self):

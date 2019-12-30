@@ -2,82 +2,84 @@
 import maya.api.OpenMaya as om
 import maya.cmds as mc
 
-from mapya import attribute
-from mapya import api
-from mapya.cmds import Cmds
-
-# DEFAULTS = {'return_typed_instances': True}
+from mapya.attribute import Attribute
+from mapya.mayaObject import MayaObject
 
 
-class Node(api.MObject):
-    """attribute container that makes maya attributes behave like python attributes"""
+class Node(MayaObject):
+    """
+    basic maya node
+
+    myNode = Node('pSphere1')
+    myNode # Node('pSphere1')
+    str(myNode) # 'pSphere1'
+    myNode.name # 'pSphere1'
+    myNode.attr.tx # Attribute('pSphere1.translateX')
+    """
+
+    class MayaAttribute(object):
+        """
+        python attribute style access to maya attribute INSTANCE:
+            myNode.attr.tx # Attribute('pSphere1.translateX')
+            myNode.attr('tx') # Attribute('pSphere1.translateX')
+            myNode.attr.tx.value # 0.0
+
+        __setattr__ and __getattribute__ are overwritten, so parent methods have
+        to be called internally:
+            object.__setattr__(self, attr, value) # instead of self.attr = value
+            object.__getattribute__(self, attr) # instead of self.attr
+
+        python info:
+            __getattr__ gets called if attr was not found in __getattribute__
+            object.__getattr__ does not exist
+        """
+
+        def __init__(self, node):
+            object.__setattr__(self, '__node__', node)
+
+        def __call__(self, attrName):
+            # TODO: not sure about this, because its redundant
+            #  myNode.attr(attrName) == getattr(myNode.attr, attrName)
+            return getattr(self, attrName)
+
+        def __getattribute__(self, attrName):
+            return Attribute(object.__getattribute__(self, '__node__'), attrName)
+
+        def __setattr__(self, attrName, value):
+            raise Exception('This should never be called?!')
 
     @staticmethod
-    def get_typed_instance(node_name):
+    def get_typed_instance(nodeName):
         """return first match with given nodes inheritance chain """
-        from . import node_type
         # TODO: dynamically load all node_type modules
-        type_modules = {'dagNode': node_type.dagNode.DagNode,
-                        'deformableShape': node_type.deformableShape.DeformableShape,
-                        'mesh': node_type.mesh.Mesh,
-                        'objectSet': node_type.objectSet.ObjectSet,
-                        'transform': node_type.transform.Transform}
+        from mapya.nodeType.dagNode import DagNode
+        from mapya.nodeType.deformableShape import DeformableShape
+        from mapya.nodeType.mesh import Mesh
+        from mapya.nodeType.objectSet import ObjectSet
+        from mapya.nodeType.transform import Transform
+        type_modules = {'dagNode': DagNode,
+                        'deformableShape': DeformableShape,
+                        'mesh': Mesh,
+                        'objectSet': ObjectSet,
+                        'transform': Transform}
 
-        node_types = mc.nodeType(node_name, inherited=True)
+        node_types = mc.nodeType(nodeName, inherited=True)
         node_types.reverse()
-        for type_ in node_types:
-            if type_ in type_modules:
-                return type_modules[type_](node_name)
+        for nodeType in node_types:
+            if nodeType in type_modules:
+                return type_modules[nodeType](nodeName)
         else:
-            return Node(node_name)
+            return Node(nodeName)
 
-    def __init__(self, name):
-        # TODO: add option (argument) to return typed instance
-        super(Node, self).__init__(name)
-        self.mc = Cmds(self)
-        self.__attrs__ = {}
+    def __init__(self, nodeName):
+        super(Node, self).__init__(mayaObjectName=nodeName)
+        self.attr = self.MayaAttribute(self)
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
     def __str__(self):
         return self.name
-
-    # ########################
-    # maya attribute access
-    # ########################
-
-    def __getattr__(self, name):
-        """get maya node attr (if it exists). Else default Python"""
-        if attribute.Attribute.exists(self.name, name):
-            return self.attr(name)
-        else:
-            return object.__getattribute__(self, name)
-
-    def __setattr__(self, attr, value):
-        """try to set maya node attr first, else default Python behavior"""
-        if attr not in dir(self) and attribute.Attribute.exists(self.name, attr):
-            self.attr(attr).set(value)
-        else:
-            object.__setattr__(self, attr, value)
-
-    def attr(self, name):
-        """get maya attribute from string"""
-        long_name = mc.attributeQuery(name, node=self.name, longName=True)
-        full_name = '{0}.{1}'.format(self.name, long_name)
-        if long_name not in self.__attrs__:
-            self.__attrs__[long_name] = attribute.Attribute(full_name)
-        elif self.__attrs__[long_name].MPlug.isDynamic:
-            # catch name changes
-            instance_name = self.__attrs__[long_name].attrName()
-            if instance_name != long_name:
-                self.__attrs__[instance_name] = self.__attrs__[long_name]
-                self.__attrs__[long_name] = attribute.Attribute(full_name)
-        return self.__attrs__[long_name]
-
-    # ########################
-    # new
-    # ########################
 
     @property
     def name(self):
@@ -89,3 +91,10 @@ class Node(api.MObject):
     def name(self, value):
         mc.rename(self.name, value)
 
+    @property
+    def locked(self):
+        return mc.lockNode(self.name, q=True)[0]
+
+    @locked.setter
+    def locked(self, value):
+        mc.lockNode(self.name, lock=value)

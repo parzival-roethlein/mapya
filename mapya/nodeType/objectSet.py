@@ -1,15 +1,24 @@
 
 import maya.cmds as mc
 
-from mapya.node_type.dependNode import DependNode
+from mapya.node import Node
 
 
-class ObjectSet(DependNode):
+class ObjectSet(Node):
 
-    # ########################
-    # modify existing
-    # ########################
+    @property
+    def members(self):
+        return self.dagSetMembers + self.dnSetMembers
 
+    @members.setter
+    def members(self, value):
+        mc.sets(clear=self.name)
+        if value:
+            # mc.sets(value, include=self.name) # does not preserve order
+            for v in value:
+                mc.sets(v, include=self.name)
+
+    # TODO: move maya attr overwrites to Attribute()!?
     @property
     def dnSetMembers(self):
         return mc.listConnections('{}.dnSetMembers'.format(self.name), destination=False) or []
@@ -29,18 +38,3 @@ class ObjectSet(DependNode):
         if self.dagSetMembers:
             mc.sets(self.dagSetMembers, remove=self.name)
         mc.sets(value, include=self.name)
-
-    # ########################
-    # new
-    # ########################
-
-    @property
-    def members(self):
-        return self.dagSetMembers + self.dnSetMembers
-
-    @members.setter
-    def members(self, value):
-        mc.sets(clear=self.name)
-        if value:
-            mc.sets(value, include=self.name)
-

@@ -1,3 +1,10 @@
+"""
+import sys
+sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
+import maya_test
+reload(maya_test)
+"""
+
 import unittest
 
 import maya.cmds as mc
