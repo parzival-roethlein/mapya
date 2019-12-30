@@ -112,10 +112,10 @@ class Attribute(MayaObject):
 
         # TODO: FIND WAY TO VALIDATE MPlug (without mc.objExists())
         #  if(self.__MPlug__.isNull):
-        #     # never triggered (once created never null)
+        #     # never the case (once created never null)
         #     raise InvalidMayaObjectError('MPlug is null')
         #  if(self.__MPlug__.attribute().isNull()):
-        #     # never triggered
+        #     # never the case
         #     raise InvalidMayaObjectError('MPlug MObject is null')
         #  if(not om.MObjectHandle(self.__MPlug.attribute()).isValid()):
         #     # not working
@@ -128,7 +128,8 @@ class Attribute(MayaObject):
         if name.endswith('.'):
             raise InvalidMayaObjectError('Invalid attribute: {}'.format(name))
         if not mc.objExists(name):
-            # TODO: this does crash maya in some deleteAttr redo/undo combinations, also evaluates strange when undo deleteAttr
+            # TODO: this used to crash maya in some deleteAttr undo/redo combination
+            # TODO: this used to evaluate strange when undo deleteAttr
             raise InvalidMayaObjectError('Does not exist: {}'.format(name))
 
     @property
