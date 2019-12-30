@@ -9,7 +9,7 @@ import sys
 sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
 import mayaObject_test
 reload(mayaObject_test)
-mayaObject_test.run()
+mayaObject_result = mayaObject_test.run()
 
 """
 
@@ -21,6 +21,7 @@ from mapya.mayaObject import InvalidMayaObjectError
 from mapya.mayaObject import MayaObject
 
 from maya_test import MayaTest
+from maya_test import testRunner
 
 
 class TestMayaObject(MayaTest):
@@ -127,9 +128,5 @@ class TestMayaObject(MayaTest):
 
 
 def run():
-    print('\n{0}\n{1} start\n{2}'.format('-' * 70, __name__, '-' * 70))
-    all_tests = unittest.TestSuite()
-    all_tests.addTest(unittest.makeSuite(TestMayaObject))
-    result = unittest.TextTestRunner(verbosity=2).run(all_tests)
-    print('{0}\n{1} result:\n{2}\n{3}\n'.format('-' * 70, __name__, result, '-' * 70))
+    return testRunner(__name__, [TestMayaObject])
 

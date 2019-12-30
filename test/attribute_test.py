@@ -9,7 +9,7 @@ import sys
 sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
 import attribute_test
 reload(attribute_test)
-attribute_test.run()
+attribute_result = attribute_test.run()
 
 
 
@@ -23,7 +23,8 @@ import sys
 sys.path.append(r'C:\Users\paz\Documents\git\mapya\test')
 import attribute_test
 reload(attribute_test)
-attribute_test.add_user_attributes()
+attribute_result = attribute_test.add_user_attributes()
+
 """
 
 import unittest
@@ -34,6 +35,7 @@ import maya.cmds as mc
 from mapya.attribute import Attribute
 from mapya.mayaObject import InvalidMayaObjectError
 from maya_test import MayaTest
+from maya_test import testRunner
 
 
 def add_user_attributes(nodes=None):
@@ -242,9 +244,4 @@ class TestConnect(MayaTest):
 
 
 def run():
-    print('\n{0}\n{1} start\n{2}'.format('-' * 70, __name__, '-' * 70))
-    all_tests = unittest.TestSuite()
-    for each in [TestMPlug, TestAttribute, TestGetSet, TestConnect]:
-        all_tests.addTest(unittest.makeSuite(each))
-    result = unittest.TextTestRunner(verbosity=2).run(all_tests)
-    print('{0}\n{1} result:\n{2}\n{3}\n'.format('-' * 70, __name__, result, '-' * 70))
+    return testRunner(__name__, [TestMPlug, TestAttribute, TestGetSet, TestConnect])
