@@ -21,21 +21,19 @@ class MayaObject(object):
 
     def validate(self):
         if(self.__MObject__.isNull()
+                or not self.__MObject__
                 or not self.__MObjectHandle__.isValid()
-                or not self.__MObjectHandle__.isAlive()):
+                or not self.__MObjectHandle__.isAlive()
+                or not self.__MObjectHandle__):
             raise InvalidMayaObjectError()
 
     @property
     def MObject(self):
         self.validate()
-        if not self.__MObject__:
-            raise InvalidMayaObjectError()
         return self.__MObject__
 
     @property
     def MObjectHandle(self):
         self.validate()
-        if not self.__MObjectHandle__:
-            raise InvalidMayaObjectError()
         return self.__MObjectHandle__
 
