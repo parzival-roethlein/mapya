@@ -3,9 +3,8 @@ pythonic maya node api
 ### DESCRIPTION
 * interact with maya nodes and attributes through python classes
 * pythonic: properties, object oriented
-* makes more maya attributes settable: transform.matrix, mesh.pnts, ...
-* introduces new convenience properties: node.name, node.locked, attribute.locked, transform.parent, objectSet.members
-* fast: python api 2.0 and MPxCommands for compute-intensive commands (mesh.pnts.set())
+* introduces new convenience properties: node.name, node.locked, attribute.locked, transform.parent, objectSet.members. Including settable Maya attribute versions: transform.matrix, mesh.points, ...
+* fast: python api 2.0 and MPxCommands for compute-intensive commands (mesh.points.set())
 
 ### USAGE
 ```python
