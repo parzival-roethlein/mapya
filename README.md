@@ -18,14 +18,24 @@ myCube = MapyaObject(mc.polyCube()[0])
 print(repr(myCube)) # Transform(u'pCube1')
 myCube.name = 'my_cube'
 print(myCube) # 'my_cube'
-print(myCube.children) # [u'my_cubeShape']
 myCube.locked = True
 # mc.delete(myCube) # RuntimeError: Cannot delete locked node 'my_cube'. # 
-# pythonic maya attr access
+# pythonic maya attr access 
 print(myCube.attr.ty.value) # 0.0
 myCube.attr.ty.value = 2
 myCube.attr('tx').value = getattr(myCube.attr, 'ty').value
 print(myCube.attr.ty.name) # my_cube.translateY
+# transform type specific feature: settable matrix attributes
+myCube2 = MapyaObject(mc.polyCube()[0])
+myCube2.attr.t.value = -1, 1, 0
+myCube.matrix = myCube2.worldMatrix
+myCube.worldMatrix = [v*2 for v in myCube2.matrix]
+# mesh type specific feature: flexible point setter
+myShape = MapyaObject(myCube.children[0])
+print(repr(myShape)) # Mesh(u'my_cubeShape')
+myShape.points = [[-0.5, -1, 0.5], [0.5,-1, 0.5]]
+myShape.points = {3: [0.5, 1, 0.5]}
+
 ```
 
 ### DECISIONS
@@ -35,7 +45,6 @@ print(myCube.attr.ty.name) # my_cube.translateY
 ### TODO
 * mixedCase naming, like maya
 * unify the repr return to something like MapyaNode(''), not specific child classes
-* mesh.pnts should be mesh.vrts or mesh.vtx[:] (that considers .pnts as offset)
 * stability tests: run tests with different maya settings (scene units, ..) 
 
 ### TODO (maybe)

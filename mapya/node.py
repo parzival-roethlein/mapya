@@ -75,9 +75,6 @@ class Node(MayaObject):
         super(Node, self).__init__(mayaObjectName=nodeName)
         self.attr = self.MayaAttribute(self)
 
-    def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self.name)
-
     def __str__(self):
         return self.name
 

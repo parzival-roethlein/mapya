@@ -101,9 +101,6 @@ class Attribute(MayaObject):
         sel_list.add(attrName)
         self.__MPlug__ = om.MPlug(sel_list.getPlug(0))
 
-    def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self.name)
-
     def __str__(self):
         return self.name
 

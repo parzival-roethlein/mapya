@@ -21,11 +21,11 @@ class Mesh(DeformableShape):
 
     # TODO: needs setter function to give optional point space. maybe replace with .vtx Attribute()?!
     @property
-    def pnts(self):
+    def points(self):
         return om.MFnMesh(self.MDagPath).getPoints()
 
-    @pnts.setter
-    def pnts(self, value):
+    @points.setter
+    def points(self, value):
         if not mc.pluginInfo('prSetPntsCmd', q=True, loaded=True):
             from mapya.plugin import prSetPntsCmd
             mc.loadPlugin(prSetPntsCmd.__file__.replace('.pyc', '.py'))

@@ -19,6 +19,14 @@ class MayaObject(object):
         self.__MObject__ = selectionList.getDependNode(0)
         self.__MObjectHandle__ = om.MObjectHandle(self.__MObject__)
 
+    def __repr__(self):
+        # return "MapyaObject('{}')".format(self.name)
+        return '%s(%r)' % (self.__class__.__name__, self.name)
+
+    @property
+    def name(self):
+        raise NotImplementedError
+
     def validate(self):
         if(self.__MObject__.isNull()
                 or not self.__MObject__
