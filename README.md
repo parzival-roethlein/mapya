@@ -46,23 +46,24 @@ set1.members = [cube1, cube2]
 print(set1.members) # [u'firstCube', u'pCube2']
 set1.members = [cube2, cube1]
 print(set1.members) # [u'pCube2', u'firstCube']
-
 ```
+
+### DEPENDENCIES
+prmaya: https://github.com/parzival-roethlein/prmaya
 
 ### DECISIONS
 * follow maya convention that shape commands can be run on the shapes transform? undecided
 * auto convert return values (if mayaNode or mayaAttribute) to MapyaObject instances? probably not
+* unify the repr return to something like MapyaNode(''), not specific child classes
 
 ### TODO
-* fix random crashes (MObject access?)
 * mixedCase naming, like maya
-* unify the repr return to something like MapyaNode(''), not specific child classes
+* fix random crashes (MObject access?)
+* custom subclasses support
 * stability tests: run tests with different maya settings (scene units, ..) 
 
-### TODO (maybe)
-* class instance should save python class version, that way it can be noticed and converted etc if class changes
-  * extra function needed for version up changes that have to be done on maya object
-* compare performance between maya.api.OpenMaya with numpy
+### TODO (much later)
+* versioning for custom subclases: instance saves version, to allow running conversion functions when upgrading
 * performance tests, slots class versions
 
 ### RELATED

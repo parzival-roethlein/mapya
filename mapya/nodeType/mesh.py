@@ -14,7 +14,7 @@ import maya.api.OpenMaya as om
 import maya.cmds as mc
 
 from mapya.nodeType.deformableShape import DeformableShape
-from mapya.plugin.prSetPntsCmd import py_prSetPntsCmd
+from prmaya.plugins import prSetPointsCmd
 
 
 class Mesh(DeformableShape):
@@ -31,7 +31,6 @@ class Mesh(DeformableShape):
         return om.MFnMesh(self.MDagPath).getPoints(space)
 
     def setPoints(self, value, space=om.MSpace.kObject):
-        if not mc.pluginInfo('prSetPntsCmd', q=True, loaded=True):
-            from mapya.plugin import prSetPntsCmd
-            mc.loadPlugin(prSetPntsCmd.__file__.replace('.pyc', '.py'))
-        py_prSetPntsCmd(self.name, value, space)
+        if not mc.pluginInfo('prSetPointsCmd', q=True, loaded=True):
+            mc.loadPlugin(prSetPointsCmd.__file__.replace('.pyc', '.py'))
+        prSetPointsCmd.setPoints(self.name, value, space)
